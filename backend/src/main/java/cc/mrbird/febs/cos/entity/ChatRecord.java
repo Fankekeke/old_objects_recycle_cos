@@ -30,9 +30,9 @@ public class ChatRecord implements Serializable {
     private Integer userId;
 
     /**
-     * 酒店ID
+     * 维修员ID
      */
-    private Integer hotelId;
+    private Integer staffId;
 
     /**
      * 发送者类型 0-用户 1-维修
