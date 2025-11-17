@@ -7,26 +7,28 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="商家编号"
+                label="贴子标题"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.code"/>
+                <a-input v-model="queryParams.title"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="商家名称"
+                label="发贴人"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.name"/>
+                <a-input v-model="queryParams.username"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="负责人"
+                label="所属模块"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.principal"/>
+                <a-select v-model="queryParams.tagId" allowClear>
+                  <a-select-option v-for="(item, index) in tagList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </div>
@@ -39,7 +41,7 @@
     </div>
     <div>
       <div class="operator">
-<!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
+        <a-button type="primary" ghost @click="add">新增</a-button>
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -52,58 +54,70 @@
                :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                :scroll="{ x: 900 }"
                @change="handleTableChange">
+        <template slot="titleShow" slot-scope="text, record">
+          <template>
+            <a-badge v-if="record.deleteFlag == 1" status="error"/>
+            <a-badge v-if="record.deleteFlag == 0" status="processing"/>
+            <a-tooltip>
+              <template slot="title">
+                {{ record.title }}
+              </template>
+              {{ record.title.slice(0, 8) }} ...
+            </a-tooltip>
+          </template>
+        </template>
+        <template slot="contentShow" slot-scope="text, record">
+          <template>
+            <a-tooltip>
+              <template slot="title">
+                {{ record.content }}
+              </template>
+              {{ record.content.slice(0, 30) }} ...
+            </a-tooltip>
+          </template>
+        </template>
         <template slot="operation" slot-scope="text, record">
+          <a-icon v-if="record.deleteFlag == 1" type="caret-up" @click="auditDelete(record)" title="up" style="margin-right: 10px"></a-icon>
           <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
-          <a-icon type="file-search" @click="merchantViewOpen(record)" title="详 情" style="margin-left: 15px"></a-icon>
-          <a-icon v-if="record.status === '1'" type="caret-down" @click="audit(record.id, 0)" title="上 架" style="margin-left: 15px"></a-icon>
-          <a-icon v-if="record.status === '0'" type="caret-up" @click="audit(record.id, 1)" title="下 架" style="margin-left: 15px"></a-icon>
         </template>
       </a-table>
     </div>
-    <merchant-add
-      v-if="merchantAdd.visiable"
-      @close="handlemerchantAddClose"
-      @success="handlemerchantAddSuccess"
-      :merchantAddVisiable="merchantAdd.visiable">
-    </merchant-add>
-    <merchant-edit
-      ref="merchantEdit"
-      @close="handlemerchantEditClose"
-      @success="handlemerchantEditSuccess"
-      :merchantEditVisiable="merchantEdit.visiable">
-    </merchant-edit>
-    <merchant-view
-      @close="handlemerchantViewClose"
-      :merchantShow="merchantView.visiable"
-      :merchantData="merchantView.data">
-    </merchant-view>
+    <post-add
+      v-if="postAdd.visiable"
+      @close="handlepostAddClose"
+      @success="handlepostAddSuccess"
+      :postAddVisiable="postAdd.visiable"
+      :tagList="tagListData">
+    </post-add>
+    <post-edit
+      ref="postEdit"
+      @close="handlepostEditClose"
+      @success="handlepostEditSuccess"
+      :postEditVisiable="postEdit.visiable"
+      :tagList="tagListData">
+    </post-edit>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
-import merchantAdd from './MerchantAdd'
-import merchantEdit from './MerchantEdit'
-import merchantView from './MerchantView.vue'
+import PostAdd from './PostAdd'
+import PostEdit from './PostEdit'
 import {mapState} from 'vuex'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'merchant',
-  components: {merchantAdd, merchantEdit, merchantView, RangeDate},
+  name: 'post',
+  components: {PostAdd, PostEdit, RangeDate},
   data () {
     return {
       advanced: false,
-      merchantAdd: {
+      postAdd: {
         visiable: false
       },
-      merchantEdit: {
+      postEdit: {
         visiable: false
-      },
-      merchantView: {
-        visiable: false,
-        data: null
       },
       queryParams: {},
       filteredInfo: null,
@@ -120,7 +134,8 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      userList: []
+      tagList: [],
+      tagListData: []
     }
   },
   computed: {
@@ -129,82 +144,71 @@ export default {
     }),
     columns () {
       return [{
-        title: '商家编号',
-        dataIndex: 'code'
+        title: '发贴人',
+        dataIndex: 'username',
+        customRender: (text, row, index) => {
+          if (text !== null) {
+            return text
+          } else {
+            return '- -'
+          }
+        }
       }, {
-        title: '商家名称',
-        dataIndex: 'name'
-      }, {
-        title: '商家图片',
-        dataIndex: 'images',
+        title: '头像',
+        dataIndex: 'userImages',
         customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="user" />
+          if (!record.userImages) return <a-avatar shape="square" icon="user" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.userImages } />
             </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.userImages } />
           </a-popover>
         }
       }, {
-        title: '状态',
-        dataIndex: 'status',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case '0':
-              return <a-tag color="red">休业</a-tag>
-            case '1':
-              return <a-tag color="green">营业</a-tag>
-            default:
-              return '- -'
-          }
-        }
+        title: '标题',
+        dataIndex: 'title',
+        scopedSlots: { customRender: 'titleShow' }
       }, {
-        title: '具体地址',
-        dataIndex: 'address',
+        title: '贴子内容',
+        dataIndex: 'content',
+        scopedSlots: { customRender: 'contentShow' }
+      }, {
+        title: '访问量',
+        dataIndex: 'pageviews',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text
+            return text + '次'
           } else {
             return '- -'
           }
         }
       }, {
-        title: '负责人',
-        dataIndex: 'principal',
+        title: '收藏量',
+        dataIndex: 'collect',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text
+            return text + '收藏'
           } else {
             return '- -'
           }
         }
       }, {
-        title: '联系方式',
-        dataIndex: 'phone',
+        title: '回复量',
+        dataIndex: 'reply',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text
+            return text + '回复'
           } else {
             return '- -'
           }
         }
       }, {
-        title: '菜系',
-        dataIndex: 'dishes',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '创建时间',
+        title: '发布时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text + '元'
+            return text
           } else {
             return '- -'
           }
@@ -218,20 +222,25 @@ export default {
   },
   mounted () {
     this.fetch()
+    this.getTagList()
   },
   methods: {
-    audit (id, status) {
-      this.$get('/cos/merchant-info/audit', {merchantId: id, status}).then((r) => {
-        this.$message.success('修改成功')
+    auditDelete (row) {
+      row.deleteFlag = 0
+      this.$put('/cos/post-info', row).then((r) => {
+        this.$message.success('恢复贴子成功！')
         this.search()
       })
     },
-    merchantViewOpen (row) {
-      this.merchantView.data = row
-      this.merchantView.visiable = true
-    },
-    handlemerchantViewClose () {
-      this.merchantView.visiable = false
+    getTagList () {
+      this.$get('/cos/tag-info/list').then((r) => {
+        this.tagList = r.data.data
+        let tagListData = []
+        r.data.data.forEach(item => {
+          tagListData.push({label: item.name, value: item.id})
+        })
+        this.tagListData = tagListData
+      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -240,26 +249,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.merchantAdd.visiable = true
+      this.postAdd.visiable = true
     },
-    handlemerchantAddClose () {
-      this.merchantAdd.visiable = false
+    handlepostAddClose () {
+      this.postAdd.visiable = false
     },
-    handlemerchantAddSuccess () {
-      this.merchantAdd.visiable = false
-      this.$message.success('新增商家成功')
+    handlepostAddSuccess () {
+      this.postAdd.visiable = false
+      this.$message.success('新增贴子成功')
       this.search()
     },
     edit (record) {
-      this.$refs.merchantEdit.setFormValues(record)
-      this.merchantEdit.visiable = true
+      this.$refs.postEdit.setFormValues(record)
+      this.postEdit.visiable = true
     },
-    handlemerchantEditClose () {
-      this.merchantEdit.visiable = false
+    handlepostEditClose () {
+      this.postEdit.visiable = false
     },
-    handlemerchantEditSuccess () {
-      this.merchantEdit.visiable = false
-      this.$message.success('修改商家成功')
+    handlepostEditSuccess () {
+      this.postEdit.visiable = false
+      this.$message.success('修改贴子成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -277,7 +286,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/merchant-info/' + ids).then(() => {
+          that.$delete('/cos/post-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -347,7 +356,11 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      this.$get('/cos/merchant-info/page', {
+      if (params.tagId === undefined) {
+        delete params.tagId
+      }
+      params.userId = this.currentUser.userId
+      this.$get('/cos/post-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data
