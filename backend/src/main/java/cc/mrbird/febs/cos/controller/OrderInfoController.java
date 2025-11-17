@@ -4,8 +4,10 @@ package cc.mrbird.febs.cos.controller;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.OrderInfo;
+import cc.mrbird.febs.cos.entity.OrderQuotation;
 import cc.mrbird.febs.cos.entity.WithdrawInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
+import cc.mrbird.febs.cos.service.IOrderQuotationService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -25,6 +27,8 @@ import java.util.List;
 public class OrderInfoController {
 
     private final IOrderInfoService orderInfoService;
+
+    private final IOrderQuotationService orderQuotationService;
 
     /**
      * 分页获取订单信息
@@ -48,6 +52,22 @@ public class OrderInfoController {
     @GetMapping("/checkOrder")
     public R checkOrder(@RequestParam("orderId") Integer orderId, @RequestParam("staffId") Integer staffId) {
         return R.ok(orderInfoService.checkOrder(orderId, staffId));
+    }
+
+    /**
+     * 确认报价信息
+     *
+     * @param quotationId 报价ID
+     * @return 结果
+     */
+    @GetMapping("/checkQuotation")
+    public R checkQuotation(@RequestParam("quotationId") Integer quotationId) {
+        OrderQuotation quotation = orderQuotationService.getById(quotationId);
+        OrderInfo orderInfo = orderInfoService.getById(quotation.getOrderId());
+        orderInfo.setStaffIds(quotation.getStaffId().toString());
+        orderInfo.setTotal(quotation.getPrice());
+        orderInfo.setStatus("1");
+        return R.ok(orderInfoService.updateById(orderInfo));
     }
 
     /**
