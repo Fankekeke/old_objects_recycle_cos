@@ -28,10 +28,10 @@
             {{ orderInfo.integral }}
           </a-col>
           <a-col :span="6"><b>订单状态：</b>
-            <span v-if="orderInfo.status === '0'" style="color: red">未支付</span>
-            <span v-if="orderInfo.status === '1'" style="color: blue">已支付</span>
-            <span v-if="orderInfo.status === '2'" style="color: orange">配送中</span>
-            <span v-if="orderInfo.status === '3'" style="color: green">已收货</span>
+            <span v-if="orderInfo.status === '0'" style="color: red">等待报价</span>
+            <span v-if="orderInfo.status === '1'" style="color: blue">未支付</span>
+            <span v-if="orderInfo.status === '2'" style="color: orange">维修回收中</span>
+            <span v-if="orderInfo.status === '3'" style="color: green">已完成</span>
           </a-col>
           <a-col :span="6"><b>订单类型：</b>
             <span v-if="orderInfo.type === '0'">堂食</span>

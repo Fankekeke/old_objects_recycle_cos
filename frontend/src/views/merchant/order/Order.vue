@@ -235,13 +235,13 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case '0':
-              return <a-tag color="red">未支付</a-tag>
+              return <a-tag color="red">等待报价</a-tag>
             case '1':
-              return <a-tag>已支付</a-tag>
+              return <a-tag>未支付</a-tag>
             case '2':
-              return <a-tag>配送中</a-tag>
+              return <a-tag>维修回收中</a-tag>
             case '3':
-              return <a-tag>已收货</a-tag>
+              return <a-tag>已完成</a-tag>
             default:
               return '- -'
           }

@@ -33,9 +33,9 @@
                   </div>
                   <div style="padding-left: 24px;padding-right: 24px;margin-bottom: 50px;margin-top: 50px" v-if="orderInfo != null">
                     <a-steps :current="orderInfo.status" progress-dot size="small">
+                      <a-step title="等待报价" />
                       <a-step title="未支付" />
-                      <a-step title="待接单" />
-                      <a-step title="配送中" />
+                      <a-step title="维修回收中" />
                       <a-step title="已完成" />
                     </a-steps>
                   </div>
