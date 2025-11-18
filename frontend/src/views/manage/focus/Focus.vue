@@ -7,15 +7,7 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="贴子标题"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.title"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="发贴人"
+                label="用户名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.username"/>
@@ -23,12 +15,10 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="所属模块"
+                label="关注人"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-select v-model="queryParams.tagId" allowClear>
-                  <a-select-option v-for="(item, index) in tagList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
-                </a-select>
+                <a-input v-model="queryParams.collectUsername"/>
               </a-form-item>
             </a-col>
           </div>
@@ -41,7 +31,7 @@
     </div>
     <div>
       <div class="operator">
-<!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
+        <!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -76,49 +66,23 @@
             </a-tooltip>
           </template>
         </template>
-        <template slot="operation" slot-scope="text, record">
-          <a-icon v-if="record.deleteFlag == 1" type="caret-up" @click="auditDelete(record)" title="up" style="margin-right: 10px"></a-icon>
-          <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
-        </template>
       </a-table>
     </div>
-    <post-add
-      v-if="postAdd.visiable"
-      @close="handlepostAddClose"
-      @success="handlepostAddSuccess"
-      :postAddVisiable="postAdd.visiable"
-      :tagList="tagListData">
-    </post-add>
-    <post-edit
-      ref="postEdit"
-      @close="handlepostEditClose"
-      @success="handlepostEditSuccess"
-      :postEditVisiable="postEdit.visiable"
-      :tagList="tagListData">
-    </post-edit>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
-import PostAdd from './PostAdd'
-import PostEdit from './PostEdit'
 import {mapState} from 'vuex'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
   name: 'post',
-  components: {PostAdd, PostEdit, RangeDate},
+  components: {RangeDate},
   data () {
     return {
       advanced: false,
-      postAdd: {
-        visiable: false
-      },
-      postEdit: {
-        visiable: false
-      },
       queryParams: {},
       filteredInfo: null,
       sortedInfo: null,
@@ -144,7 +108,7 @@ export default {
     }),
     columns () {
       return [{
-        title: '发贴人',
+        title: '用户名称',
         ellipsis: true,
         dataIndex: 'username',
         customRender: (text, row, index) => {
@@ -156,14 +120,14 @@ export default {
         }
       }, {
         title: '头像',
-        dataIndex: 'userImages',
+        dataIndex: 'avatar',
         customRender: (text, record, index) => {
-          if (!record.userImages) return <a-avatar shape="square" icon="user" />
+          if (!record.avatar) return <a-avatar shape="square" icon="user" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.userImages } />
+              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.avatar } />
             </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.userImages } />
+            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.avatar } />
           </a-popover>
         }
       }, {
@@ -180,47 +144,43 @@ export default {
           }
         }
       }, {
-        title: '标题',
+        title: '关注人名称',
         ellipsis: true,
-        dataIndex: 'title',
-        scopedSlots: { customRender: 'titleShow' }
-      }, {
-        title: '贴子内容',
-        ellipsis: true,
-        dataIndex: 'content',
-        scopedSlots: { customRender: 'contentShow' }
-      }, {
-        title: '访问量',
-        dataIndex: 'pageviews',
+        dataIndex: 'collectUsername',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text + '次'
+            return text
           } else {
             return '- -'
           }
         }
       }, {
-        title: '收藏量',
-        dataIndex: 'collect',
+        title: '关注人头像',
+        dataIndex: 'collectAvatar',
+        customRender: (text, record, index) => {
+          if (!record.collectAvatar) return <a-avatar shape="square" icon="user" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.collectAvatar } />
+            </template>
+            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.collectAvatar } />
+          </a-popover>
+        }
+      }, {
+        title: '关注人类型',
+        dataIndex: 'collectRoleFlag',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '收藏'
-          } else {
-            return '- -'
+          switch (text) {
+            case '1':
+              return <a-tag color="#48ad20">用户</a-tag>
+            case '2':
+              return <a-tag color="#2eabff">维修人员</a-tag>
+            default:
+              return '- -'
           }
         }
       }, {
-        title: '回复量',
-        dataIndex: 'reply',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '回复'
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '发布时间',
+        title: '关注时间',
         ellipsis: true,
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
@@ -230,66 +190,18 @@ export default {
             return '- -'
           }
         }
-      }, {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: {customRender: 'operation'}
       }]
     }
   },
   mounted () {
     this.fetch()
-    this.getTagList()
   },
   methods: {
-    auditDelete (row) {
-      row.deleteFlag = 0
-      this.$put('/cos/post-info', row).then((r) => {
-        this.$message.success('恢复贴子成功！')
-        this.search()
-      })
-    },
-    getTagList () {
-      this.$get('/cos/tag-info/list').then((r) => {
-        this.tagList = r.data.data
-        let tagListData = []
-        r.data.data.forEach(item => {
-          tagListData.push({label: item.name, value: item.id})
-        })
-        this.tagListData = tagListData
-      })
-    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
-    },
-    add () {
-      this.postAdd.visiable = true
-    },
-    handlepostAddClose () {
-      this.postAdd.visiable = false
-    },
-    handlepostAddSuccess () {
-      this.postAdd.visiable = false
-      this.$message.success('新增贴子成功')
-      this.search()
-    },
-    edit (record) {
-      this.$refs.postEdit.setFormValues(record)
-      this.postEdit.visiable = true
-    },
-    handlepostEditClose () {
-      this.postEdit.visiable = false
-    },
-    handlepostEditSuccess () {
-      this.postEdit.visiable = false
-      this.$message.success('修改贴子成功')
-      this.search()
-    },
-    handleDeptChange (value) {
-      this.queryParams.deptId = value || ''
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {
@@ -303,7 +215,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/post-info/' + ids).then(() => {
+          that.$delete('/cos/focus-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -376,7 +288,7 @@ export default {
       if (params.tagId === undefined) {
         delete params.tagId
       }
-      this.$get('/cos/post-info/page', {
+      this.$get('/cos/focus-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

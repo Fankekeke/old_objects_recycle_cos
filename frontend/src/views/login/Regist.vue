@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" hoverable style="margin-top:  30px;background-color: #f9f9f9">
+  <a-card :bordered="false" :hoverable="false" style="margin-top:  30px;background-color: #f9f9f9">
     <div class="user-layout-register">
       <a-form ref="formRegister" :autoFormCreate="(form)=>{this.form = form}" id="formRegister">
         <a-form-item

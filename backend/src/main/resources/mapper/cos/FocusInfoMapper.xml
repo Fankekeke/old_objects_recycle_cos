@@ -11,10 +11,10 @@
         fi.create_date AS createDate,
         tu1.name AS username,
         tu1.images AS avatar,
-        tu1.roleFlag AS roleFlag,
+        tu1.role_flag AS roleFlag,
         tu2.name AS collectUsername,
         tu2.images AS collectAvatar,
-        tu2.roleFlag AS collectRoleFlag
+        tu2.role_flag AS collectRoleFlag
         FROM
         focus_info fi
         LEFT JOIN t_user tu1 ON ( tu1.USER_ID = fi.user_id )

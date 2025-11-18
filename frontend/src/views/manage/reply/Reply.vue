@@ -121,9 +121,6 @@ export default {
     }),
     columns () {
       return [{
-        title: '回复ID',
-        dataIndex: 'id'
-      }, {
         title: '用户昵称',
         ellipsis: true,
         dataIndex: 'username'
@@ -138,6 +135,19 @@ export default {
             </template>
             <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images } />
           </a-popover>
+        }
+      }, {
+        title: '用户类型',
+        dataIndex: 'roleFlag',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case '1':
+              return <a-tag color="#48ad20">用户</a-tag>
+            case '2':
+              return <a-tag color="#2eabff">维修人员</a-tag>
+            default:
+              return '- -'
+          }
         }
       }, {
         title: '所属贴子',

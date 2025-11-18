@@ -104,7 +104,8 @@ public class UserInfoController {
      */
     @PutMapping
     public R edit(UserInfo userInfo) {
-        userService.update(Wrappers.<User>lambdaUpdate().set(User::getName, userInfo.getName()).set(User::getImages, userInfo.getImages()).eq(User::getUserId, userInfo.getUserId()));
+        UserInfo userInfoFix = userInfoService.getById(userInfo.getId());
+        userService.update(Wrappers.<User>lambdaUpdate().set(User::getName, userInfo.getName()).set(User::getImages, userInfo.getImages()).eq(User::getUserId, userInfoFix.getUserId()));
         return R.ok(userInfoService.updateById(userInfo));
     }
 

@@ -4,7 +4,7 @@
       <div style="height: 800px;padding: 0 50px">
         <div style="font-size: 35px;font-weight: 500;color: white;font-family: SimHei">Hello</div>
         <div style="font-size: 22px;font-weight: 500;color: white;font-family: SimHei">配送下单</div>
-        <div style="height: 730px;margin-top: 30px">
+        <div style="height: 730px;">
           <a-card :bordered="false" hoverable style="height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);color:#fff;padding-bottom: 30px">
             <a-row style="padding: 0 50px;margin: 0 auto">
               <a-col :span="24">
