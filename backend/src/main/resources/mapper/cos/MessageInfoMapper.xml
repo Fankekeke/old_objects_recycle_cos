@@ -10,13 +10,13 @@
         mi.content,
         mi.create_date AS createDate,
         mi.read_status AS readStatus,
-        tu.AVATAR AS avatar,
-        ui.name as username,
-        ui.images
+        tu.images AS avatar,
+        tu.images,
+        tu.name as username,
+        tu.role_flag
         FROM
         message_info mi
         LEFT JOIN t_user tu ON ( tu.USER_ID = mi.send_user )
-        LEFT JOIN user_info ui ON (ui.user_id = tu.USER_ID)
         WHERE
         1 = 1
         <if test="messageInfo.username != null and messageInfo.username != ''">

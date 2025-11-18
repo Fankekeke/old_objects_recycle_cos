@@ -17,6 +17,7 @@ public interface IPostInfoService extends IService<PostInfo> {
 
     /**
      * 分页获取系统用户信息
+     *
      * @param page
      * @param user
      * @return

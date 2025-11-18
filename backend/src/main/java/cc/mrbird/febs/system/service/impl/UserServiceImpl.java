@@ -207,6 +207,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setSsex(User.SEX_UNKNOW);
         user.setAvatar(User.DEFAULT_AVATAR);
         user.setDescription("注册用户");
+        user.setName(name);
+        user.setRoleFlag("1");
         this.save(user);
 
         UserRole ur = new UserRole();
@@ -245,6 +247,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setSsex(User.SEX_UNKNOW);
         user.setAvatar(User.DEFAULT_AVATAR);
         user.setDescription("注册员工");
+        user.setName(staffInfo.getName());
+        user.setImages(staffInfo.getImages());
+        user.setRoleFlag("2");
         this.save(user);
 
         staffInfo.setUserId(user.getUserId());

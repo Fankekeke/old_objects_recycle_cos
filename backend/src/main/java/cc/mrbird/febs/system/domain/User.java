@@ -95,6 +95,15 @@ public class User implements Serializable {
     @ExcelField(value = "角色")
     private transient String roleName;
 
+    private String name;
+
+    private String images;
+
+    /**
+     * 角色权限标记（1.用户 2.维修员）
+     */
+    private String roleFlag;
+
     // 排序字段
     private transient String sortField;
 

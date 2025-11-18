@@ -27,6 +27,7 @@ public class FocusInfoController {
 
     /**
      * 分页查询关注人信息
+     *
      * @param page
      * @param focusInfo
      * @return
@@ -38,6 +39,7 @@ public class FocusInfoController {
 
     /**
      * 分页查询关注人信息
+     *
      * @param userId
      * @return
      */
@@ -47,7 +49,19 @@ public class FocusInfoController {
     }
 
     /**
+     * 分页查询粉丝信息
+     *
+     * @param userId
+     * @return
+     */
+    @GetMapping("/fans/list/{userId}")
+    public R focusFansInfoByUser(@PathVariable("userId") Integer userId) {
+        return R.ok(focusInfoService.focusFansInfoByUser(userId));
+    }
+
+    /**
      * 添加关注信息
+     *
      * @param focusInfo
      * @return
      */
@@ -67,6 +81,7 @@ public class FocusInfoController {
 
     /**
      * 删除关注
+     *
      * @param ids
      * @return
      */

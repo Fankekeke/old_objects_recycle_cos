@@ -26,6 +26,7 @@ public class MessageInfoController {
 
     /**
      * 分页查询消息信息
+     *
      * @param page
      * @param messageInfo
      * @return
@@ -37,6 +38,7 @@ public class MessageInfoController {
 
     /**
      * 新增系统消息
+     *
      * @param messageInfo
      * @return
      */
@@ -49,6 +51,7 @@ public class MessageInfoController {
 
     /**
      * 设置系统消息已读
+     *
      * @param ids
      * @return
      */

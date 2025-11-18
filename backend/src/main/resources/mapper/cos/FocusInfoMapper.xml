@@ -9,10 +9,12 @@
         fi.user_id AS userId,
         fi.collect_user_id AS collectUserId,
         fi.create_date AS createDate,
-        tu1.USERNAME AS username,
-        tu1.AVATAR AS avatar,
-        tu2.USERNAME AS collectUsername,
-        tu2.AVATAR AS collectAvatar
+        tu1.name AS username,
+        tu1.images AS avatar,
+        tu1.roleFlag AS roleFlag,
+        tu2.name AS collectUsername,
+        tu2.images AS collectAvatar,
+        tu2.roleFlag AS collectRoleFlag
         FROM
         focus_info fi
         LEFT JOIN t_user tu1 ON ( tu1.USER_ID = fi.user_id )
@@ -20,10 +22,10 @@
         WHERE
         fi.delete_flag = 0
         <if test="focusInfo.username != null and focusInfo.username != ''">
-            AND tu1.USERNAME LIKE CONCAT('%',#{focusInfo.username},'%')
+            AND tu1.name LIKE CONCAT('%',#{focusInfo.username},'%')
         </if>
         <if test="focusInfo.collectUsername != null and focusInfo.collectUsername != ''">
-            AND tu2.USERNAME LIKE CONCAT('%',#{focusInfo.collectUsername},'%')
+            AND tu2.name LIKE CONCAT('%',#{focusInfo.collectUsername},'%')
         </if>
         <if test="focusInfo.userId != null">
             AND fi.user_id = #{focusInfo.userId}
@@ -38,9 +40,9 @@
         fi.user_id AS userId,
         fi.collect_user_id AS collectUserId,
         fi.create_date AS createDate,
-        tu1.USERNAME AS username,
-        tu1.AVATAR AS avatar,
-        tu2.AVATAR AS collectAvatar,
+        tu1.name AS username,
+        tu1.images AS avatar,
+        tu2.images AS collectAvatar,
         ui.name as collectUsername,
         ui.images as userImages,
         ui.content,
@@ -53,5 +55,29 @@
         WHERE
         fi.delete_flag = 0
         AND fi.user_id = #{userId}
+    </select>
+
+    <!-- 分页查询粉丝信息 -->
+    <select id="focusFansInfoByUser" resultType="java.util.LinkedHashMap">
+        SELECT
+            fi.id,
+            fi.user_id AS userId,
+            fi.collect_user_id AS collectUserId,
+            fi.create_date AS createDate,
+            tu1.name AS username,
+            tu1.images AS avatar,
+            tu2.images AS collectAvatar,
+            ui.name as collectUsername,
+            ui.images as userImages,
+            ui.content,
+            ui.code
+        FROM
+            focus_info fi
+                LEFT JOIN t_user tu1 ON ( tu1.USER_ID = fi.user_id )
+                LEFT JOIN t_user tu2 ON ( tu2.USER_ID = fi.collect_user_id )
+                LEFT JOIN user_info ui ON (ui.user_id = tu2.USER_ID)
+        WHERE
+            fi.delete_flag = 0
+          AND fi.collect_user_id = #{userId}
     </select>
 </mapper>

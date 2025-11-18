@@ -4,6 +4,8 @@ package cc.mrbird.febs.cos.controller;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IUserInfoService;
+import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.system.service.UserService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,6 +25,8 @@ import java.util.List;
 public class UserInfoController {
 
     private final IUserInfoService userInfoService;
+
+    private final UserService userService;
 
     /**
      * 分页获取用户信息
@@ -100,6 +104,7 @@ public class UserInfoController {
      */
     @PutMapping
     public R edit(UserInfo userInfo) {
+        userService.update(Wrappers.<User>lambdaUpdate().set(User::getName, userInfo.getName()).set(User::getImages, userInfo.getImages()).eq(User::getUserId, userInfo.getUserId()));
         return R.ok(userInfoService.updateById(userInfo));
     }
 

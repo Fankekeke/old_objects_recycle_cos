@@ -26,6 +26,7 @@ public class CollectInfoController {
 
     /**
      * 获取收藏贴子列表
+     *
      * @param page
      * @param collectInfo
      * @return
@@ -37,6 +38,7 @@ public class CollectInfoController {
 
     /**
      * 获取收藏贴子列表
+     *
      * @return
      */
     @GetMapping("/list/{userId}")
@@ -46,6 +48,7 @@ public class CollectInfoController {
 
     /**
      * 添加收藏信息
+     *
      * @param collectInfo
      * @return
      */
@@ -54,8 +57,8 @@ public class CollectInfoController {
         Integer count = collectInfoService.count(Wrappers.<CollectInfo>lambdaQuery().eq(CollectInfo::getPostId, collectInfo.getPostId())
                 .eq(CollectInfo::getUserId, collectInfo.getUserId()));
         if (count > 0) {
-         Boolean result = collectInfoService.update(Wrappers.<CollectInfo>lambdaUpdate().set(CollectInfo::getDeleteFlag, collectInfo.getDeleteFlag())
-                 .eq(CollectInfo::getPostId, collectInfo.getPostId()).eq(CollectInfo::getUserId, collectInfo.getUserId()));
+            Boolean result = collectInfoService.update(Wrappers.<CollectInfo>lambdaUpdate().set(CollectInfo::getDeleteFlag, collectInfo.getDeleteFlag())
+                    .eq(CollectInfo::getPostId, collectInfo.getPostId()).eq(CollectInfo::getUserId, collectInfo.getUserId()));
             return R.ok(result);
         } else {
             collectInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
@@ -65,6 +68,7 @@ public class CollectInfoController {
 
     /**
      * 删除收藏信息
+     *
      * @param ids
      * @return
      */

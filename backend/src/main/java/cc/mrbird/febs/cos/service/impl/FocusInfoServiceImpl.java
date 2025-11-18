@@ -26,4 +26,15 @@ public class FocusInfoServiceImpl extends ServiceImpl<FocusInfoMapper, FocusInfo
     public List<LinkedHashMap<String, Object>> focusInfoByUser(Integer userId) {
         return baseMapper.focusInfoByUser(userId);
     }
+
+    /**
+     * 分页查询粉丝信息
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> focusFansInfoByUser(Integer userId) {
+        return baseMapper.focusFansInfoByUser(userId);
+    }
 }

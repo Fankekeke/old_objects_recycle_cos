@@ -7,6 +7,7 @@ import cc.mrbird.febs.cos.entity.StaffInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.service.UserService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -130,6 +131,7 @@ public class StaffInfoController {
      */
     @PutMapping
     public R edit(StaffInfo staffInfo) {
+        userInfoService.update(Wrappers.<User>lambdaUpdate().set(User::getName, staffInfo.getName()).set(User::getImages, staffInfo.getImages()).eq(User::getUserId, staffInfo.getUserId()));
         return R.ok(staffInfoService.updateById(staffInfo));
     }
 

@@ -19,4 +19,12 @@ public interface IFocusInfoService extends IService<FocusInfo> {
 
     // 查询关注人信息
     List<LinkedHashMap<String, Object>> focusInfoByUser(Integer userId);
+
+    /**
+     * 分页查询粉丝信息
+     *
+     * @param userId
+     * @return
+     */
+    List<LinkedHashMap<String, Object>> focusFansInfoByUser(Integer userId);
 }

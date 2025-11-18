@@ -44,6 +44,7 @@ public class ReplyInfoController {
 
     /**
      * 分页查询回复信息
+     *
      * @param page
      * @param replyInfo
      * @return
@@ -55,6 +56,7 @@ public class ReplyInfoController {
 
     /**
      * 获取具体的帖子回复信息
+     *
      * @param postId
      * @return
      */
@@ -67,6 +69,7 @@ public class ReplyInfoController {
 
     /**
      * 添加回复信息
+     *
      * @param replyInfo
      * @return
      */
@@ -76,7 +79,8 @@ public class ReplyInfoController {
         String check = this.contentCheck(replyInfo.getContent());
         if (StrUtil.isNotEmpty(check)) {
             return R.error(500, check);
-        } {
+        }
+        {
             // 获取贴子信息
             PostInfo postInfo = postInfoService.getById(replyInfo.getPostId());
             // 获取回复人信息
@@ -84,12 +88,12 @@ public class ReplyInfoController {
             String username = user != null ? user.getName() : "用户";
             List<MessageInfo> messageInfoList = new ArrayList<>();
             List<CollectInfo> collectInfoList = collectInfoService.list(Wrappers.<CollectInfo>lambdaQuery().eq(CollectInfo::getPostId, replyInfo.getPostId()).eq(CollectInfo::getDeleteFlag, 0));
-            String message = "您收藏的贴子《"+postInfo.getTitle()+"》，"+username+"进行了回复，快去看看吧";
+            String message = "您收藏的贴子《" + postInfo.getTitle() + "》，" + username + "进行了回复，快去看看吧";
             for (CollectInfo collectInfo : collectInfoList) {
                 messageInfoList.add(new MessageInfo(collectInfo.getUserId(), message, DateUtil.formatDateTime(new Date()), 0));
             }
 
-            String message1 = "您的贴子《"+postInfo.getTitle()+"》，"+username+"进行了回复，快去看看吧";
+            String message1 = "您的贴子《" + postInfo.getTitle() + "》，" + username + "进行了回复，快去看看吧";
             MessageInfo messageInfo = new MessageInfo(postInfo.getUserId(), message1, DateUtil.formatDateTime(new Date()), 0);
 
             messageInfoList.add(messageInfo);
@@ -102,6 +106,7 @@ public class ReplyInfoController {
 
     /**
      * 删除回复信息
+     *
      * @param ids
      * @return
      */
@@ -113,6 +118,7 @@ public class ReplyInfoController {
 
     /**
      * 规范检查
+     *
      * @param content
      */
     public String contentCheck(String content) {
