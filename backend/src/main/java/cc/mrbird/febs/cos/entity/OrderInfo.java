@@ -156,6 +156,16 @@ public class OrderInfo implements Serializable {
     private BigDecimal integral;
 
     /**
+     * 订单类型（1.维修 2.回收）
+     */
+    private String orderType;
+
+    /**
+     * 订单方式（1.上门维修回收 2.邮寄）
+     */
+    private String orderMethod;
+
+    /**
      * 是否使用优惠券
      */
     @TableField(exist = false)
