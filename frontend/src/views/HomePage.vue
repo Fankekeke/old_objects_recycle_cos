@@ -53,10 +53,11 @@
                   </div>
                 </a-carousel>
               </div>
-              <post></post>
             </a-col>
             <a-col :span="14">
-              <work></work>
+              <div style="box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
+                <work></work>
+              </div>
             </a-col>
           </a-row>
         </a-col>

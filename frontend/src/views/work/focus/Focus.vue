@@ -6,15 +6,16 @@
           <p style="margin-top: 100px">暂无关注记录</p>
         </div>
       </a-col>
-      <a-col :span="8" v-for="(item, index) in collectList" :key="index">
+      <a-col :span="4" v-for="(item, index) in collectList" :key="index">
         <a-card hoverable :bordered="false">
           <a-card-meta>
-            <p slot="title">
-              {{ item.collectUsername }}
-              <span style="font-size: 13px;color: #4a4a48">【{{ item.code }}】</span>
-            </p>
+            <div slot="title">
+              <p>{{ item.collectUsername }}</p>
+              <a-tag v-if="item.collectRoleFlag == 1" color="#48ad20">用户</a-tag>
+              <a-tag v-if="item.collectRoleFlag == 2" color="#2eabff">维修人员</a-tag>
+            </div>
             <p slot="description">{{ item.content }}</p>
-            <a-avatar shape="square" slot="avatar" icon="user" :src="'http://127.0.0.1:9527/imagesWeb/' + item.userImages" />
+            <a-avatar shape="square" slot="avatar" :size="80" icon="user" :src="'http://127.0.0.1:9527/imagesWeb/' + item.collectAvatar" />
           </a-card-meta>
           <template slot="actions" class="ant-card-actions">
             <a-icon key="delete" type="delete" @click="collectPostCheck(1, item.collectUserId)"/>

@@ -43,15 +43,12 @@
         tu1.name AS username,
         tu1.images AS avatar,
         tu2.images AS collectAvatar,
-        ui.name as collectUsername,
-        ui.images as userImages,
-        ui.content,
-        ui.code
+        tu2.name as collectUsername,
+        tu2.role_flag AS collectRoleFlag
         FROM
         focus_info fi
         LEFT JOIN t_user tu1 ON ( tu1.USER_ID = fi.user_id )
         LEFT JOIN t_user tu2 ON ( tu2.USER_ID = fi.collect_user_id )
-        LEFT JOIN user_info ui ON (ui.user_id = tu2.USER_ID)
         WHERE
         fi.delete_flag = 0
         AND fi.user_id = #{userId}
@@ -67,15 +64,11 @@
             tu1.name AS username,
             tu1.images AS avatar,
             tu2.images AS collectAvatar,
-            ui.name as collectUsername,
-            ui.images as userImages,
-            ui.content,
-            ui.code
+            tu2.name as collectUsername
         FROM
             focus_info fi
                 LEFT JOIN t_user tu1 ON ( tu1.USER_ID = fi.user_id )
                 LEFT JOIN t_user tu2 ON ( tu2.USER_ID = fi.collect_user_id )
-                LEFT JOIN user_info ui ON (ui.user_id = tu2.USER_ID)
         WHERE
             fi.delete_flag = 0
           AND fi.collect_user_id = #{userId}

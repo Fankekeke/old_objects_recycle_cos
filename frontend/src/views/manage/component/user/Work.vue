@@ -1,12 +1,12 @@
 <template>
-  <div style="background:#ECECEC; padding:30px;margin-top: 30px;margin-bottom: 30px">
+  <div style="background:#ECECEC;margin-bottom: 30px">
     <div style="height: 950px;">
-      <div style="height: 800px;padding: 0 50px">
+      <div style="height: 800px;padding: 0 20px">
         <div style="font-size: 35px;font-weight: 500;color: white;font-family: SimHei">Hello</div>
         <div style="font-size: 22px;font-weight: 500;color: white;font-family: SimHei">配送下单</div>
         <div style="height: 730px;">
           <a-card :bordered="false" hoverable style="height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);color:#fff;padding-bottom: 30px">
-            <a-row style="padding: 0 50px;margin: 0 auto">
+            <a-row style="padding: 0 20px;margin: 0 auto">
               <a-col :span="24">
                 <a-row>
                   <a-col :span="24" style="font-size: 15px;font-family: SimHei;" v-if="nextFlag == 1">
@@ -123,7 +123,7 @@
                     </div>
                   </a-col>
                   <a-col :span="24" style="font-size: 15px;font-family: SimHei;color: #4a4a48" v-if="nextFlag == 2">
-                    <a-row style="padding-left: 20px;padding-right: 20px;margin-top: 30px;" v-if="orderInfo.discountInfos.length !== 0">
+                    <a-row style="padding-left: 20px;padding-right: 20px;" v-if="orderInfo.discountInfos.length !== 0">
                       <a-col style="margin-bottom: 15px"><span style="font-size: 13px;font-weight: 650;color: #000c17">选择优惠券</span></a-col>
                       <a-col :span="8">
                         <a-select v-model="discountId" style="width: 100%" @change="handleChange" allowClear>

@@ -165,7 +165,7 @@ export default {
       postDetail: null,
       postDetailShow: false,
       pagination: {
-        pageSize: 5
+        pageSize: 10
       },
       loading: false,
       fileList: [],
