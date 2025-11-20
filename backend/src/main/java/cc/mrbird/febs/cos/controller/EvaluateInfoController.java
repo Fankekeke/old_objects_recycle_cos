@@ -3,13 +3,19 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.EvaluateInfo;
+import cc.mrbird.febs.cos.entity.StaffInfo;
 import cc.mrbird.febs.cos.service.IEvaluateInfoService;
+import cc.mrbird.febs.cos.service.IStaffInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +28,8 @@ import java.util.List;
 public class EvaluateInfoController {
 
     private final IEvaluateInfoService evaluateInfoService;
+
+    private final IStaffInfoService staffInfoService;
 
     /**
      * 分页获取订单评价信息
@@ -65,6 +73,13 @@ public class EvaluateInfoController {
     @PostMapping
     public R save(EvaluateInfo evaluateInfo) {
         evaluateInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        StaffInfo staffInfo = staffInfoService.getById(evaluateInfo.getStaffId());
+        List<EvaluateInfo> evaluateInfoList = evaluateInfoService.list(Wrappers.<EvaluateInfo>lambdaQuery().eq(EvaluateInfo::getStaffId, staffInfo.getId()));
+        if (CollectionUtil.isEmpty(evaluateInfoList)) {
+            staffInfo.setScore(new BigDecimal("3.5"));
+        } else {
+            staffInfo.setScore(evaluateInfoList.stream().map(EvaluateInfo::getScore).reduce(BigDecimal.ZERO, BigDecimal::add).divide(new BigDecimal(evaluateInfoList.size()), 1, RoundingMode.HALF_UP));
+        }
         return R.ok(evaluateInfoService.save(evaluateInfo));
     }
 

@@ -107,7 +107,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     }
 
     /**
-     * 员工接单，并通过邮箱向用户发送接单通知。
+     * 订单分配，并通过邮箱向用户发送接单通知。
      *
      * @param orderId 订单ID
      * @param staffId 员工ID

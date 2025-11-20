@@ -37,6 +37,6 @@ public class OrderQuotationServiceImpl extends ServiceImpl<OrderQuotationMapper,
      */
     @Override
     public List<LinkedHashMap<String, Object>> queryQuotationByOrder(Integer orderId) {
-        return queryQuotationByOrder(orderId);
+        return baseMapper.queryQuotationByOrder(orderId);
     }
 }

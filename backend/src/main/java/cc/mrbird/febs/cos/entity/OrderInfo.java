@@ -41,9 +41,34 @@ public class OrderInfo implements Serializable {
     private String orderName;
 
     /**
+     * 物件描述
+     */
+    private String content;
+
+    /**
+     * 瑕疵描述
+     */
+    private String flawContent;
+
+    /**
+     * 瑕疵图片
+     */
+    private String flawImages;
+
+    /**
      * 所属用户
      */
     private Integer userId;
+
+    /**
+     * 预估价格
+     */
+    private BigDecimal forecastPrice;
+
+    /**
+     * 视频
+     */
+    private String video;
 
     /**
      * 总价格
@@ -121,6 +146,11 @@ public class OrderInfo implements Serializable {
     private String logisticsInfo;
 
     /**
+     * 修复流程信息
+     */
+    private String fixProcessInfo;
+
+    /**
      * 完成时间
      */
     private String finishDate;
@@ -164,6 +194,16 @@ public class OrderInfo implements Serializable {
      * 订单方式（1.上门维修回收 2.邮寄）
      */
     private String orderMethod;
+
+    /**
+     * 修复难度（1.轻度、2.中度、3.复杂）
+     */
+    private String fixDifficulty;
+
+    /**
+     * 物件标签
+     */
+    private String tagList;
 
     /**
      * 是否使用优惠券

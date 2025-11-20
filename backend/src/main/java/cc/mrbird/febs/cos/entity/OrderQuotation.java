@@ -41,6 +41,11 @@ public class OrderQuotation implements Serializable {
     private BigDecimal price;
 
     /**
+     * 工时
+     */
+    private Integer workHour;
+
+    /**
      * 报价描述
      */
     private String content;

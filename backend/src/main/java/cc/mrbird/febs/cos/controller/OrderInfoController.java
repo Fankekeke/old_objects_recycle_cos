@@ -43,7 +43,7 @@ public class OrderInfoController {
     }
 
     /**
-     * 员工接单
+     * 订单分配
      *
      * @param orderId 订单ID
      * @param staffId 员工ID

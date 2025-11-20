@@ -53,6 +53,7 @@
                si.name   AS staffName,
                si.phone  AS staffPhone,
                si.images AS staffImages,
+               si.score AS staffScore,
                ui.name   AS userName,
                ui.phone  as userPhone,
                ui.images AS userImages

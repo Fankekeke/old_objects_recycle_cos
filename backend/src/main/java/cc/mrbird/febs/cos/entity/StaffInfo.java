@@ -74,6 +74,11 @@ public class StaffInfo implements Serializable {
      */
     private BigDecimal price;
 
+    /**
+     * 评价分数
+     */
+    private BigDecimal score;
+
     @TableField(exist = false)
     private Integer merchantId;
 
