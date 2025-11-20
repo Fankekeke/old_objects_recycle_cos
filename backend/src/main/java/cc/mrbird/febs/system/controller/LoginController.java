@@ -167,6 +167,14 @@ public class LoginController {
         this.userService.registUser(username, password, name);
     }
 
+    @PostMapping("regist/staff")
+    public void registUser(
+            @NotBlank(message = "{required}") String username,
+            @NotBlank(message = "{required}") String password,
+            @NotBlank(message = "{required}") String name, @NotBlank(message = "{required}") String phone) throws Exception {
+        this.userService.registStaff(username, password, name, phone);
+    }
+
     private String saveTokenToRedis(User user, JWTToken token, HttpServletRequest request) throws Exception {
         String ip = IPUtil.getIpAddr(request);
 

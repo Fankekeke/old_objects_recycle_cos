@@ -114,7 +114,7 @@ export default {
     loadMessages (hotelId, userId) {
       this.$get(`/cos/chat-record/list`, {
         userId: userId,
-        hotelId: hotelId
+        staffId: hotelId
       }).then((r) => {
         // 将后端返回的聊天记录转换为前端需要的格式
         this.messages = r.data.data.map(message => ({
@@ -123,7 +123,7 @@ export default {
           content: message.content,
           timestamp: new Date(message.createTime)
         }))
-
+        console.log(this.messages)
         // 滚动到底部
         this.$nextTick(() => {
           const container = this.$refs.messageContainer

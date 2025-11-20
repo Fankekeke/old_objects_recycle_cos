@@ -113,7 +113,7 @@ export default {
     loadMessages (teacherId, studentId) {
       this.$get(`/cos/chat-record/list`, {
         userId: studentId,
-        hotelId: teacherId
+        staffId: teacherId
       }).then((r) => {
         // 将后端返回的聊天记录转换为前端需要的格式
         this.messages = r.data.data.map(message => ({

@@ -16,13 +16,6 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label='员工姓名' v-bind="formItemLayout">
-                <a-input disabled v-decorator="[
-                'name',
-                ]"/>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
               <a-form-item label='用户名称' v-bind="formItemLayout">
                 <a-input v-decorator="[
                 'name',
@@ -42,9 +35,16 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label='创建时间' v-bind="formItemLayout">
+              <a-form-item label='联系方式' v-bind="formItemLayout">
                 <a-input v-decorator="[
-                'createDate'
+                'phone'
+                ]"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label='邮箱地址' v-bind="formItemLayout">
+                <a-input v-decorator="[
+                'email'
                 ]"/>
               </a-form-item>
             </a-col>
@@ -188,14 +188,14 @@ export default {
     },
     setFormValues ({...expert}) {
       this.rowId = expert.id
-      let fields = ['code', 'name', 'createDate', 'sex']
+      let fields = ['code', 'name', 'email', 'sex', 'phone']
       let obj = {}
       Object.keys(expert).forEach((key) => {
         if (key === 'images') {
           this.fileList = []
           this.imagesInit(expert['images'])
         }
-        if (key === 'sex') {
+        if (key === 'sex' && expert[key] !== null) {
           expert[key] = expert[key].toString()
         }
         if (fields.indexOf(key) !== -1) {

@@ -26,7 +26,8 @@
           </a-button>
         </a-form-item>
         <div>
-          <a style="float: right" @click="regist">注册账户</a>
+          <a style="float: right;" @click="regist">用户账户</a>
+          <a style="float: left" @click="registStaff">维修注册</a>
         </div>
       </a-form>
     </div>
@@ -92,6 +93,9 @@ export default {
     },
     regist () {
       this.$emit('regist', 'Regist')
+    },
+    registStaff () {
+      this.$emit('regist', 'RegistStaff')
     },
     getCaptcha () {
       this.$message.warning('暂未开发')

@@ -30,6 +30,22 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
+          <a-form-item label='联系方式' v-bind="formItemLayout">
+            <a-input v-decorator="[
+            'phone',
+            { rules: [{ required: true, message: '请输入联系方式!' }] }
+            ]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item label='邮箱地址' v-bind="formItemLayout">
+            <a-input v-decorator="[
+            'email',
+            { rules: [{ required: true, message: '请输入邮箱地址!' }] }
+            ]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
           <a-form-item label='在职状态' v-bind="formItemLayout">
             <a-radio-group button-style="solid" v-decorator="[
               'status',
@@ -158,10 +174,10 @@ export default {
     },
     setFormValues ({...staff}) {
       this.rowId = staff.id
-      let fields = ['name', 'status', 'sex', 'deptId']
+      let fields = ['name', 'status', 'sex', 'deptId', 'phone', 'email']
       let obj = {}
       Object.keys(staff).forEach((key) => {
-        if (key === 'sex' || key === 'status') {
+        if (key === 'sex' || key === 'status' && staff[key] !== null) {
           staff[key] = staff[key].toString()
         }
         if (key === 'images') {

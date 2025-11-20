@@ -237,6 +237,46 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param password 密码
      */
     @Override
+    public void registStaff(String username, String password, String name, String phone) throws Exception {
+        User user = new User();
+        user.setPassword(MD5Util.encrypt(username, password));
+        user.setUsername(username);
+        user.setCreateTime(new Date());
+        user.setStatus(User.STATUS_VALID);
+        user.setSsex(User.SEX_UNKNOW);
+        user.setAvatar(User.DEFAULT_AVATAR);
+        user.setDescription("注册用户");
+        user.setName(name);
+        user.setRoleFlag("2");
+        this.save(user);
+
+        UserRole ur = new UserRole();
+        ur.setUserId(user.getUserId());
+        ur.setRoleId(76L); // 注册用户角色 ID
+        this.userRoleMapper.insert(ur);
+
+        // 添加用户信息
+        StaffInfo staffInfo = new StaffInfo();
+        staffInfo.setCode("STF-" + System.currentTimeMillis());
+        staffInfo.setName(name);
+        staffInfo.setUserId(user.getUserId());
+        staffInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        staffInfo.setPhone(phone);
+        staffInfoService.save(staffInfo);
+
+        // 创建用户默认的个性化配置
+        userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
+        // 将用户相关信息保存到 Redis中
+        userManager.loadUserRedisCache(user);
+    }
+
+    /**
+     * 注册员工
+     *
+     * @param username 用户名
+     * @param password 密码
+     */
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void registMerchant(String username, String password, StaffInfo staffInfo) throws Exception {
         User user = new User();
