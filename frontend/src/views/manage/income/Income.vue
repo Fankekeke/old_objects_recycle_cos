@@ -42,7 +42,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -129,7 +129,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '员工姓名',
         dataIndex: 'staffName',
@@ -139,7 +140,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '头像',
         dataIndex: 'images',
@@ -161,7 +163,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '订单名称',
         dataIndex: 'orderName',
@@ -171,7 +174,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '联系方式',
         dataIndex: 'phone',
@@ -181,7 +185,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '订单收益',
         dataIndex: 'income',
@@ -191,7 +196,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '配送费用',
         dataIndex: 'deliveryPrice',
@@ -201,7 +207,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '总收益',
         dataIndex: 'totalPrice',
@@ -211,7 +218,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '创建时间',
         dataIndex: 'createDate',
@@ -221,7 +229,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

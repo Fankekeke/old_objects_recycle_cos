@@ -65,7 +65,7 @@
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="6"><b>物品类型：</b>
+        <a-col :span="6"><b>物件类型：</b>
           <span v-if="orderInfo.goodsType == 1">文件</span>
           <span v-if="orderInfo.goodsType == 2">食品</span>
           <span v-if="orderInfo.goodsType == 3">蛋糕</span>
@@ -77,13 +77,13 @@
           <span v-if="orderInfo.goodsType == 9">服饰</span>
           <span v-if="orderInfo.goodsType == 10">其他</span>
         </a-col>
-        <a-col :span="6"><b>物品重量：</b>
+        <a-col :span="6"><b>物件重量：</b>
           {{ orderInfo.weight ? orderInfo.weight : '- -' }}KG
         </a-col>
-        <a-col :span="6"><b>物品高度：</b>
+        <a-col :span="6"><b>物件高度：</b>
           {{ orderInfo.height ? orderInfo.height : '- -' }}厘米
         </a-col>
-        <a-col :span="6"><b>物品宽度：</b>
+        <a-col :span="6"><b>物件宽度：</b>
           {{ orderInfo.width ? orderInfo.width : '- -' }}厘米
         </a-col>
       </a-row>

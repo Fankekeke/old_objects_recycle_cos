@@ -111,7 +111,7 @@
     <div style="font-size: 13px;font-family: SimHei" v-if="orderItemInfo.length !== 0">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">购买菜品</span></a-col>
-        <a-table :columns="columns" :data-source="orderItemInfo"></a-table>
+        <a-table bordered :columns="columns" :data-source="orderItemInfo"></a-table>
       </a-row>
       <br/>
     </div>

@@ -23,7 +23,7 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="物品名称"
+                label="物件名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.materialName"/>
@@ -42,7 +42,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -166,7 +166,7 @@ export default {
           }
         }
       }, {
-        title: '兑换物品',
+        title: '兑换物件',
         dataIndex: 'materialName',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -176,7 +176,7 @@ export default {
           }
         }
       }, {
-        title: '物品图片',
+        title: '物件图片',
         dataIndex: 'materialImages',
         customRender: (text, record, index) => {
           if (!record.materialImages) return <a-avatar shape="square" icon="user" />

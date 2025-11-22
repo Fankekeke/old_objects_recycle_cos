@@ -31,7 +31,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -116,10 +116,12 @@ export default {
     columns () {
       return [{
         title: '员工编号',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        ellipsis: true
       }, {
         title: '员工姓名',
-        dataIndex: 'name'
+        dataIndex: 'name',
+        ellipsis: true
       }, {
         title: '照片',
         dataIndex: 'images',
@@ -141,7 +143,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '提现金额',
         dataIndex: 'withdrawPrice',
@@ -151,7 +154,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '账户余额',
         dataIndex: 'accountPrice',
@@ -161,7 +165,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '审核状态',
         dataIndex: 'status',
@@ -186,7 +191,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

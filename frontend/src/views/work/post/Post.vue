@@ -45,7 +45,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -152,7 +152,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '头像',
         dataIndex: 'userImages',
@@ -168,11 +169,13 @@ export default {
       }, {
         title: '标题',
         dataIndex: 'title',
-        scopedSlots: { customRender: 'titleShow' }
+        scopedSlots: { customRender: 'titleShow' },
+        ellipsis: true
       }, {
         title: '贴子内容',
         dataIndex: 'content',
-        scopedSlots: { customRender: 'contentShow' }
+        scopedSlots: { customRender: 'contentShow' },
+        ellipsis: true
       }, {
         title: '访问量',
         dataIndex: 'pageviews',
@@ -182,7 +185,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '收藏量',
         dataIndex: 'collect',
@@ -192,7 +196,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '回复量',
         dataIndex: 'reply',
@@ -202,7 +207,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '发布时间',
         dataIndex: 'createDate',
@@ -212,7 +218,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

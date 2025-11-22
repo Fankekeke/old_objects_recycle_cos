@@ -43,7 +43,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -164,7 +164,8 @@ export default {
     columns () {
       return [{
         title: '订单编号',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        ellipsis: true
       }, {
         title: '下单用户',
         dataIndex: 'userName',
@@ -174,7 +175,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '用户头像',
         dataIndex: 'userImages',
@@ -196,7 +198,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '订单名称',
         dataIndex: 'orderName',
@@ -206,9 +209,10 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
-        title: '物品图片',
+        title: '物件图片',
         dataIndex: 'images',
         customRender: (text, record, index) => {
           if (!record.images) return <a-avatar shape="square" icon="user" />
@@ -228,7 +232,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '订单状态',
         dataIndex: 'status',
@@ -249,7 +254,8 @@ export default {
       }, {
         title: '备注',
         dataIndex: 'remark',
-        scopedSlots: {customRender: 'titleShow'}
+        scopedSlots: {customRender: 'titleShow'},
+        ellipsis: true
       }, {
         title: '下单时间',
         dataIndex: 'createDate',
@@ -259,7 +265,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

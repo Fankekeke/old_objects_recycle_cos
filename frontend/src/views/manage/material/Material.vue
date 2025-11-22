@@ -7,7 +7,7 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="物品编号"
+                label="物件编号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.code"/>
@@ -15,7 +15,7 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="物品名称"
+                label="物件名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.name"/>
@@ -35,7 +35,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -118,13 +118,15 @@ export default {
     }),
     columns () {
       return [{
-        title: '物品编号',
-        dataIndex: 'code'
+        title: '物件编号',
+        dataIndex: 'code',
+        ellipsis: true
       }, {
-        title: '物品名称',
-        dataIndex: 'name'
+        title: '物件名称',
+        dataIndex: 'name',
+        ellipsis: true
       }, {
-        title: '物品图片',
+        title: '物件图片',
         dataIndex: 'images',
         customRender: (text, record, index) => {
           if (!record.images) return <a-avatar shape="square" icon="user" />
@@ -136,9 +138,10 @@ export default {
           </a-popover>
         }
       }, {
-        title: '物品描述',
+        title: '物件描述',
         dataIndex: 'content',
-        scopedSlots: { customRender: 'contentShow' }
+        scopedSlots: { customRender: 'contentShow' },
+        ellipsis: true
       }, {
         title: '所需积分',
         dataIndex: 'integral',
@@ -148,7 +151,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '销量',
         dataIndex: 'saleNum',
@@ -158,7 +162,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '创建时间',
         dataIndex: 'createDate',
@@ -168,7 +173,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -194,7 +200,7 @@ export default {
     },
     handlematerialAddSuccess () {
       this.materialAdd.visiable = false
-      this.$message.success('新增物品成功')
+      this.$message.success('新增物件成功')
       this.search()
     },
     edit (record) {
@@ -206,7 +212,7 @@ export default {
     },
     handlematerialEditSuccess () {
       this.materialEdit.visiable = false
-      this.$message.success('修改物品成功')
+      this.$message.success('修改物件成功')
       this.search()
     },
     handleDeptChange (value) {

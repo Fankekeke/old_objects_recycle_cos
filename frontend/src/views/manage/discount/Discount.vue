@@ -57,7 +57,7 @@
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
-      <a-table ref="TableInfo"
+      <a-table bordered ref="TableInfo"
                :columns="columns"
                :rowKey="record => record.id"
                :dataSource="dataSource"
@@ -142,10 +142,12 @@ export default {
     columns () {
       return [{
         title: '优惠券编号',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        ellipsis: true
       }, {
         title: '优惠券名称',
-        dataIndex: 'couponName'
+        dataIndex: 'couponName',
+        ellipsis: true
       }, {
         title: '用户名称',
         dataIndex: 'userName',
@@ -155,7 +157,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '联系方式',
         dataIndex: 'phone',
@@ -165,7 +168,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '用户头像',
         dataIndex: 'images',
@@ -213,7 +217,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

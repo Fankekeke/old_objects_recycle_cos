@@ -28,6 +28,9 @@
         <if test="replyInfo.username != null and replyInfo.username != ''">
             AND tu.name LIKE CONCAT('%',#{replyInfo.username},'%')
         </if>
+        <if test="replyInfo.userId != null and replyInfo.userId != ''">
+            AND ri.user_id = #{replyInfo.userId}
+        </if>
         ORDER BY ri.send_create DESC
     </select>
 

@@ -79,7 +79,7 @@
                     <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">购买信息</span></a-col>
                   </a-row>
                   <div v-if="checkList.length !== 0" style="font-size: 12px;font-family: SimHei">
-                    <a-table :columns="columns" :rowKey="record => record.id" :data-source="checkList" :pagination="false">
+                    <a-table bordered :columns="columns" :rowKey="record => record.id" :data-source="checkList" :pagination="false">
                       <template slot="operation" slot-scope="text, record">
                         <a-icon type="minus-square" theme="twoTone" @click="dishesRemove(record)" title="删 除" style="cursor: pointer;"></a-icon>
                       </template>
@@ -103,7 +103,7 @@
                     <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">购买信息</span></a-col>
                   </a-row>
                   <div v-if="checkList.length !== 0" style="font-size: 12px;font-family: SimHei">
-                    <a-table :columns="columns1" :rowKey="record => record.id" :data-source="checkList" :pagination="false">
+                    <a-table bordered :columns="columns1" :rowKey="record => record.id" :data-source="checkList" :pagination="false">
                     </a-table>
                     <a-alert :message="'购买菜品热量【'+totalHeat+'】 超过600，请合理规划饮食' " banner v-if="totalHeat > 600"/>
                     <a-row style="padding-left: 20px;padding-right: 20px;margin-top: 30px">

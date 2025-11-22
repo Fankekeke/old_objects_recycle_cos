@@ -1,100 +1,171 @@
 <template>
-  <div style="background:#ECECEC;margin-bottom: 30px">
+  <div style="background: linear-gradient(135deg, #fdfdfd 0%, #d7d7d7 100%); margin-bottom: 30px; min-height: 100vh;">
     <div style="height: 950px;">
-      <div style="height: 800px;padding: 0 20px">
-        <div style="font-size: 35px;font-weight: 500;color: white;font-family: SimHei">Hello</div>
-        <div style="font-size: 22px;font-weight: 500;color: white;font-family: SimHei">配送下单</div>
+      <div style="height: 800px; padding: 20px;">
+        <div style="font-size: 36px; font-weight: 600; color: #5d4037; font-family: 'STSong', SimHei; text-align: center; margin-bottom: 10px;">
+          老物件回收与修复
+        </div>
+        <div style="font-size: 20px; font-weight: 500; color: #8d6e63; font-family: 'STSong', SimHei; text-align: center; margin-bottom: 20px;">
+          上传物件图片分析
+        </div>
         <div style="height: 730px;">
-          <a-card :bordered="false" hoverable style="height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);color:#fff;padding-bottom: 30px">
-            <a-row style="padding: 0 20px;margin: 0 auto">
-              <a-col :span="24">
+          <a-card
+            :bordered="false"
+            hoverable
+            style="height: 100%; border-radius: 15px; box-shadow: 0 8px 16px rgba(121, 85, 72, 0.2);">
+            <a-row style="margin: 0 auto" :gutter="20">
+              <a-col :span="12">
+                <a-upload-dragger
+                  name="avatar"
+                  :multiple="true"
+                  accept=".png, .jpg"
+                  action="http://127.0.0.1:9527/cos/ai/recognitionImage"
+                  @change="aiHandleChange"  style="border-radius: 10px; background-color: #fffcf5;"
+                >
+                  <p class="ant-upload-drag-icon">
+                    <a-icon type="camera" theme="twoTone" twoToneColor="#8d6e63" style="font-size: 48px;" />
+                  </p>
+                  <p class="ant-upload-text" style="font-size: 18px; color: #5d4037; font-weight: 500;">
+                    点击或拖拽图片到此区域上传
+                  </p>
+                  <p class="ant-upload-hint" style="color: #8d6e63;">
+                    支持PNG、JPG格式图片，用于识别老物件类型
+                  </p>
+                </a-upload-dragger>
+                <!-- AI识别结果展示区域 -->
+                <div class="external-script-placeholder" data-src="https://example.com/dynamic-widget.js"></div>
+                <div v-if="showAiResult && aiRecognitionResult"
+                     style="margin-top: 20px; padding: 15px; background: #fffaf0; border-radius: 10px; border: 1px solid #e8e0d2;">
+                  <h3 style="color: #5d4037; margin-bottom: 15px; text-align: center;">AI识别结果</h3>
+                  <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e0d6cc; max-height: 500px; overflow-y: auto;">
+                    <div class="markdown-content" v-html="aiRecognitionResult"></div>
+                  </div>
+                </div>
+              </a-col>
+              <a-col :span="12">
                 <a-row>
                   <a-col :span="24" style="font-size: 15px;font-family: SimHei;" v-if="nextFlag == 1">
-                    <div style="margin-top: 30px">
+                    <div style="background: #f8f6f4; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(121, 85, 72, 0.1);">
                       <a-form :form="form" layout="vertical">
                         <a-row :gutter="20">
-                          <a-col :span="8">
-                            <a-form-item label='配送地址' v-bind="formItemLayout">
-                              <a-select style="width: 100%" v-decorator="[
-                                'startAddressId',
-                                { rules: [{ required: true, message: '请输入配送地址!' }] }
-                                ]">
-                                <a-select-option v-for="(item, index) in addressList" :value="item.id" :key="index">{{ item.address }}</a-select-option>
-                              </a-select>
-                            </a-form-item>
-                          </a-col>
-                          <a-col :span="8" :offset="1">
-                            <a-form-item label='收货地址' v-bind="formItemLayout">
-                              <a-select style="width: 100%" v-decorator="[
-                                'endAddressId',
-                                { rules: [{ required: true, message: '请输入收货地址!' }] }
-                                ]">
-                                <a-select-option v-for="(item, index) in addressList" :value="item.id" :key="index">{{ item.address }}</a-select-option>
-                              </a-select>
-                            </a-form-item>
-                          </a-col>
-                          <a-col :span="24" style="font-size: 15px;font-family: SimHei;"></a-col>
-                          <a-col :span="5">
-                            <a-form-item label='订单名称' v-bind="formItemLayout">
+                          <a-col :span="6">
+                            <a-form-item label='物件名称' v-bind="formItemLayout">
                               <a-input v-decorator="[
                                 'orderName',
-                                { rules: [{ required: true, message: '请输入订单名称!' }] }
+                                { rules: [{ required: true, message: '请输入物件名称!' }] }
                                 ]"/>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="5">
-                            <a-form-item label='物品类型' v-bind="formItemLayout">
-                              <a-select v-decorator="[
+                          <a-col :span="6">
+                            <a-form-item label='物件类型' v-bind="formItemLayout">
+                              <a-input v-decorator="[
                                 'goodsType',
-                                { rules: [{ required: true, message: '请输入物品类型!' }] }
-                                ]">
-                                <a-select-option value="1">文件</a-select-option>
-                                <a-select-option value="2">食品</a-select-option>
-                                <a-select-option value="3">蛋糕</a-select-option>
-                                <a-select-option value="4">数码</a-select-option>
-                                <a-select-option value="5">证件</a-select-option>
-                                <a-select-option value="6">药品</a-select-option>
-                                <a-select-option value="7">海鲜</a-select-option>
-                                <a-select-option value="8">鲜花</a-select-option>
-                                <a-select-option value="9">服饰</a-select-option>
-                                <a-select-option value="10">其他</a-select-option>
+                                { rules: [{ required: true, message: '请输入物件类型!' }] }
+                                ]"/>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="6">
+                            <a-form-item label='物件重量' v-bind="formItemLayout">
+                              <a-input-number style="width: 100%" v-decorator="[
+                              'weight',
+                              { rules: [{ required: true, message: '请输入物件重量!' }] }
+                              ]" :min="0.1" :step="0.1"/>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="6">
+                            <a-form-item label='物件高度' v-bind="formItemLayout">
+                              <a-input-number style="width: 100%" v-decorator="[
+                              'height',
+                              { rules: [{ required: true, message: '请输入物件高度!' }] }
+                              ]" :min="0.1" :step="0.1"/>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="6">
+                            <a-form-item label='物件宽度' v-bind="formItemLayout">
+                              <a-input-number style="width: 100%" v-decorator="[
+                              'width',
+                              { rules: [{ required: true, message: '请输入物件宽度!' }] }
+                              ]" :min="0.1" :step="0.1"/>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="6">
+                            <a-form-item label='订单类型' v-bind="formItemLayout">
+                              <a-select v-decorator="[
+        'orderType',
+        { rules: [{ required: true, message: '请选择订单类型!' }] }
+        ]">
+                                <a-select-option value="1">维修</a-select-option>
+                                <a-select-option value="2">回收</a-select-option>
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="5">
-                            <a-form-item label='物品重量' v-bind="formItemLayout">
-                              <a-input-number style="width: 100%" v-decorator="[
-                              'weight',
-                              { rules: [{ required: true, message: '请输入物品重量!' }] }
-                              ]" :min="0.1" :step="0.1"/>
+
+                          <!-- 预估价格 -->
+                          <a-col :span="6">
+                            <a-form-item label='预估价格' v-bind="formItemLayout">
+                              <a-input-number
+                                style="width: 100%"
+                                v-decorator="['forecastPrice']"
+                                :min="0"
+                                :step="0.01"
+                                placeholder="元"/>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="5">
-                            <a-form-item label='物品高度' v-bind="formItemLayout">
-                              <a-input-number style="width: 100%" v-decorator="[
-                              'height',
-                              { rules: [{ required: true, message: '请输入物品高度!' }] }
-                              ]" :min="0.1" :step="0.1"/>
+
+                          <!-- 修复难度 -->
+                          <a-col :span="6">
+                            <a-form-item label='修复难度' v-bind="formItemLayout">
+                              <a-select v-decorator="['fixDifficulty']">
+                                <a-select-option value="1">轻度</a-select-option>
+                                <a-select-option value="2">中度</a-select-option>
+                                <a-select-option value="3">复杂</a-select-option>
+                              </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="5">
-                            <a-form-item label='物品宽度' v-bind="formItemLayout">
-                              <a-input-number style="width: 100%" v-decorator="[
-                              'width',
-                              { rules: [{ required: true, message: '请输入物品宽度!' }] }
-                              ]" :min="0.1" :step="0.1"/>
+
+                          <!-- 订单方式 -->
+                          <a-col :span="6">
+                            <a-form-item label='取货方式' v-bind="formItemLayout">
+                              <a-select v-decorator="[
+        'orderMethod',
+        { rules: [{ required: true, message: '请选择订单方式!' }] }
+        ]">
+                                <a-select-option value="1">上门</a-select-option>
+                                <a-select-option value="2">邮寄</a-select-option>
+                              </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="24">
+
+                          <a-col :span="6" v-if="form.getFieldValue('orderMethod') === '1'">
+                            <a-form-item label='取货地址' v-bind="formItemLayout">
+                              <a-select style="width: 100%" v-decorator="[
+                                'startAddressId',
+                                { rules: [{ required: true, message: '请输入取货地址!' }] }
+                                ]">
+                                <a-select-option v-for="(item, index) in addressList" :value="item.id" :key="index">{{ item.address }}</a-select-option>
+                              </a-select>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="24"></a-col>
+                          <!-- 瑕疵描述 -->
+                          <a-col :span="12">
+                            <a-form-item label='瑕疵描述' v-bind="formItemLayout">
+                              <a-textarea
+                                :rows="3"
+                                v-decorator="['flawContent']"
+                                placeholder="请详细描述物件的瑕疵情况"/>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="12">
                             <a-form-item label='备注' v-bind="formItemLayout">
-                              <a-textarea :rows="4" v-decorator="[
+                              <a-textarea :rows="3" v-decorator="[
                               'remark',
                                { rules: [{ required: true, message: '请输入备注!' }] }
                               ]"/>
                             </a-form-item>
                           </a-col>
                           <a-col :span="24">
-                            <a-form-item label='图册' v-bind="formItemLayout">
+                            <a-form-item label='其他图片' v-bind="formItemLayout">
                               <a-upload
                                 name="avatar"
                                 action="http://127.0.0.1:9527/file/fileUpload/"
@@ -116,14 +187,19 @@
                             </a-form-item>
                           </a-col>
                         </a-row>
-                        <a-button type="primary" @click="fetch">
-                          下一步
-                        </a-button>
+                        <div style="text-align: center; margin-top: 20px;">
+                          <a-button
+                            type="primary"
+                            @click="fetch"        style="border-radius: 20px; background: linear-gradient(45deg, #8d6e63, #a1887f); border: none; padding: 0 40px; height: 40px;"
+                          >
+                            下一步
+                          </a-button>
+                        </div>
                       </a-form>
                     </div>
                   </a-col>
                   <a-col :span="24" style="font-size: 15px;font-family: SimHei;color: #4a4a48" v-if="nextFlag == 2">
-                    <a-row style="padding-left: 20px;padding-right: 20px;" v-if="orderInfo.discountInfos.length !== 0">
+                    <a-row v-if="orderInfo.discountInfos.length !== 0">
                       <a-col style="margin-bottom: 15px"><span style="font-size: 13px;font-weight: 650;color: #000c17">选择优惠券</span></a-col>
                       <a-col :span="8">
                         <a-select v-model="discountId" style="width: 100%" @change="handleChange" allowClear>
@@ -162,7 +238,6 @@
 </template>
 
 <script>
-
 import {mapState} from 'vuex'
 import VehicleView from './VehicleView.vue'
 import Map from './Map.vue'
@@ -201,7 +276,9 @@ export default {
       startDate: null,
       endDate: null,
       orderInfo: null,
-      discountId: null
+      discountId: null,
+      aiRecognitionResult: null,
+      showAiResult: false
     }
   },
   computed: {
@@ -213,6 +290,26 @@ export default {
     this.selectAddress()
   },
   methods: {
+    aiHandleChange ({ file }) {
+      if (file.response !== undefined) {
+        console.log(file.response.code)
+        console.log(file.status)
+        if (file.response.code === 500 && file.status === 'done') {
+          this.$message.error(file.response.msg)
+        } else if (file.response.code === 0 && file.status === 'done') {
+          // 存储识别结果并在界面展示
+          this.aiRecognitionResult = file.response.data
+          this.showAiResult = true
+          this.$message.success('物件识别成功，请确认识别信息')
+
+          // 自动填充表单字段（如果有返回的数据）
+          if (file.response.msg) {
+            const data = file.response.msg
+            this.aiRecognitionResult = data
+          }
+        }
+      }
+    },
     orderPay () {
       let data = this.orderInfo
       data.discountId = this.discountId
@@ -321,8 +418,9 @@ export default {
         images.push(image.response)
       })
       this.form.validateFields((err, values) => {
-        if (values.startAddressId == values.endAddressId) {
-          this.$message.warn('配送地址与收货地址不能为同一地址')
+        // 当订单方式为上门(1)时，取货地址为必填项
+        if (values.orderMethod === '1' && !values.startAddressId) {
+          this.$message.warn('请选择取货地址')
           return false
         }
         values.images = images.length > 0 ? images.join(',') : null
@@ -370,4 +468,151 @@ export default {
   overflow: hidden;
 }
 
+</style>
+<style scoped>/* 增加字体引入 */
+
+/* 基础样式调整 */
+>>> .ant-card-meta-title {
+  font-size: 14px;
+  font-family: 'Noto Serif SC', SimHei;
+}
+
+>>> .ant-card-meta-description {
+  font-size: 13px;
+  font-family: 'Noto Serif SC', SimHei;
+}
+
+>>> .ant-divider-with-text-left {
+  margin: 0;
+}
+
+>>> .ant-card-head-title {
+  font-size: 16px;
+  font-family: 'Noto Serif SC', SimHei;
+  font-weight: 600;
+}
+
+>>> .ant-card-extra {
+  font-size: 14px;
+  font-family: 'Noto Serif SC', SimHei;
+}
+
+/* 表单元素美化 */
+>>> .ant-input, >>> .ant-select-selection {
+  border-radius: 8px !important;
+  border-color: #d7ccc8 !important;
+}
+
+>>> .ant-input:hover, >>> .ant-select-selection:hover {
+  border-color: #a1887f !important;
+}
+
+>>> .ant-form-item-label label {
+  color: #5d4037 !important;
+  font-weight: 500 !important;
+}
+
+/* 按钮美化 */
+>>> .ant-btn-primary {
+  background: linear-gradient(45deg, #8d6e63, #a1887f) !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+/* 上传组件美化 */
+>>> .ant-upload.ant-upload-drag {
+  background: #fffcf5 !important;
+  border-radius: 10px !important;
+}
+
+>>> .ant-upload.ant-upload-drag:not(.ant-upload-disabled):hover {
+  border-color: #8d6e63 !important;
+}
+</style>
+<style scoped>/* Markdown内容样式 */
+.markdown-body {
+  line-height: 1.6;
+  color: #333;
+  font-family: 'Noto Serif SC', SimHei;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: #5d4037;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-body h1 {
+  font-size: 1.8em;
+  border-bottom: 2px solid #e0d6cc;
+  padding-bottom: 0.3em;
+}
+
+.markdown-body h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid #e0d6cc;
+  padding-bottom: 0.3em;
+}
+
+.markdown-body p {
+  margin: 0.8em 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 2em;
+  margin: 0.8em 0;
+}
+
+.markdown-body li {
+  margin: 0.3em 0;
+}
+
+.markdown-body code {
+  background-color: #f5f0e6;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.markdown-body pre {
+  background-color: #f5f0e6;
+  padding: 1em;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid #d7ccc8;
+  padding-left: 1em;
+  margin: 1em 0;
+  color: #666;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid #d7ccc8;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.markdown-body th {
+  background-color: #f0e6d2;
+}
 </style>

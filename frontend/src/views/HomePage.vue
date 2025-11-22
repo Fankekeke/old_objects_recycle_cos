@@ -18,44 +18,44 @@
         </a-col>
         <a-col :span="24" v-if="user.roleId == 75" style="margin-top: 15px">
           <a-row :gutter="25">
-            <a-col :span="10">
-              <div class="scenic-carousel-wrapper">
-                <a-carousel autoplay>
-                  <div class="carousel-slide">
-                    <img src="http://127.0.0.1:9527/imagesWeb/SA1648175183138.jpg" alt="景区风光" class="carousel-image" />
-                    <div class="slide-overlay">
-                      <div class="slide-content">
-                        <h2 class="slide-title">欢迎来到美丽景区</h2>
-                        <p class="slide-description">探索自然与文化的完美融合，享受难忘的旅行体验</p>
-                        <a-button type="primary" class="explore-btn">立即探索</a-button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-slide">
-                    <img src="http://127.0.0.1:9527/imagesWeb/SA1648524716556.jpg" alt="特色景点" class="carousel-image" />
-                    <div class="slide-overlay">
-                      <div class="slide-content">
-                        <h2 class="slide-title">特色景点推荐</h2>
-                        <p class="slide-description">发现隐藏的自然宝藏，感受独特的风景魅力</p>
-                        <a-button type="primary" class="explore-btn">查看详情</a-button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-slide">
-                    <img src="http://127.0.0.1:9527/imagesWeb/SA1648524713924.jpg" alt="最佳季节" class="carousel-image" />
-                    <div class="slide-overlay">
-                      <div class="slide-content">
-                        <h2 class="slide-title">最佳旅游季节</h2>
-                        <p class="slide-description">四季皆有不同的美景，为您提供最佳游览建议</p>
-                        <a-button type="primary" class="explore-btn">查看攻略</a-button>
-                      </div>
-                    </div>
-                  </div>
-                </a-carousel>
-              </div>
-            </a-col>
-            <a-col :span="14">
-              <div style="box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
+<!--            <a-col :span="10">-->
+<!--              <div class="scenic-carousel-wrapper">-->
+<!--                <a-carousel autoplay>-->
+<!--                  <div class="carousel-slide">-->
+<!--                    <img src="http://127.0.0.1:9527/imagesWeb/SA1648175183138.jpg" alt="景区风光" class="carousel-image" />-->
+<!--                    <div class="slide-overlay">-->
+<!--                      <div class="slide-content">-->
+<!--                        <h2 class="slide-title">欢迎来到美丽景区</h2>-->
+<!--                        <p class="slide-description">探索自然与文化的完美融合，享受难忘的旅行体验</p>-->
+<!--                        <a-button type="primary" class="explore-btn">立即探索</a-button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="carousel-slide">-->
+<!--                    <img src="http://127.0.0.1:9527/imagesWeb/SA1648524716556.jpg" alt="特色景点" class="carousel-image" />-->
+<!--                    <div class="slide-overlay">-->
+<!--                      <div class="slide-content">-->
+<!--                        <h2 class="slide-title">特色景点推荐</h2>-->
+<!--                        <p class="slide-description">发现隐藏的自然宝藏，感受独特的风景魅力</p>-->
+<!--                        <a-button type="primary" class="explore-btn">查看详情</a-button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="carousel-slide">-->
+<!--                    <img src="http://127.0.0.1:9527/imagesWeb/SA1648524713924.jpg" alt="最佳季节" class="carousel-image" />-->
+<!--                    <div class="slide-overlay">-->
+<!--                      <div class="slide-content">-->
+<!--                        <h2 class="slide-title">最佳旅游季节</h2>-->
+<!--                        <p class="slide-description">四季皆有不同的美景，为您提供最佳游览建议</p>-->
+<!--                        <a-button type="primary" class="explore-btn">查看攻略</a-button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </a-carousel>-->
+<!--              </div>-->
+<!--            </a-col>-->
+            <a-col :span="24">
+              <div>
                 <work></work>
               </div>
             </a-col>

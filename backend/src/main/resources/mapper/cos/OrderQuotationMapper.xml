@@ -5,32 +5,44 @@
     <!-- 分页获取回收维修报价信息 -->
     <select id="queryQuotation" resultType="java.util.LinkedHashMap">
         SELECT
-            oq.id,
-            oq.order_id,
-            oq.staff_id,
-            oq.price,
-            oq.content,
-            oq.create_date,
-            oi.code,
-            oi.order_name,
-            oi.goods_type,
-            oi.images,
-            oi.weight,
-            oi.height,
-            oi.width,
-            oi.remark,
-            si.name AS staffName,
-            si.phone AS staffPhone,
-            si.images AS staffImages,
-            ui.name AS userName,
-            ui.phone as userPhone,
-            ui.images AS userImages
+        oq.id,
+        oq.order_id,
+        oq.staff_id,
+        oq.price,
+        oq.content,
+        oq.create_date,
+        oi.code,
+        oi.order_name,
+        oi.goods_type,
+        oi.images,
+        oi.weight,
+        oi.height,
+        oi.width,
+        oi.remark,
+        si.name AS staffName,
+        si.phone AS staffPhone,
+        si.images AS staffImages,
+        ui.name AS userName,
+        ui.phone as userPhone,
+        ui.images AS userImages
         FROM
-            order_quotation oq
-                left join staff_info si on (si.id = oq.staff_id)
-                left join order_info oi on (oi.id = oq.order_id)
-                left join user_info ui on (ui.id = oi.user_id)
+        order_quotation oq
+        left join staff_info si on (si.id = oq.staff_id)
+        left join order_info oi on (oi.id = oq.order_id)
+        left join user_info ui on (ui.id = oi.user_id)
         where 1 = 1
+        <if test="orderQuotation.userName != null and orderQuotation.userName != ''">
+            AND ui.name LIKE CONCAT('%',#{orderQuotation.userName},'%')
+        </if>
+        <if test="orderQuotation.staffName != null and orderQuotation.staffName != ''">
+            AND si.name LIKE CONCAT('%',#{orderQuotation.staffName},'%')
+        </if>
+        <if test="orderQuotation.orderName != null and orderQuotation.orderName != ''">
+            AND oq.staffId = #{orderQuotation.orderName}
+        </if>
+        <if test="orderQuotation.staffId != null and orderQuotation.staffId != ''">
+            AND oi.order_name LIKE CONCAT('%',#{orderQuotation.staffId},'%')
+        </if>
         order by oq.create_date desc
     </select>
 

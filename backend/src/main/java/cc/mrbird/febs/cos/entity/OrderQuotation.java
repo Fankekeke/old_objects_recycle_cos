@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,6 +55,24 @@ public class OrderQuotation implements Serializable {
      * 报价时间
      */
     private String createDate;
+
+    /**
+     * 订单名称
+     */
+    @TableField(exist = false)
+    private String orderName;
+
+    /**
+     * 工单名称
+     */
+    @TableField(exist = false)
+    private String staffName;
+
+    /**
+     * 用户名称
+     */
+    @TableField(exist = false)
+    private String userName;
 
 
 }
