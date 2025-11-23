@@ -1,54 +1,91 @@
 <template>
   <div style="background:#ECECEC; padding:30px;width: 100%">
     <a-row :gutter="20">
-      <div style="text-align: center" v-if="orderList.length === 0">
-        <a-icon type="folder-open" theme="twoTone" style="font-size: 80px"/>
-        <p style="font-size: 25px">暂无订单</p>
+      <!-- 替换空状态部分 -->
+      <div style="text-align: center; padding: 60px 0;" v-if="orderList.length === 0">
+        <a-icon type="inbox" theme="twoTone" style="font-size: 72px; margin-bottom: 16px;"/>
+        <p style="font-size: 20px; color: #8c8c8c; margin-bottom: 8px;">暂无订单</p>
+        <p style="font-size: 14px; color: #bfbfbf;">当前没有可接的订单，请稍后再试</p>
       </div>
       <a-col :span="6" v-for="(item, index) in orderList" :key="index" style="margin-bottom: 30px">
-        <a-card hoverable style="width: 100%">
+        <a-card hoverable style="width: 100%; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <template slot="actions" class="ant-card-actions">
-            <a-icon key="pushpin" type="pushpin" @click="checkOrder(item.id)"/>
-            <a-icon key="ellipsis" type="ellipsis" @click="orderMapOpen(item)"/>
+            <a-icon key="pushpin" type="pushpin" @click="checkOrder(item.id)" style="font-size: 16px; color: #1890ff;"/>
+            <a-icon key="ellipsis" type="ellipsis" @click="orderMapOpen(item)" style="font-size: 16px; color: #1890ff;"/>
           </template>
-          <a-card-meta :title="item.orderName">
+          <a-carousel autoplay style="height: 180px; border-radius: 8px 8px 0 0;" v-if="item.images !== undefined && item.images !== ''">
+            <div style="width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;"
+                 v-for="(img, index) in item.images.split(',')" :key="index">
+              <img :src="'http://127.0.0.1:9527/imagesWeb/'+img"
+                   style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+          </a-carousel>
+          <a-card-meta :title="item.orderName" style="padding: 16px;">
             <div slot="description">
-              <div>
-                <a-icon type="user" />
-                {{item.userName}}
-                |
-                <a-icon type="phone" />
-                {{item.phone}}
-                |
-                <a-icon type="appstore" />
-                <span v-if="item.goodsType == 1">文件</span>
-                <span v-if="item.goodsType == 2">食品</span>
-                <span v-if="item.goodsType == 3">蛋糕</span>
-                <span v-if="item.goodsType == 4">数码</span>
-                <span v-if="item.goodsType == 5">证件</span>
-                <span v-if="item.goodsType == 6">药品</span>
-                <span v-if="item.goodsType == 7">海鲜</span>
-                <span v-if="item.goodsType == 8">鲜花</span>
-                <span v-if="item.goodsType == 9">服饰</span>
-                <span v-if="item.goodsType == 10">其他</span>
+              <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                <a-avatar
+                  shape="circle"
+                  size="small"
+                  :src="'http://127.0.0.1:9527/imagesWeb/' + item.userImages"          style="margin-right: 8px;"
+                />
+                <div>
+                  <div style="font-weight: 500;">{{ item.userName }}</div>
+                  <div style="font-size: 12px; color: #8c8c8c;">
+                    <a-icon type="phone" style="font-size: 12px;"/>
+                    {{ item.phone ? item.phone : ' - - ' }}
+                  </div>
+                </div>
               </div>
-              <div style="margin-top: 6px">
-                <a-icon type="compass" />
-                {{item.kilometre}}KM
-                |
-                 <a-icon type="clock-circle-o" />
-                {{moment(item.createDate).format('YYYY-MM-DD HH:mm:ss')}}
+
+              <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <a-tag color="blue">{{ item.goodsType }}</a-tag>
+                <a-tag v-if="item.orderType == 1" color="orange">维修</a-tag>
+                <a-tag v-if="item.orderType == 2" color="purple">回收</a-tag>
+                <a-tag v-if="item.orderMethod == 1" color="cyan">上门</a-tag>
+                <a-tag v-if="item.orderMethod == 2" color="volcano">邮寄</a-tag>
               </div>
-              <div style="margin-top: 6px">
-                收益：
-                <span style="color: red">{{(item.afterOrderPrice * 0.8).toFixed(2)}}元</span>
+
+              <div style="margin-bottom: 8px;">
+                <a-icon type="clock-circle" style="color: #8c8c8c;"/>
+                <span style="font-size: 12px; color: #8c8c8c; margin-left: 4px;">
+                  {{ moment(item.createDate).format('YYYY-MM-DD HH:mm') }}
+                </span>
+              </div>
+
+              <div v-if="item.content" style="margin: 12px 0;">
+                <div :style="{
+    fontSize: '13px',
+    lineHeight: '1.6',
+    color: '#595959',
+    maxHeight: expandedItems[item.id] ? 'none' : '60px',
+    overflow: 'hidden',
+    position: 'relative'
+  }">
+                  {{ item.content }}
+                </div>
+                <a v-if="item.content && item.content.length > 100"
+                   @click="toggleContent(item.id)"     style="font-size: 12px; color: #1890ff; margin-top: 4px; display: inline-block;">
+                  {{ expandedItems[item.id] ? '收起' : '展开' }}
+                </a>
+              </div>
+
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #f0f0f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-size: 12px; color: #8c8c8c;">期望价格</div>
+                    <div style="color: #ff4d4f; font-weight: 500;font-size: 15px">¥{{ (item.forecastPrice * 0.8).toFixed(2) }}</div>
+                  </div>
+                  <div v-if="item.orderType == 1">
+                    <div style="font-size: 12px; color: #8c8c8c;">维修难度</div>
+                    <a-tag :color="item.fixDifficulty == 1 ? 'green' : item.fixDifficulty == 2 ? 'orange' : 'red'">
+                      <span v-if="item.fixDifficulty == 1">轻度</span>
+                      <span v-if="item.fixDifficulty == 2">中度</span>
+                      <span v-if="item.fixDifficulty == 3">复杂</span>
+                    </a-tag>
+                  </div>
+                </div>
               </div>
             </div>
-            <a-avatar
-              slot="avatar"
-              shape="square"
-              :src="'http://127.0.0.1:9527/imagesWeb/' + item.userImages"
-            />
           </a-card-meta>
         </a-card>
       </a-col>
@@ -65,7 +102,9 @@
 import {mapState} from 'vuex'
 import moment from 'moment'
 import MapView from '../../manage/map/Map.vue'
+
 moment.locale('zh-cn')
+
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -74,9 +113,10 @@ function getBase64 (file) {
     reader.onerror = error => reject(error)
   })
 }
+
 const formItemLayout = {
-  labelCol: { span: 24 },
-  wrapperCol: { span: 24 }
+  labelCol: {span: 24},
+  wrapperCol: {span: 24}
 }
 export default {
   name: 'User',
@@ -88,6 +128,7 @@ export default {
   },
   data () {
     return {
+      expandedItems: {},
       form: this.$form.createForm(this),
       formItemLayout,
       loading: false,
@@ -113,6 +154,9 @@ export default {
     orderMapOpen (row) {
       this.orderMapView.data = row
       this.orderMapView.visiable = true
+    },
+    toggleContent(orderId) {
+      this.$set(this.expandedItems, orderId, !this.expandedItems[orderId]);
     },
     checkOrder (orderId) {
       this.$get(`/cos/order-info/checkOrder`, {orderId, staffId: this.currentUser.userId}).then((r) => {
@@ -156,7 +200,7 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-    picHandleChange ({ fileList }) {
+    picHandleChange ({fileList}) {
       this.fileList = fileList
     },
     imagesInit (images) {
@@ -219,12 +263,72 @@ export default {
 </script>
 
 <style scoped>
-  >>> .ant-card-meta-title {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-card-meta-description {
-    font-size: 12px;
-    font-family: SimHei;
-  }
+>>> .ant-card-meta-title {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+>>> .ant-card-meta-description {
+  font-size: 12px;
+  font-family: SimHei;
+}
+
+>>> .ant-divider-with-text-left {
+  margin: 0;
+}
+
+>>> .ant-card-head-title {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+>>> .ant-card-extra {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+.ant-carousel >>> .slick-slide {
+  text-align: center;
+  height: 150px;
+  line-height: 150px;
+  overflow: hidden;
+}
+
+>>> .ant-card {
+  transition: all 0.3s ease;
+}
+
+>>> .ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+>>> .ant-card-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+>>> .ant-card-actions > li {
+  margin: 0 12px;
+}
+
+>>> .ant-card-meta-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.ant-carousel >>> .slick-dots li button {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.ant-carousel >>> .slick-dots li.slick-active button {
+  background: #1890ff;
+}
+
+>>> .ant-tag {
+  margin: 0;
+  font-size: 10px;
+}
 </style>

@@ -176,7 +176,8 @@ export default {
     columns () {
       return [{
         title: '订单编号',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        ellipsis: true
       }, {
         title: '下单用户',
         dataIndex: 'userName',
@@ -186,7 +187,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '用户头像',
         dataIndex: 'userImages',
@@ -208,7 +210,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '订单名称',
         dataIndex: 'orderName',
@@ -218,7 +221,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '物件图片',
         dataIndex: 'images',
@@ -232,15 +236,19 @@ export default {
           </a-popover>
         }
       }, {
-        title: '折后价格（元）',
-        dataIndex: 'afterOrderPrice',
+        title: '订单类型',
+        dataIndex: 'orderType',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '元'
-          } else {
-            return '- -'
+          switch (text) {
+            case '1':
+              return <a-tag>维修</a-tag>
+            case '2':
+              return <a-tag>回收</a-tag>
+            default:
+              return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '订单状态',
         dataIndex: 'status',
@@ -259,9 +267,9 @@ export default {
           }
         }
       }, {
-        title: '备注',
-        dataIndex: 'remark',
-        scopedSlots: {customRender: 'titleShow'}
+        title: '物件描述',
+        dataIndex: 'content',
+        ellipsis: true
       }, {
         title: '下单时间',
         dataIndex: 'createDate',
@@ -271,7 +279,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

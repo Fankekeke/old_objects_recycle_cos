@@ -41,41 +41,45 @@
         <a-col :span="6"><b>订单名称：</b>
           {{ orderInfo.orderName ? orderInfo.orderName : '- -' }}
         </a-col>
+        <a-col :span="6"><b>预估价格：</b>
+          {{ orderInfo.forecastPrice ? orderInfo.forecastPrice + '元' : '- -' }}
+        </a-col>
         <a-col :span="6"><b>总价格：</b>
           {{ orderInfo.orderPrice ? orderInfo.orderPrice + '元' : '- -' }}
-        </a-col>
-        <a-col :span="6"><b>创建时间：</b>
-          {{ orderInfo.createDate }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col :span="6"><b>创建时间：</b>
+          {{ orderInfo.createDate }}
+        </a-col>
         <a-col :span="6"><b>付款时间：</b>
           {{ orderInfo.payDate }}
         </a-col>
-        <a-col :span="6"><b>公里数：</b>
-          {{ orderInfo.kilometre ? orderInfo.kilometre : '- -' }}KM
-        </a-col>
-        <a-col :span="6"><b>配送价格：</b>
-          {{ orderInfo.distributionPrice ? orderInfo.distributionPrice : '- -' }}元
-        </a-col>
         <a-col :span="6"><b>折扣后价格：</b>
           {{ orderInfo.afterOrderPrice ? orderInfo.afterOrderPrice : '- -' }}元
+        </a-col>
+        <a-col :span="6" v-if="orderData.orderType == 1"><b>维修难度：</b>
+          <span v-if="orderData.fixDifficulty == 1">轻度</span>
+          <span v-if="orderData.fixDifficulty == 2">中度</span>
+          <span v-if="orderData.fixDifficulty == 3">复杂</span>
+        </a-col>
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col :span="6"><b>订单类型：</b>
+          <span v-if="orderData.orderType == 1">维修</span>
+          <span v-if="orderData.orderType == 2">回收</span>
+        </a-col>
+        <a-col :span="6"><b>订单方式：</b>
+          <span v-if="orderData.orderMethod == 1">上门</span>
+          <span v-if="orderData.orderMethod == 2">邮寄</span>
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="6"><b>物件类型：</b>
-          <span v-if="orderInfo.goodsType == 1">文件</span>
-          <span v-if="orderInfo.goodsType == 2">食品</span>
-          <span v-if="orderInfo.goodsType == 3">蛋糕</span>
-          <span v-if="orderInfo.goodsType == 4">数码</span>
-          <span v-if="orderInfo.goodsType == 5">证件</span>
-          <span v-if="orderInfo.goodsType == 6">药品</span>
-          <span v-if="orderInfo.goodsType == 7">海鲜</span>
-          <span v-if="orderInfo.goodsType == 8">鲜花</span>
-          <span v-if="orderInfo.goodsType == 9">服饰</span>
-          <span v-if="orderInfo.goodsType == 10">其他</span>
+          {{ orderInfo.goodsType ? orderInfo.goodsType : '- -' }}
         </a-col>
         <a-col :span="6"><b>物件重量：</b>
           {{ orderInfo.weight ? orderInfo.weight : '- -' }}KG
@@ -89,7 +93,21 @@
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">图册</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件描述</span></a-col>
+        <a-col :span="24">
+          {{ orderData.content ? orderData.content : '- -' }}
+        </a-col>
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件瑕疵</span></a-col>
+        <a-col :span="24">
+          {{ orderData.flawContent ? orderData.flawContent : '- -' }}
+        </a-col>
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件图册</span></a-col>
         <a-col :span="24">
           <a-upload
             name="avatar"
@@ -102,6 +120,24 @@
           </a-upload>
           <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
             <img alt="example" style="width: 100%" :src="previewImage" />
+          </a-modal>
+        </a-col>
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">瑕疵图册</span></a-col>
+        <a-col :span="24">
+          <a-upload
+            name="avatar"
+            action="http://127.0.0.1:9527/file/fileUpload/"
+            list-type="picture-card"
+            :file-list="flawFileList"
+            @preview="handlePreviewFlaw"
+            @change="picHandleChangeFlaw"
+          >
+          </a-upload>
+          <a-modal :visible="previewVisibleFlaw" :footer="null" @cancel="handleCancelFlaw">
+            <img alt="example" style="width: 100%" :src="previewImageFlaw" />
           </a-modal>
         </a-col>
       </a-row>
@@ -290,8 +326,11 @@ export default {
     return {
       loading: false,
       fileList: [],
+      flawFileList: [],
       previewVisible: false,
       previewImage: '',
+      previewVisibleFlaw: false,
+      previewImageFlaw: '',
       repairInfo: null,
       reserveInfo: null,
       durgList: [],
@@ -325,6 +364,7 @@ export default {
         this.staffInfo = r.data.staff
         this.evaluateInfo = r.data.evaluate
         this.imagesInit(this.orderInfo.images)
+        this.flawImagesInit(this.orderInfo.flawImages)
       })
     },
     imagesInit (images) {
@@ -334,6 +374,15 @@ export default {
           imageList.push({uid: index, name: image, status: 'done', url: 'http://127.0.0.1:9527/imagesWeb/' + image})
         })
         this.fileList = imageList
+      }
+    },
+    flawImagesInit (images) {
+      if (images !== null && images !== '') {
+        let imageList = []
+        images.split(',').forEach((image, index) => {
+          imageList.push({uid: index, name: image, status: 'done', url: 'http://127.0.0.1:9527/imagesWeb/' + image})
+        })
+        this.flawFileList = imageList
       }
     },
     handleCancel () {
@@ -348,6 +397,20 @@ export default {
     },
     picHandleChange ({ fileList }) {
       this.fileList = fileList
+    },
+
+    handleCancelFlaw () {
+      this.previewVisibleFlaw = false
+    },
+    async handlePreviewFlaw (file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj)
+      }
+      this.previewImageFlaw = file.url || file.preview
+      this.previewVisibleFlaw = true
+    },
+    picHandleChangeFlaw ({ fileList }) {
+      this.flawFileList = fileList
     },
     onClose () {
       this.$emit('close')

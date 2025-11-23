@@ -5,32 +5,7 @@
     <!-- 分页获取订单信息 -->
     <select id="selectOrderPage" resultType="java.util.LinkedHashMap">
         select
-        oi.id,
-        oi.code,
-        oi.order_name,
-        oi.user_id,
-        oi.total,
-        oi.create_date,
-        oi.remark,
-        oi.status,
-        oi.staff_ids,
-        oi.pay_date,
-        oi.goods_type,
-        oi.images,
-        oi.weight,
-        oi.height,
-        oi.width,
-        oi.start_address_id,
-        oi.end_address_id,
-        oi.delivery_date,
-        oi.logistics_info,
-        oi.finish_date,
-        oi.kilometre,
-        oi.distribution_price,
-        oi.order_price,
-        oi.discount_id,
-        oi.after_order_price,
-        oi.integral,
+        oi.*,
         ui.name as userName,
         ui.images as userImages,
         ei.id as evaluateId,
@@ -60,7 +35,7 @@
             AND si.user_id = #{orderInfo.staffIds}
         </if>
         <if test="orderInfo.staffFlag != null and orderInfo.staffFlag != ''">
-            AND oi.status = '1'
+            AND oi.status = '0'
         </if>
         order by oi.create_date desc
     </select>

@@ -1,14 +1,14 @@
 <template>
   <div style="background: linear-gradient(135deg, #fdfdfd 0%, #d7d7d7 100%); margin-bottom: 30px; min-height: 100vh;">
-    <div style="height: 950px;">
-      <div style="height: 800px; padding: 20px;">
+    <div>
+      <div style="padding: 20px;">
         <div style="font-size: 36px; font-weight: 600; color: #5d4037; font-family: 'STSong', SimHei; text-align: center; margin-bottom: 10px;">
           老物件回收与修复
         </div>
         <div style="font-size: 20px; font-weight: 500; color: #8d6e63; font-family: 'STSong', SimHei; text-align: center; margin-bottom: 20px;">
           上传物件图片分析
         </div>
-        <div style="height: 730px;">
+        <div>
           <a-card
             :bordered="false"
             hoverable
@@ -100,6 +100,17 @@
                             </a-form-item>
                           </a-col>
 
+                          <!-- 修复难度 -->
+                          <a-col :span="6" v-if="form.getFieldValue('orderType') === '1'">
+                            <a-form-item label='修复难度' v-bind="formItemLayout">
+                              <a-select v-decorator="['fixDifficulty']">
+                                <a-select-option value="1">轻度</a-select-option>
+                                <a-select-option value="2">中度</a-select-option>
+                                <a-select-option value="3">复杂</a-select-option>
+                              </a-select>
+                            </a-form-item>
+                          </a-col>
+
                           <!-- 预估价格 -->
                           <a-col :span="6">
                             <a-form-item label='预估价格' v-bind="formItemLayout">
@@ -109,17 +120,6 @@
                                 :min="0"
                                 :step="0.01"
                                 placeholder="元"/>
-                            </a-form-item>
-                          </a-col>
-
-                          <!-- 修复难度 -->
-                          <a-col :span="6">
-                            <a-form-item label='修复难度' v-bind="formItemLayout">
-                              <a-select v-decorator="['fixDifficulty']">
-                                <a-select-option value="1">轻度</a-select-option>
-                                <a-select-option value="2">中度</a-select-option>
-                                <a-select-option value="3">复杂</a-select-option>
-                              </a-select>
                             </a-form-item>
                           </a-col>
 
@@ -157,15 +157,15 @@
                             </a-form-item>
                           </a-col>
                           <a-col :span="12">
-                            <a-form-item label='备注' v-bind="formItemLayout">
+                            <a-form-item label='物件描述' v-bind="formItemLayout">
                               <a-textarea :rows="3" v-decorator="[
-                              'remark',
-                               { rules: [{ required: true, message: '请输入备注!' }] }
+                              'content',
+                               { rules: [{ required: true, message: '请输入物件描述!' }] }
                               ]"/>
                             </a-form-item>
                           </a-col>
                           <a-col :span="24">
-                            <a-form-item label='其他图片' v-bind="formItemLayout">
+                            <a-form-item label='物件图片' v-bind="formItemLayout">
                               <a-upload
                                 name="avatar"
                                 action="http://127.0.0.1:9527/file/fileUpload/"
@@ -186,41 +186,60 @@
                               </a-modal>
                             </a-form-item>
                           </a-col>
+                          <a-col :span="24">
+                            <a-form-item label='物件视频' v-bind="formItemLayout">
+                              <a-upload
+                                name="avatar"
+                                action="http://127.0.0.1:9527/file/fileUpload/"
+                                list-type="picture-card"
+                                :file-list="videoFileList"
+                                @preview="handlePreviewVideo"
+                                @change="picHandleChangeVideo"
+                              >
+                                <div v-if="videoFileList.length < 8">
+                                  <a-icon type="plus" />
+                                  <div class="ant-upload-text">
+                                    Upload
+                                  </div>
+                                </div>
+                              </a-upload>
+                              <a-modal :visible="previewVisibleVideo" :footer="null" @cancel="handleCancelVideo">
+                                <img alt="example" style="width: 100%" :src="previewImageVideo" />
+                              </a-modal>
+                            </a-form-item>
+                          </a-col>
+                          <a-col :span="24">
+                            <a-form-item label='瑕疵图片' v-bind="formItemLayout">
+                              <a-upload
+                                name="avatar"
+                                action="http://127.0.0.1:9527/file/fileUpload/"
+                                list-type="picture-card"
+                                :file-list="flawFileList"
+                                @preview="handlePreviewFlaw"
+                                @change="picHandleChangeFlaw"
+                              >
+                                <div v-if="flawFileList.length < 8">
+                                  <a-icon type="plus" />
+                                  <div class="ant-upload-text">
+                                    Upload
+                                  </div>
+                                </div>
+                              </a-upload>
+                              <a-modal :visible="previewVisibleFlaw" :footer="null" @cancel="handleCancelFlaw">
+                                <img alt="example" style="width: 100%" :src="previewImageFlaw" />
+                              </a-modal>
+                            </a-form-item>
+                          </a-col>
                         </a-row>
                         <div style="text-align: center; margin-top: 20px;">
                           <a-button
                             type="primary"
                             @click="fetch"        style="border-radius: 20px; background: linear-gradient(45deg, #8d6e63, #a1887f); border: none; padding: 0 40px; height: 40px;"
                           >
-                            下一步
+                            发布
                           </a-button>
                         </div>
                       </a-form>
-                    </div>
-                  </a-col>
-                  <a-col :span="24" style="font-size: 15px;font-family: SimHei;color: #4a4a48" v-if="nextFlag == 2">
-                    <a-row v-if="orderInfo.discountInfos.length !== 0">
-                      <a-col style="margin-bottom: 15px"><span style="font-size: 13px;font-weight: 650;color: #000c17">选择优惠券</span></a-col>
-                      <a-col :span="8">
-                        <a-select v-model="discountId" style="width: 100%" @change="handleChange" allowClear>
-                          <a-select-option v-for="(item, index) in orderInfo.discountInfos" :value="item.id" :key="index">{{ item.couponName }}</a-select-option>
-                        </a-select>
-                      </a-col>
-                    </a-row>
-                    <div style="padding-left: 20px;margin-top: 25px;text-align: left;padding-left: 30px"><span>合计</span>
-                      <span style="color: red">{{ orderInfo.orderPrice }} 元</span>
-                    </div>
-                    <div style="padding-left: 20px;margin-top: 5px;text-align: left;padding-left: 30px"><span>配送费用</span>
-                      {{ orderInfo.kilometre }} 千米  <span style="color: red">{{ orderInfo.distributionPrice }} 元</span>
-                    </div>
-                    <div style="text-align: center;margin-top: 50px">
-                      <a-icon type="wallet" theme="twoTone" style="font-size: 80px;"/>
-                      <div style="font-size: 25px;font-family: SimHei">折后价格 <span style="font-size: 14px">{{ orderInfo.afterOrderPrice }} 元</span></div>
-                      <br/>
-                      <br/>
-                      <a-button type="primary" @click="orderPay">
-                        支付
-                      </a-button>
                     </div>
                   </a-col>
                 </a-row>
@@ -245,6 +264,14 @@ const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 }
 }
+function getBase64 (file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+  })
+}
 export default {
   name: 'Work',
   components: {Map, VehicleView},
@@ -252,9 +279,15 @@ export default {
     return {
       nextFlag: 1,
       fileList: [],
+      flawFileList: [],
+      videoFileList: [],
       addressList: [],
       previewVisible: false,
       previewImage: '',
+      previewVisibleFlaw: false,
+      previewImageFlaw: '',
+      previewVisibleVideo: false,
+      previewImageVideo: '',
       formItemLayout,
       form: this.$form.createForm(this),
       orderMapView: {
@@ -365,6 +398,32 @@ export default {
     picHandleChange ({ fileList }) {
       this.fileList = fileList
     },
+    handleCancelFlaw () {
+      this.previewVisibleFlaw = false
+    },
+    async handlePreviewFlaw (file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj)
+      }
+      this.previewImageFlaw = file.url || file.preview
+      this.previewVisibleFlaw = true
+    },
+    picHandleChangeFlaw ({ fileList }) {
+      this.flawFileList = fileList
+    },
+    handleCancelVideo () {
+      this.previewVisibleVideo = false
+    },
+    async handlePreviewVideo (file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj)
+      }
+      this.previewImageVideo = file.url || file.preview
+      this.previewVisibleVideo = true
+    },
+    picHandleChangeVideo ({ fileList }) {
+      this.videoFileList = fileList
+    },
     handlevehicleViewClose () {
       this.vehicleView.visiable = false
     },
@@ -401,11 +460,6 @@ export default {
     handleorderMapViewClose () {
       this.orderMapView.visiable = false
     },
-    getRoomType () {
-      this.$get(`/cos/vehicle-type-info/list`).then((r) => {
-        this.roomTypeList = r.data.data
-      })
-    },
     getWorkStatusList () {
       this.$get(`/cos/order-info/selectMerchantList`, { key: this.key }).then((r) => {
         this.roomList = r.data.data
@@ -417,21 +471,33 @@ export default {
       this.fileList.forEach(image => {
         images.push(image.response)
       })
+
+      let flawImages = []
+      this.flawFileList.forEach(image => {
+        flawImages.push(image.response)
+      })
+
+      let videoList = []
+      this.videoFileList.forEach(image => {
+        videoList.push(image.response)
+      })
+
       this.form.validateFields((err, values) => {
         // 当订单方式为上门(1)时，取货地址为必填项
         if (values.orderMethod === '1' && !values.startAddressId) {
           this.$message.warn('请选择取货地址')
           return false
         }
+        values.flawImages = flawImages.length > 0 ? images.join(',') : null
+        values.video = videoList.length > 0 ? images.join(',') : null
         values.images = images.length > 0 ? images.join(',') : null
         values.userId = this.currentUser.userId
         if (!err) {
           this.loading = true
-          this.$post('/cos/order-info/getPriceTotal', {
+          this.$post('/cos/order-info', {
             ...values
           }).then((r) => {
-            this.orderInfo = r.data.data
-            this.nextFlag = 2
+            this.$message.success('添加订单成功')
           })
         }
       })

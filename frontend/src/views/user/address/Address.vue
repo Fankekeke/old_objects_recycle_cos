@@ -149,7 +149,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '头像',
         dataIndex: 'images',
@@ -164,10 +165,12 @@ export default {
         }
       }, {
         title: '地址编号',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        ellipsis: true
       }, {
         title: '省份',
-        dataIndex: 'province'
+        dataIndex: 'province',
+        ellipsis: true
       }, {
         title: '市',
         dataIndex: 'city'
@@ -183,7 +186,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '联系人',
         dataIndex: 'contactPerson',
@@ -193,7 +197,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '联系方式',
         dataIndex: 'contactMethod',
@@ -203,7 +208,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '创建时间',
         dataIndex: 'createDate',
@@ -213,7 +219,8 @@ export default {
           } else {
             return '- -'
           }
-        }
+        },
+        ellipsis: true
       }, {
         title: '操作',
         dataIndex: 'operation',

@@ -5,9 +5,11 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.OrderInfo;
 import cc.mrbird.febs.cos.entity.OrderQuotation;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.entity.WithdrawInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IOrderQuotationService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -29,6 +31,8 @@ public class OrderInfoController {
     private final IOrderInfoService orderInfoService;
 
     private final IOrderQuotationService orderQuotationService;
+
+    private final IUserInfoService userInfoService;
 
     /**
      * 分页获取订单信息
@@ -209,7 +213,13 @@ public class OrderInfoController {
      */
     @PostMapping
     public R save(OrderInfo orderInfo) {
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, orderInfo.getUserId()));
+        if (userInfo != null) {
+            orderInfo.setUserId(userInfo.getId());
+        }
         orderInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        orderInfo.setStatus("0");
+        orderInfo.setCode("ORD-" + System.currentTimeMillis());
         return R.ok(orderInfoService.save(orderInfo));
     }
 
