@@ -8,7 +8,7 @@
     <div style="font-size: 13px;font-family: SimHei" v-if="userInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span></a-col>
-        <a-col :span="6"><b>会员编号：</b>
+        <a-col :span="6"><b>用户编号：</b>
           {{ userInfo.code }}
         </a-col>
         <a-col :span="6"><b>用户姓名：</b>
@@ -60,7 +60,7 @@
     <br/>
     <div style="font-size: 13px;font-family: SimHei" v-if="startAddressInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">发货地址</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件地址</span></a-col>
         <a-col :span="6"><b>详细地址：</b>
           {{ startAddressInfo.address }}
         </a-col>
@@ -132,7 +132,7 @@
     <br/>
     <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">配送员信息</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
         <a-col :span="6"><b>员工姓名：</b>
           {{ staffInfo.name }}
         </a-col>

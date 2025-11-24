@@ -59,7 +59,7 @@
             </a-col>
             <br/>
             <br/>
-            <a-col :span="6"><b>会员折扣：</b>
+            <a-col :span="6"><b>用户折扣：</b>
               {{ orderInfo.discount }} 元
             </a-col>
           </a-row>
@@ -69,7 +69,7 @@
         <div style="font-size: 13px;font-family: SimHei" v-if="userInfo !== null">
           <a-row style="padding-left: 24px;padding-right: 24px;">
             <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span></a-col>
-            <a-col :span="6"><b>会员编号：</b>
+            <a-col :span="6"><b>用户编号：</b>
               {{ userInfo.code }}
             </a-col>
             <a-col :span="6"><b>用户姓名：</b>
@@ -134,7 +134,7 @@
           <span style="font-size: 13px">价格规则</span>
         </a-divider>
         <a-col :span="24">
-          【基础金额 + (距离 * 距离单价) + 配送车辆金额 + (配送员数量 * 配送员金额) + 无电梯费用】
+          【基础金额 + (距离 * 距离单价) + 配送车辆金额 + (员工数量 * 员工金额) + 无电梯费用】
         </a-col>
       </a-row>
       <br/>
@@ -154,10 +154,10 @@
         <a-col :span="6"><b>配送车辆金额：</b>
           元
         </a-col>
-        <a-col :span="6"><b>配送员数量：</b>
+        <a-col :span="6"><b>员工数量：</b>
           个
         </a-col>
-        <a-col :span="6"><b>配送员金额：</b>
+        <a-col :span="6"><b>员工金额：</b>
           元
         </a-col>
         <a-col :span="6"><b>无电梯费用：</b>

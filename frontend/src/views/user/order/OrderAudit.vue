@@ -20,7 +20,7 @@
         <a-col :span="6"><b>折后价格：</b>
           {{ orderInfo.afterOrderPrice ? orderInfo.afterOrderPrice + '元' : '- -' }}
         </a-col>
-        <a-col :span="6"><b>会员折扣：</b>
+        <a-col :span="6"><b>用户折扣：</b>
           {{ orderInfo.discount }} 元
         </a-col>
       </a-row>
@@ -64,7 +64,7 @@
     <div style="font-size: 13px;font-family: SimHei" v-if="userInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span></a-col>
-        <a-col :span="6"><b>会员编号：</b>
+        <a-col :span="6"><b>用户编号：</b>
           {{ userInfo.code }}
         </a-col>
         <a-col :span="6"><b>用户姓名：</b>
@@ -115,7 +115,7 @@
           <a-table bordered :columns="columns" :data-source="orderItemInfo"></a-table>
         </a-col>
         <a-col :span="6">
-          <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">选择配送员</span></a-col>
+          <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">选择员工</span></a-col>
           <a-select v-model="staffId" style="width: 100%;">
             <a-select-option v-for="(item, index) in staffList" :value="item.id" :key="index">{{ item.name }}</a-select-option>
           </a-select>
@@ -145,7 +145,7 @@
     <br/>
     <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">配送员信息</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
         <a-col :span="6"><b>员工姓名：</b>
           {{ staffInfo.name }}
         </a-col>
@@ -290,7 +290,7 @@ export default {
     },
     checkDealer () {
       if (this.staffId === null) {
-        this.$message.warn('请选择配送员工')
+        this.$message.warn('请选择员工工')
         return false
       }
       this.$get(`/cos/order-info/checkDealer`, {orderCode: this.orderInfo.code, staffId: this.staffId}).then((r) => {

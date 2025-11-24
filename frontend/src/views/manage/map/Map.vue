@@ -11,12 +11,9 @@
     <div style="width: 100%">
       <a-icon type="arrow-left" style="position: absolute;z-index: 999;color: red;font-size: 20px;margin: 15px" @click="home"/>
       <a-row style="height:100vh;font-family: SimHei">
-        <a-col :span="15" style="height: 100%;">
-          <div id="areas" style="width: 100%;height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
-        </a-col>
         <a-col :span="9" style="height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);color:#fff">
           <div>
-            <div class="scenicInfo" style="height: 100vh; overflow-y: auto;padding-left: 5px;overflow-x: hidden">
+            <div class="scenicInfo" style="height: 100vh; overflow-y: auto;overflow-x: hidden">
               <div v-if="orderInfo != null">
                 <a-carousel autoplay style="height: 300px;" v-if="orderInfo.images !== null && orderInfo.images !== ''">
                   <div style="width: 100%;height: 300px" v-for="(item, index) in orderInfo.images.split(',')" :key="index">
@@ -26,9 +23,9 @@
                 <a-card :title="orderInfo.orderName" :bordered="false">
                   <div style="text-align: center;margin-top: 20px;font-family: SimHei;">
                     <a-icon type="smile" theme="twoTone" style="font-size: 80px"/>
-                    <p v-if="orderInfo.status == 0" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">请支付订单！</p>
-                    <p v-if="orderInfo.status == 1" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">等待配送员接单！</p>
-                    <p v-if="orderInfo.status == 2" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">配送员正在配送中！</p>
+                    <p v-if="orderInfo.status == 0" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">等待报价中！</p>
+                    <p v-if="orderInfo.status == 1" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">已确认，等待订单支付！</p>
+                    <p v-if="orderInfo.status == 2" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">维修回收中！</p>
                     <p v-if="orderInfo.status == 3" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">订单已完成！</p>
                   </div>
                   <div style="padding-left: 24px;padding-right: 24px;margin-bottom: 50px;margin-top: 50px" v-if="orderInfo != null">
@@ -44,8 +41,8 @@
               <div style="font-size: 12px;font-family: SimHei;color: #404040;margin-top: 15px">
                 <div style="font-size: 12px;font-family: SimHei" v-if="userInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">用户信息</span></a-col>
-                    <a-col :span="8"><b>会员编号：</b>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span></a-col>
+                    <a-col :span="8"><b>用户编号：</b>
                       {{ userInfo.code }}
                     </a-col>
                     <a-col :span="8"><b>用户姓名：</b>
@@ -66,31 +63,22 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="orderInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">订单信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单信息</span></a-col>
                     <a-col :span="8"><b>订单编号：</b>
                       {{ orderInfo.code }}
                     </a-col>
                     <a-col :span="8"><b>订单名称：</b>
                       {{ orderInfo.orderName ? orderInfo.orderName : '- -' }}
                     </a-col>
+                    <a-col :span="8"><b>预估价格：</b>
+                      {{ orderInfo.forecastPrice ? orderInfo.forecastPrice + '元' : '- -' }}
+                    </a-col>
+                  </a-row>
+                  <br/>
+                  <a-row style="padding-left: 24px;padding-right: 24px;">
                     <a-col :span="8"><b>总价格：</b>
                       {{ orderInfo.orderPrice ? orderInfo.orderPrice + '元' : '- -' }}
                     </a-col>
-                  </a-row>
-                  <br/>
-                  <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col :span="8"><b>公里数：</b>
-                      {{ orderInfo.kilometre ? orderInfo.kilometre : '- -' }}KM
-                    </a-col>
-                    <a-col :span="8"><b>配送价格：</b>
-                      {{ orderInfo.distributionPrice ? orderInfo.distributionPrice : '- -' }}元
-                    </a-col>
-                    <a-col :span="8"><b>折扣后价格：</b>
-                      {{ orderInfo.afterOrderPrice ? orderInfo.afterOrderPrice : '- -' }}元
-                    </a-col>
-                  </a-row>
-                  <br/>
-                  <a-row style="padding-left: 24px;padding-right: 24px;">
                     <a-col :span="8"><b>创建时间：</b>
                       {{ orderInfo.createDate }}
                     </a-col>
@@ -98,15 +86,105 @@
                       {{ orderInfo.payDate }}
                     </a-col>
                   </a-row>
+                  <br/>
+                  <a-row style="padding-left: 24px;padding-right: 24px;">
+                    <a-col :span="8"><b>折扣后价格：</b>
+                      {{ orderInfo.afterOrderPrice ? orderInfo.afterOrderPrice : '- -' }}元
+                    </a-col>
+                    <a-col :span="8" v-if="orderData.orderType == 1"><b>维修难度：</b>
+                      <span v-if="orderData.fixDifficulty == 1">轻度</span>
+                      <span v-if="orderData.fixDifficulty == 2">中度</span>
+                      <span v-if="orderData.fixDifficulty == 3">复杂</span>
+                    </a-col>
+                    <a-col :span="8"><b>订单类型：</b>
+                      <span v-if="orderData.orderType == 1">维修</span>
+                      <span v-if="orderData.orderType == 2">回收</span>
+                    </a-col>
+                  </a-row>
+                  <br/>
+                  <a-row style="padding-left: 24px;padding-right: 24px;">
+                    <a-col :span="8"><b>订单方式：</b>
+                      <span v-if="orderData.orderMethod == 1">上门</span>
+                      <span v-if="orderData.orderMethod == 2">邮寄</span>
+                    </a-col>
+                    <a-col :span="8"><b>物件类型：</b>
+                      {{ orderInfo.goodsType ? orderInfo.goodsType : '- -' }}
+                    </a-col>
+                    <a-col :span="8"><b>物件重量：</b>
+                      {{ orderInfo.weight ? orderInfo.weight : '- -' }}KG
+                    </a-col>
+                  </a-row>
+                  <br/>
+                  <a-row style="padding-left: 24px;padding-right: 24px;">
+                    <a-col :span="8"><b>物件高度：</b>
+                      {{ orderInfo.height ? orderInfo.height : '- -' }}厘米
+                    </a-col>
+                    <a-col :span="8"><b>物件宽度：</b>
+                      {{ orderInfo.width ? orderInfo.width : '- -' }}厘米
+                    </a-col>
+                  </a-row>
                 </div>
+                <br/>
+                <br/>
+                <a-row style="padding-left: 24px;padding-right: 24px;">
+                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件描述</span></a-col>
+                  <a-col :span="24">
+                    {{ orderData.content ? orderData.content : '- -' }}
+                  </a-col>
+                </a-row>
+                <br/>
+                <a-row style="padding-left: 24px;padding-right: 24px;">
+                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件瑕疵</span></a-col>
+                  <a-col :span="24">
+                    {{ orderData.flawContent ? orderData.flawContent : '- -' }}
+                  </a-col>
+                </a-row>
+                <br/>
+                <a-row style="padding-left: 24px;padding-right: 24px;">
+                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件图册</span></a-col>
+                  <a-col :span="24">
+                    <a-upload
+                      name="avatar"
+                      action="http://127.0.0.1:9527/file/fileUpload/"
+                      list-type="picture-card"
+                      :file-list="fileList"
+                      @preview="handlePreview"
+                      @change="picHandleChange"
+                    >
+                    </a-upload>
+                    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </a-col>
+                </a-row>
+                <br/>
+                <a-row style="padding-left: 24px;padding-right: 24px;">
+                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">瑕疵图册</span></a-col>
+                  <a-col :span="24">
+                    <a-upload
+                      name="avatar"
+                      action="http://127.0.0.1:9527/file/fileUpload/"
+                      list-type="picture-card"
+                      :file-list="flawFileList"
+                      @preview="handlePreviewFlaw"
+                      @change="picHandleChangeFlaw"
+                    >
+                    </a-upload>
+                    <a-modal :visible="previewVisibleFlaw" :footer="null" @cancel="handleCancelFlaw">
+                      <img alt="example" style="width: 100%" :src="previewImageFlaw" />
+                    </a-modal>
+                  </a-col>
+                </a-row>
                 <br/>
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="startAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">发货地址</span></a-col>
-                    <a-col :span="8"><b>详细地址：</b>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件地址</span></a-col>
+                    <a-col :span="24"><b>详细地址：</b>
                       {{ startAddressInfo.address }}
                     </a-col>
+                    <br/>
+                    <br/>
                     <a-col :span="8"><b>联系人：</b>
                       {{ startAddressInfo.contactPerson ? startAddressInfo.contactPerson : '- -' }}
                     </a-col>
@@ -119,10 +197,12 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="endAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">送货地址</span></a-col>
-                    <a-col :span="8"><b>详细地址：</b>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送货地址</span></a-col>
+                    <a-col :span="24"><b>详细地址：</b>
                       {{ endAddressInfo.address }}
                     </a-col>
+                    <br/>
+                    <br/>
                     <a-col :span="8"><b>联系人：</b>
                       {{ endAddressInfo.contactPerson ? endAddressInfo.contactPerson : '- -' }}
                     </a-col>
@@ -135,7 +215,7 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="discountInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">优惠信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">优惠信息</span></a-col>
                     <a-col :span="8"><b>优惠券编号：</b>
                       {{ discountInfo.code }}
                     </a-col>
@@ -175,7 +255,7 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">配送员信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
                     <a-col :span="8"><b>员工姓名：</b>
                       {{ staffInfo.name }}
                     </a-col>
@@ -192,7 +272,7 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="evaluateInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 14px;font-weight: 650;color: #000c17">订单评价</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单评价</span></a-col>
                     <a-col :span="8"><b>评价分数：</b>
                       <a-rate :default-value="evaluateInfo.score" disabled />
                     </a-col>
@@ -214,6 +294,14 @@
             </div>
           </div>
         </a-col>
+        <a-col :span="15" style="height: 100%;">
+          <a-row :gutter="15">
+            <a-col :span="24"></a-col>
+            <a-col :span="12">
+              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
+            </a-col>
+          </a-row>
+        </a-col>
       </a-row>
     </div>
   </a-drawer>
@@ -221,6 +309,14 @@
 
 <script>
 import baiduMap from '@/utils/map/baiduMap'
+function getBase64 (file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+  })
+}
 export default {
   name: 'Map',
   props: {
@@ -234,6 +330,12 @@ export default {
   },
   data () {
     return {
+      fileList: [],
+      flawFileList: [],
+      previewVisible: false,
+      previewImage: '',
+      previewVisibleFlaw: false,
+      previewImageFlaw: '',
       userInfo: null,
       orderInfo: null,
       startAddressInfo: null,
@@ -287,6 +389,51 @@ export default {
     }
   },
   methods: {
+    imagesInit (images) {
+      if (images !== null && images !== '') {
+        let imageList = []
+        images.split(',').forEach((image, index) => {
+          imageList.push({uid: index, name: image, status: 'done', url: 'http://127.0.0.1:9527/imagesWeb/' + image})
+        })
+        this.fileList = imageList
+      }
+    },
+    flawImagesInit (images) {
+      if (images !== null && images !== '') {
+        let imageList = []
+        images.split(',').forEach((image, index) => {
+          imageList.push({uid: index, name: image, status: 'done', url: 'http://127.0.0.1:9527/imagesWeb/' + image})
+        })
+        this.flawFileList = imageList
+      }
+    },
+    handleCancel () {
+      this.previewVisible = false
+    },
+    async handlePreview (file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj)
+      }
+      this.previewImage = file.url || file.preview
+      this.previewVisible = true
+    },
+    picHandleChange ({ fileList }) {
+      this.fileList = fileList
+    },
+
+    handleCancelFlaw () {
+      this.previewVisibleFlaw = false
+    },
+    async handlePreviewFlaw (file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj)
+      }
+      this.previewImageFlaw = file.url || file.preview
+      this.previewVisibleFlaw = true
+    },
+    picHandleChangeFlaw ({ fileList }) {
+      this.flawFileList = fileList
+    },
     dataInit (orderId) {
       this.$get(`/cos/order-info/${orderId}`).then((r) => {
         this.userInfo = r.data.user
@@ -296,6 +443,8 @@ export default {
         this.discountInfo = r.data.discount
         this.staffInfo = r.data.staff
         this.evaluateInfo = r.data.evaluate
+        this.imagesInit(this.orderInfo.images)
+        this.flawImagesInit(this.orderInfo.flawImages)
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()

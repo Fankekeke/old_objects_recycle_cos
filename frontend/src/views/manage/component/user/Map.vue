@@ -130,7 +130,7 @@
                     <div style="padding-left: 20px;margin-top: 25px;text-align: right;padding-right: 30px"><span>菜品合计</span>
                       <span style="color: red">{{ totalPrice }} 元</span>
                     </div>
-                    <div style="padding-left: 20px;margin-top: 5px;text-align: right;padding-right: 30px" v-if="orderAddInfo.isMember == 1"><span>会员折扣</span>
+                    <div style="padding-left: 20px;margin-top: 5px;text-align: right;padding-right: 30px" v-if="orderAddInfo.isMember == 1"><span>用户折扣</span>
                       <span style="color: red">{{ orderAddInfo.discount }} 元</span>
                     </div>
                     <div style="padding-left: 20px;margin-top: 5px;text-align: right;padding-right: 30px" v-if="orderAddInfo.addressId != null"><span>配送费用</span>

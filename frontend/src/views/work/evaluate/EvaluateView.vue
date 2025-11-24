@@ -43,7 +43,7 @@
         <a-col :span="6"><b>联系电话：</b>
           {{ userInfo.phone ? userInfo.phone : '- -' }}
         </a-col>
-        <a-col :span="6"><b>会员编号：</b>
+        <a-col :span="6"><b>用户编号：</b>
           {{ userInfo.code ? userInfo.code : '- -' }}
         </a-col>
       </a-row>
@@ -83,7 +83,7 @@
         </a-col>
       </a-row>
       <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">  
+      <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="6"><b>联系电话：</b>
           {{ vehicleInfo.phone }}
         </a-col>

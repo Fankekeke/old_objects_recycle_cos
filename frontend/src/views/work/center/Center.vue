@@ -8,11 +8,11 @@
         <p style="font-size: 14px; color: #bfbfbf;">当前没有可接的订单，请稍后再试</p>
       </div>
       <a-col :span="6" v-for="(item, index) in orderList" :key="index" style="margin-bottom: 30px">
-        <a-card hoverable style="width: 100%; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <template slot="actions" class="ant-card-actions">
-            <a-icon key="pushpin" type="pushpin" @click="checkOrder(item.id)" style="font-size: 16px; color: #1890ff;"/>
-            <a-icon key="ellipsis" type="ellipsis" @click="orderMapOpen(item)" style="font-size: 16px; color: #1890ff;"/>
-          </template>
+        <a-card hoverable style="width: 100%; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" @click="orderMapOpen(item)">
+<!--          <template slot="actions" class="ant-card-actions">-->
+<!--            <a-icon key="pushpin" type="pushpin" @click="checkOrder(item.id)" style="font-size: 16px; color: #1890ff;"/>-->
+<!--            <a-icon key="ellipsis" type="ellipsis"  style="font-size: 16px; color: #1890ff;"/>-->
+<!--          </template>-->
           <a-carousel autoplay style="height: 180px; border-radius: 8px 8px 0 0;" v-if="item.images !== undefined && item.images !== ''">
             <div style="width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;"
                  v-for="(img, index) in item.images.split(',')" :key="index">
@@ -63,10 +63,10 @@
   }">
                   {{ item.content }}
                 </div>
-                <a v-if="item.content && item.content.length > 100"
-                   @click="toggleContent(item.id)"     style="font-size: 12px; color: #1890ff; margin-top: 4px; display: inline-block;">
-                  {{ expandedItems[item.id] ? '收起' : '展开' }}
-                </a>
+<!--                <a v-if="item.content && item.content.length > 100"-->
+<!--                   @click="toggleContent(item.id)"     style="font-size: 12px; color: #1890ff; margin-top: 4px; display: inline-block;">-->
+<!--                  {{ expandedItems[item.id] ? '收起' : '展开' }}-->
+<!--                </a>-->
               </div>
 
               <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #f0f0f0;">
@@ -102,6 +102,7 @@
 import {mapState} from 'vuex'
 import moment from 'moment'
 import MapView from '../../manage/map/Map.vue'
+import OrderView from './OrderView.vue'
 
 moment.locale('zh-cn')
 
@@ -120,7 +121,7 @@ const formItemLayout = {
 }
 export default {
   name: 'User',
-  components: {MapView},
+  components: {MapView, OrderView},
   computed: {
     ...mapState({
       currentUser: state => state.account.user
