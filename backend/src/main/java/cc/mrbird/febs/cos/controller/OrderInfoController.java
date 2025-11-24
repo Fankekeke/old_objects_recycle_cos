@@ -10,7 +10,12 @@ import cc.mrbird.febs.cos.entity.WithdrawInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IOrderQuotationService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.tokenizer.Result;
+import cn.hutool.extra.tokenizer.TokenizerEngine;
+import cn.hutool.extra.tokenizer.TokenizerUtil;
+import cn.hutool.extra.tokenizer.Word;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -220,6 +226,12 @@ public class OrderInfoController {
         orderInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         orderInfo.setStatus("0");
         orderInfo.setCode("ORD-" + System.currentTimeMillis());
+        // 针对物件名称进行分词
+        TokenizerEngine engine = TokenizerUtil.createEngine();
+        //解析文本
+        Result result = engine.parse(orderInfo.getOrderName());
+        String resultStr = CollUtil.join((Iterator<Word>)result, ",");
+        orderInfo.setTagList(resultStr);
         return R.ok(orderInfoService.save(orderInfo));
     }
 
