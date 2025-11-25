@@ -3,8 +3,10 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.AddressInfo;
+import cc.mrbird.febs.cos.entity.StaffInfo;
 import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IAddressInfoService;
+import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -29,6 +31,8 @@ public class AddressInfoController {
 
     private final IUserInfoService userInfoService;
 
+    private final IStaffInfoService staffInfoService;
+
     /**
      * 分页获取收货地址信息
      *
@@ -39,6 +43,18 @@ public class AddressInfoController {
     @GetMapping("/page")
     public R page(Page<AddressInfo> page, AddressInfo addressInfo) {
         return R.ok(addressInfoService.selectAddressPage(page, addressInfo));
+    }
+
+    /**
+     * 分页获取员工地址信息
+     *
+     * @param page        分页对象
+     * @param addressInfo 收货地址信息
+     * @return 结果
+     */
+    @GetMapping("/page/staff")
+    public R queryAddressPageByStaff(Page<AddressInfo> page, AddressInfo addressInfo) {
+        return R.ok(addressInfoService.queryAddressPageByStaff(page, addressInfo));
     }
 
     /**
@@ -78,6 +94,21 @@ public class AddressInfoController {
     }
 
     /**
+     * 根据员工获取收货地址
+     *
+     * @param staffId 员工ID
+     * @return 结果
+     */
+    @GetMapping("/listByStaffId/{staffId}")
+    public R listByStaffId(@PathVariable("staffId") Integer staffId) {
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, staffId));
+        if (staffInfo == null) {
+            return R.ok(Collections.emptyList());
+        }
+        return R.ok(addressInfoService.list(Wrappers.<AddressInfo>lambdaQuery().eq(AddressInfo::getStaffId, staffInfo.getId())));
+    }
+
+    /**
      * 新增收货地址信息
      *
      * @param addressInfo 收货地址信息
@@ -89,6 +120,24 @@ public class AddressInfoController {
         UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, addressInfo.getUserId()));
         if (userInfo != null) {
             addressInfo.setUserId(userInfo.getId());
+        }
+        addressInfo.setCode("ADS-" + System.currentTimeMillis());
+        addressInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        return R.ok(addressInfoService.save(addressInfo));
+    }
+
+    /**
+     * 新增收货地址信息
+     *
+     * @param addressInfo 收货地址信息
+     * @return 结果
+     */
+    @PostMapping("/saveByStaff")
+    public R saveByStaff(AddressInfo addressInfo) {
+        // 获取所属员工
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, addressInfo.getStaffId()));
+        if (staffInfo != null) {
+            addressInfo.setStaffId(staffInfo.getId());
         }
         addressInfo.setCode("ADS-" + System.currentTimeMillis());
         addressInfo.setCreateDate(DateUtil.formatDateTime(new Date()));

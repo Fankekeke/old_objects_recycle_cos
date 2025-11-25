@@ -37,6 +37,11 @@ public class OrderQuotation implements Serializable {
     private Integer staffId;
 
     /**
+     * 地址ID
+     */
+    private Integer addressId;
+
+    /**
      * 报价价格
      */
     private BigDecimal price;

@@ -27,4 +27,16 @@ public class AddressInfoServiceImpl extends ServiceImpl<AddressInfoMapper, Addre
     public IPage<LinkedHashMap<String, Object>> selectAddressPage(Page<AddressInfo> page, AddressInfo addressInfo) {
         return baseMapper.selectAddressPage(page, addressInfo);
     }
+
+    /**
+     * 分页获取员工地址信息
+     *
+     * @param page        分页对象
+     * @param addressInfo 收货地址信息
+     * @return 结果
+     */
+    @Override
+    public IPage<LinkedHashMap<String, Object>> queryAddressPageByStaff(Page<AddressInfo> page, AddressInfo addressInfo) {
+        return baseMapper.queryAddressPageByStaff(page, addressInfo);
+    }
 }

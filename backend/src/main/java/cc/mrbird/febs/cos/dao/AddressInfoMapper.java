@@ -21,4 +21,13 @@ public interface AddressInfoMapper extends BaseMapper<AddressInfo> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectAddressPage(Page<AddressInfo> page, @Param("addressInfo") AddressInfo addressInfo);
+
+    /**
+     * 分页获取员工地址信息
+     *
+     * @param page        分页对象
+     * @param addressInfo 收货地址信息
+     * @return 结果
+     */
+    IPage<LinkedHashMap<String, Object>> queryAddressPageByStaff(Page<AddressInfo> page, @Param("addressInfo") AddressInfo addressInfo);
 }

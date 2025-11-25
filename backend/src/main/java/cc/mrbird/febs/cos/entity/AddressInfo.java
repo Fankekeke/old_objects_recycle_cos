@@ -75,6 +75,11 @@ public class AddressInfo implements Serializable {
     private Integer userId;
 
     /**
+     * 所属员工
+     */
+    private Integer staffId;
+
+    /**
      * 经度
      */
     private BigDecimal longitude;

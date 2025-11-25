@@ -161,7 +161,7 @@ public class OrderInfo implements Serializable {
     private BigDecimal kilometre;
 
     /**
-     * 配送价格
+     * 距离价格
      */
     private BigDecimal distributionPrice;
 
