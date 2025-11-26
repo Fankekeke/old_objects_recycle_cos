@@ -202,7 +202,7 @@ export default {
         values.staffId = this.currentUser.userId
         if (!err) {
           this.loading = true
-          this.$post('/cos/address-info', {
+          this.$post('/cos/address-info/saveByStaff', {
             ...values
           }).then((r) => {
             this.reset()

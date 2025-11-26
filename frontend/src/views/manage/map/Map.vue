@@ -294,9 +294,9 @@
             </div>
           </div>
         </a-col>
-        <a-col :span="15" style="height: 100%;">
-          <a-row :gutter="15">
-            <a-col :span="24">
+        <a-col :span="15" style="height: 100%;background: #f8f8f8">
+          <a-row :gutter="15" style="padding: 20px" v-if="orderData != null">
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
               <div style="font-size: 13px;font-family: SimHei">
                 <a-row style="padding-left: 24px;padding-right: 24px;">
                   <a-col style="margin-bottom: 15px">
@@ -305,8 +305,8 @@
                   <a-col :span="24">
                     <a-form :form="quoteForm" layout="vertical">
                       <a-row :gutter="16">
-                        <a-col :span="8">
-                          <a-form-item label="地址ID">
+                        <a-col :span="8" v-if="orderData.orderMethod == 2">
+                          <a-form-item label="选择地址">
                             <a-select
                               v-decorator="['addressId', { rules: [{ required: true, message: '请选择地址' }] }]"
                               placeholder="请选择地址"
@@ -363,9 +363,9 @@
                 </a-row>
               </div>
             </a-col>
-            <a-col :span="12">
-              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
-            </a-col>
+<!--            <a-col :span="12">-->
+<!--              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>-->
+<!--            </a-col>-->
           </a-row>
         </a-col>
       </a-row>
@@ -375,6 +375,7 @@
 
 <script>
 import baiduMap from '@/utils/map/baiduMap'
+import {mapState} from "vuex";
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -449,6 +450,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      currentUser: state => state.account.user
+    })
   },
   watch: {
     'orderShow': function (value) {
@@ -459,7 +463,7 @@ export default {
     }
   },
   methods: {
-    submitQuote() {
+    submitQuote () {
       this.quoteForm.validateFields((err, values) => {
         if (!err) {
           const quoteData = {
@@ -468,28 +472,28 @@ export default {
             price: values.price,
             workHour: values.workHour,
             content: values.content
-          };
+          }
 
           if (this.rowId != null) {
-            quoteData.id = this.rowId;
+            quoteData.id = this.rowId
             this.$put('/cos/order-quotation', quoteData).then(response => {
-              this.$message.success('报价提交成功');
+              this.$message.success('报价提交成功')
               // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
             }).catch(error => {
-              this.$message.error('报价提交失败: ' + error.message);
-            });
+              this.$message.error('报价提交失败: ' + error.message)
+            })
           } else {
             this.$post('/cos/order-quotation', quoteData).then(response => {
-              this.$message.success('报价提交成功');
+              this.$message.success('报价提交成功')
               // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
             }).catch(error => {
-              this.$message.error('报价提交失败: ' + error.message);
-            });
+              this.$message.error('报价提交失败: ' + error.message)
+            })
           }
         }
-      });
+      })
     },
-    queryQuotationByOrder() {
+    queryQuotationByOrder () {
       this.$get('/cos/order-quotation/queryQuotationByOrder', {
         orderId: this.orderInfo.id,
         staffId: this.currentUser.userId
@@ -509,7 +513,7 @@ export default {
       })
       this.quoteForm.setFieldsValue(obj)
     },
-    queryStaffAddress() {
+    queryStaffAddress () {
       this.$get(`/cos/address-info/listByStaffId/${this.currentUser.userId}`).then((r) => {
         this.addressList = r.data.data
       })

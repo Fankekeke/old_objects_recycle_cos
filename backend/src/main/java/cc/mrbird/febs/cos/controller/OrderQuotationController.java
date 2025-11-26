@@ -79,8 +79,8 @@ public class OrderQuotationController {
      * @param staffId 员工ID
      * @return 结果
      */
-    @GetMapping("/queryQuotationByOrder")
-    public R queryQuotationByOrder(@RequestParam Integer orderId, @RequestParam Integer staffId) {
+    @GetMapping("/queryQuotationByStaff")
+    public R queryQuotationByStaff(@RequestParam Integer orderId, @RequestParam Integer staffId) {
         StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, staffId));
         return R.ok(orderQuotationService.getOne(Wrappers.<OrderQuotation>lambdaQuery().eq(OrderQuotation::getOrderId, orderId).eq(OrderQuotation::getStaffId, staffInfo.getId())));
     }
