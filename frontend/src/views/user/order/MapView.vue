@@ -296,73 +296,7 @@
         </a-col>
         <a-col :span="15" style="height: 100%;">
           <a-row :gutter="15">
-            <a-col :span="24">
-              <div style="font-size: 13px;font-family: SimHei">
-                <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px">
-                    <span style="font-size: 15px;font-weight: 650;color: #000c17">报价信息</span>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form :form="quoteForm" layout="vertical">
-                      <a-row :gutter="16">
-                        <a-col :span="8">
-                          <a-form-item label="地址ID">
-                            <a-select
-                              v-decorator="['addressId', { rules: [{ required: true, message: '请选择地址' }] }]"
-                              placeholder="请选择地址"
-                            >
-                              <a-select-option
-                                v-for="address in addressList"
-                                :key="address.id"
-                                :value="address.id"
-                              >
-                                {{ address.address }}
-                              </a-select-option>
-                            </a-select>
-                          </a-form-item>
-                        </a-col>
-                        <a-col :span="8">
-                          <a-form-item label="报价价格(元)">
-                            <a-input-number
-                              style="width: 100%"
-                              v-decorator="['price', { rules: [{ required: true, message: '请输入报价价格' }] }]"
-                              placeholder="请输入报价价格"
-                              :min="0"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col :span="8">
-                          <a-form-item label="工时(小时)">
-                            <a-input-number
-                              style="width: 100%"
-                              v-decorator="['workHour', { rules: [{ required: true, message: '请输入工时' }] }]"
-                              placeholder="请输入工时"
-                              :min="0"
-                            />
-                          </a-form-item>
-                        </a-col>
-                      </a-row>
-                      <a-row :gutter="16">
-                        <a-col :span="24">
-                          <a-form-item label="报价描述">
-                            <a-textarea
-                              v-decorator="['content', { rules: [{ required: true, message: '请输入报价描述' }] }]"
-                              placeholder="请输入报价描述"
-                              :rows="3"
-                            />
-                          </a-form-item>
-                        </a-col>
-                      </a-row>
-                      <a-row :gutter="16">
-                        <a-col :span="24" style="text-align: right">
-                          <a-button type="primary" @click="submitQuote">提交报价</a-button>
-                        </a-col>
-                      </a-row>
-                    </a-form>
-                  </a-col>
-                </a-row>
-              </div>
-            </a-col>
+            <a-col :span="24"></a-col>
             <a-col :span="12">
               <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
             </a-col>
@@ -396,9 +330,6 @@ export default {
   },
   data () {
     return {
-      rowId: null,
-      quoteForm: this.$form.createForm(this),
-      addressList: [],
       fileList: [],
       flawFileList: [],
       previewVisible: false,
@@ -454,66 +385,10 @@ export default {
     'orderShow': function (value) {
       if (value) {
         this.dataInit(this.orderData.id)
-        this.queryStaffAddress()
       }
     }
   },
   methods: {
-    submitQuote() {
-      this.quoteForm.validateFields((err, values) => {
-        if (!err) {
-          const quoteData = {
-            orderId: this.orderInfo.id,
-            addressId: values.addressId,
-            price: values.price,
-            workHour: values.workHour,
-            content: values.content
-          };
-
-          if (this.rowId != null) {
-            quoteData.id = this.rowId;
-            this.$put('/cos/order-quotation', quoteData).then(response => {
-              this.$message.success('报价提交成功');
-              // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
-            }).catch(error => {
-              this.$message.error('报价提交失败: ' + error.message);
-            });
-          } else {
-            this.$post('/cos/order-quotation', quoteData).then(response => {
-              this.$message.success('报价提交成功');
-              // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
-            }).catch(error => {
-              this.$message.error('报价提交失败: ' + error.message);
-            });
-          }
-        }
-      });
-    },
-    queryQuotationByOrder() {
-      this.$get('/cos/order-quotation/queryQuotationByOrder', {
-        orderId: this.orderInfo.id,
-        staffId: this.currentUser.userId
-      }).then(response => {
-        this.setFormValues(response.data.data)
-      })
-    },
-    setFormValues ({...quotation}) {
-      this.rowId = quotation.id
-      let fields = ['addressId', 'price', 'workHour', 'content']
-      let obj = {}
-      Object.keys(quotation).forEach((key) => {
-        if (fields.indexOf(key) !== -1) {
-          this.quoteForm.getFieldDecorator(key)
-          obj[key] = quotation[key]
-        }
-      })
-      this.quoteForm.setFieldsValue(obj)
-    },
-    queryStaffAddress() {
-      this.$get(`/cos/address-info/listByStaffId/${this.currentUser.userId}`).then((r) => {
-        this.addressList = r.data.data
-      })
-    },
     imagesInit (images) {
       if (images !== null && images !== '') {
         let imageList = []

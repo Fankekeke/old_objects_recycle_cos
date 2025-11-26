@@ -73,6 +73,19 @@ public class OrderQuotationController {
     }
 
     /**
+     * 获取报价信息
+     *
+     * @param orderId 订单ID
+     * @param staffId 员工ID
+     * @return 结果
+     */
+    @GetMapping("/queryQuotationByOrder")
+    public R queryQuotationByOrder(@RequestParam Integer orderId, @RequestParam Integer staffId) {
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, staffId));
+        return R.ok(orderQuotationService.getOne(Wrappers.<OrderQuotation>lambdaQuery().eq(OrderQuotation::getOrderId, orderId).eq(OrderQuotation::getStaffId, staffInfo.getId())));
+    }
+
+    /**
      * 新增回收维修报价信息
      *
      * @param orderQuotation 回收维修报价信息
