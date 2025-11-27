@@ -176,6 +176,15 @@
                   </a-col>
                 </a-row>
                 <br/>
+                <a-row style="padding-left: 24px;padding-right: 24px;" v-if="orderData && orderData.video != null">
+                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">视频</span></a-col>
+                  <a-col :span="24">
+                    <video width="100%" height="100%" controls>
+                      <source :src="'http://127.0.0.1:9527/imagesWeb/' + orderData.video" type="video/mp4">
+                    </video>
+                  </a-col>
+                </a-row>
+                <br/>
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="startAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
@@ -494,7 +503,7 @@ export default {
       })
     },
     queryQuotationByOrder () {
-      this.$get('/cos/order-quotation/queryQuotationByOrder', {
+      this.$get('/cos/order-quotation/queryQuotationByStaff', {
         orderId: this.orderInfo.id,
         staffId: this.currentUser.userId
       }).then(response => {
@@ -574,6 +583,7 @@ export default {
         this.evaluateInfo = r.data.evaluate
         this.imagesInit(this.orderInfo.images)
         this.flawImagesInit(this.orderInfo.flawImages)
+        this.queryQuotationByOrder()
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()

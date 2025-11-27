@@ -38,7 +38,7 @@
                      style="margin-top: 20px; padding: 15px; background: #fffaf0; border-radius: 10px; border: 1px solid #e8e0d2;">
                   <h3 style="color: #5d4037; margin-bottom: 15px; text-align: center;">AI识别结果</h3>
                   <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e0d6cc; max-height: 500px; overflow-y: auto;">
-                    <div class="markdown-content" v-html="aiRecognitionResult"></div>
+                    <div class="markdown-content" v-html="renderMarkdown(aiRecognitionResult)"></div>
                   </div>
                 </div>
               </a-col>
@@ -321,8 +321,28 @@ export default {
   },
   mounted () {
     this.selectAddress()
+    // 确保加载marked.js库
+    if (typeof window.marked === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+      document.head.appendChild(script);
+    }
   },
   methods: {
+    renderMarkdown(content) {
+      if (!content) {
+        return '';
+      }
+      if (window.marked) {
+        try {
+          return window.marked.parse(content);
+        } catch (error) {
+          console.error('Markdown解析错误:', error);
+          return content;
+        }
+      }
+      return 'Marked.js 库未加载！';
+    },
     aiHandleChange ({ file }) {
       if (file.response !== undefined) {
         console.log(file.response.code)
@@ -488,8 +508,8 @@ export default {
           this.$message.warn('请选择取货地址')
           return false
         }
-        values.flawImages = flawImages.length > 0 ? images.join(',') : null
-        values.video = videoList.length > 0 ? images.join(',') : null
+        values.flawImages = flawImages.length > 0 ? flawImages.join(',') : null
+        values.video = videoList.length > 0 ? videoList.join(',') : null
         values.images = images.length > 0 ? images.join(',') : null
         values.userId = this.currentUser.userId
         if (!err) {
