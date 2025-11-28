@@ -357,7 +357,7 @@
                             <a-textarea
                               v-decorator="['content', { rules: [{ required: true, message: '请输入报价描述' }] }]"
                               placeholder="请输入报价描述"
-                              :rows="3"
+                              :rows="6"
                             />
                           </a-form-item>
                         </a-col>
@@ -480,7 +480,8 @@ export default {
             addressId: values.addressId,
             price: values.price,
             workHour: values.workHour,
-            content: values.content
+            content: values.content,
+            staffId: this.currentUser.userId
           }
 
           if (this.rowId != null) {

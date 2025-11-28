@@ -323,25 +323,25 @@ export default {
     this.selectAddress()
     // 确保加载marked.js库
     if (typeof window.marked === 'undefined') {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
-      document.head.appendChild(script);
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
+      document.head.appendChild(script)
     }
   },
   methods: {
-    renderMarkdown(content) {
+    renderMarkdown (content) {
       if (!content) {
-        return '';
+        return ''
       }
       if (window.marked) {
         try {
-          return window.marked.parse(content);
+          return window.marked.parse(content)
         } catch (error) {
-          console.error('Markdown解析错误:', error);
-          return content;
+          console.error('Markdown解析错误:', error)
+          return content
         }
       }
-      return 'Marked.js 库未加载！';
+      return 'Marked.js 库未加载！'
     },
     aiHandleChange ({ file }) {
       if (file.response !== undefined) {
@@ -518,6 +518,9 @@ export default {
             ...values
           }).then((r) => {
             this.$message.success('添加订单成功')
+            setTimeout(() => {
+              this.$router.push('/user/order')
+            }, 500)
           })
         }
       })
