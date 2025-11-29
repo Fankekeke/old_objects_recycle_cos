@@ -132,15 +132,15 @@
     <br/>
     <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
-        <a-col :span="6"><b>员工姓名：</b>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">技师信息</span></a-col>
+        <a-col :span="6"><b>技师姓名：</b>
           {{ staffInfo.name }}
         </a-col>
         <a-col :span="6"><b>性别：</b>
           <span v-if="staffInfo.sex == '1'">男</span>
           <span v-if="staffInfo.sex == '2'">女</span>
         </a-col>
-        <a-col :span="6"><b>员工工号：</b>
+        <a-col :span="6"><b>技师工号：</b>
           {{ staffInfo.code }}
         </a-col>
       </a-row>

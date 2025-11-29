@@ -143,7 +143,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             mailService.sendHtmlMail(userInfo.getMail(), DateUtil.formatDate(new Date()) + "订单接单", emailContent);
         }
 
-        return this.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getStaffIds, staffInfo.getId()).set(OrderInfo::getStatus, 2).eq(OrderInfo::getId, orderId));
+        return this.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getStaffIds, staffInfo.getId()).set(OrderInfo::getStatus, 1).eq(OrderInfo::getId, orderId));
     }
 
     /**

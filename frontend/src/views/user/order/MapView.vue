@@ -176,6 +176,15 @@
                   </a-col>
                 </a-row>
                 <br/>
+                <a-row style="padding-left: 24px;padding-right: 24px;" v-if="orderData && orderData.video != null">
+                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">视频</span></a-col>
+                  <a-col :span="24">
+                    <video width="100%" height="100%" controls>
+                      <source :src="'http://127.0.0.1:9527/imagesWeb/' + orderData.video" type="video/mp4">
+                    </video>
+                  </a-col>
+                </a-row>
+                <br/>
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="startAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
@@ -255,15 +264,15 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
-                    <a-col :span="8"><b>员工姓名：</b>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">技师信息</span></a-col>
+                    <a-col :span="8"><b>技师姓名：</b>
                       {{ staffInfo.name }}
                     </a-col>
                     <a-col :span="8"><b>性别：</b>
                       <span v-if="staffInfo.sex == '1'">男</span>
                       <span v-if="staffInfo.sex == '2'">女</span>
                     </a-col>
-                    <a-col :span="8"><b>员工工号：</b>
+                    <a-col :span="8"><b>技师工号：</b>
                       {{ staffInfo.code }}
                     </a-col>
                   </a-row>
@@ -294,12 +303,98 @@
             </div>
           </div>
         </a-col>
-        <a-col :span="15" style="height: 100%;">
-          <a-row :gutter="15">
-            <a-col :span="24"></a-col>
-            <a-col :span="12">
-              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
+        <a-col :span="15" style="height: 100%;background: #f8f8f8">
+          <a-row :gutter="15" style="padding: 20px" v-if="orderData != null">
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
+              <div v-if="quotationList && quotationList.length > 0">
+                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">报价信息</h3>
+                <a-list :data-source="quotationList" item-layout="vertical">
+                  <a-list-item slot="renderItem" slot-scope="item" style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;">
+                    <a-card style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                      <a-row :gutter="16">
+                        <a-col :span="24">
+                          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <a-avatar
+                              :src="'http://127.0.0.1:9527/imagesWeb/' + (item.staffImages ? item.staffImages.split(',')[0] : '')"
+                              size="large"                style="margin-right: 12px;"
+                            />
+                            <div>
+                              <div style="font-size: 16px; font-weight: 600; color: #000c17;">{{ item.staffName }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c;">
+                                <a-rate :default-value="item.staffScore" disabled style="font-size: 12px;" />
+                              </div>
+                            </div>
+                            <div style="margin-left: auto; text-align: right;">
+                              <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">¥{{ item.price }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">报价时间：{{ item.createDate }}</div>
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <a-row :gutter="16" style="margin-top: 15px;">
+                        <a-col :span="8">
+                          <div style="display: flex; align-items: center;">
+                            <a-icon type="phone" style="color: #1890ff; margin-right: 8px;" />
+                            <span>{{ item.staffPhone }}</span>
+                          </div>
+                        </a-col>
+                        <a-col :span="8">
+                          <div style="display: flex; align-items: center;">
+                            <a-icon type="clock-circle" style="color: #52c41a; margin-right: 8px;" />
+                            <span>预计工时：{{ item.workHour }} 小时</span>
+                          </div>
+                        </a-col>
+                        <a-col :span="8">
+                          <div style="display: flex; justify-content: flex-end;">
+                            <a-tag color="blue">技师报价</a-tag>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <a-row style="margin-top: 15px;">
+                        <a-col :span="24">
+                          <div style="font-size: 14px; color: #595959;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">报价说明：</div>
+                            <div style="background: #fafafa; padding: 12px;border-left: 3px solid #1890ff;">
+                              {{ item.content }}
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <!-- 添加确认报价按钮 -->
+                      <a-row style="margin-top: 15px;">
+                        <a-col :span="24" style="text-align: right;">
+                          <a-popconfirm
+                            title="确定要选择此报价吗？"
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="confirmQuotation(item)"
+                          >
+                            <a-button
+                              type="primary"
+                              icon="check"
+                              :loading="item.confirmLoading"
+                            >
+                              确认报价
+                            </a-button>
+                          </a-popconfirm>
+                        </a-col>
+                      </a-row>
+                    </a-card>
+                  </a-list-item>
+                </a-list>
+              </div>
+              <div v-else>
+                <a-empty description="暂无报价信息" style="padding: 40px 0;">
+                  <div slot="image" style="fontSize: 48px; color: #bfbfbf;"></div>
+                </a-empty>
+              </div>
             </a-col>
+            <!--            <a-col :span="12">-->
+            <!--              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>-->
+            <!--            </a-col>-->
           </a-row>
         </a-col>
       </a-row>
@@ -309,6 +404,7 @@
 
 <script>
 import baiduMap from '@/utils/map/baiduMap'
+import {mapState} from 'vuex'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -330,6 +426,9 @@ export default {
   },
   data () {
     return {
+      rowId: null,
+      quoteForm: this.$form.createForm(this),
+      addressList: [],
       fileList: [],
       flawFileList: [],
       previewVisible: false,
@@ -361,6 +460,7 @@ export default {
       echartsShow: false,
       getShop: null,
       putShop: null,
+      quotationList: [],
       series: [{
         name: '得分',
         data: []
@@ -380,6 +480,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      currentUser: state => state.account.user
+    })
   },
   watch: {
     'orderShow': function (value) {
@@ -389,6 +492,70 @@ export default {
     }
   },
   methods: {
+    confirmQuotation (quotation) {
+      this.$get(`/cos/order-info/checkQuotation`, {
+        quotationId: quotation.id
+      }).then(response => {
+        this.$message.success('报价确认成功')
+        // 更新订单状态
+        this.$emit('orderChange')
+      })
+    },
+    submitQuote () {
+      this.quoteForm.validateFields((err, values) => {
+        if (!err) {
+          const quoteData = {
+            orderId: this.orderInfo.id,
+            addressId: values.addressId,
+            price: values.price,
+            workHour: values.workHour,
+            content: values.content,
+            staffId: this.currentUser.userId
+          }
+
+          if (this.rowId != null) {
+            quoteData.id = this.rowId
+            this.$put('/cos/order-quotation', quoteData).then(response => {
+              this.$message.success('报价提交成功')
+              // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
+            }).catch(error => {
+              this.$message.error('报价提交失败: ' + error.message)
+            })
+          } else {
+            this.$post('/cos/order-quotation', quoteData).then(response => {
+              this.$message.success('报价提交成功')
+              // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
+            }).catch(error => {
+              this.$message.error('报价提交失败: ' + error.message)
+            })
+          }
+        }
+      })
+    },
+    queryQuotationByOrder () {
+      this.$get('/cos/order-quotation/queryQuotationByOrder', {
+        orderId: this.orderInfo.id
+      }).then(response => {
+        this.quotationList = response.data.data
+      })
+    },
+    setFormValues ({...quotation}) {
+      this.rowId = quotation.id
+      let fields = ['addressId', 'price', 'workHour', 'content']
+      let obj = {}
+      Object.keys(quotation).forEach((key) => {
+        if (fields.indexOf(key) !== -1) {
+          this.quoteForm.getFieldDecorator(key)
+          obj[key] = quotation[key]
+        }
+      })
+      this.quoteForm.setFieldsValue(obj)
+    },
+    queryStaffAddress () {
+      this.$get(`/cos/address-info/listByStaffId/${this.currentUser.userId}`).then((r) => {
+        this.addressList = r.data.data
+      })
+    },
     imagesInit (images) {
       if (images !== null && images !== '') {
         let imageList = []
@@ -445,6 +612,7 @@ export default {
         this.evaluateInfo = r.data.evaluate
         this.imagesInit(this.orderInfo.images)
         this.flawImagesInit(this.orderInfo.flawImages)
+        this.queryQuotationByOrder()
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()
@@ -532,30 +700,30 @@ export default {
 </script>
 
 <style scoped>
-  >>> .ant-drawer-body {
-    padding: 0 !important;
-  }
-  >>> .ant-card-meta-title {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-card-meta-description {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-divider-with-text-left {
-    margin: 0;
-  }
+>>> .ant-drawer-body {
+  padding: 0 !important;
+}
+>>> .ant-card-meta-title {
+  font-size: 13px;
+  font-family: SimHei;
+}
+>>> .ant-card-meta-description {
+  font-size: 13px;
+  font-family: SimHei;
+}
+>>> .ant-divider-with-text-left {
+  margin: 0;
+}
 
-  >>> .ant-card-head-title {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-card-extra {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-radio-button-wrapper {
-    border-radius: 0;
-  }
+>>> .ant-card-head-title {
+  font-size: 13px;
+  font-family: SimHei;
+}
+>>> .ant-card-extra {
+  font-size: 13px;
+  font-family: SimHei;
+}
+>>> .ant-radio-button-wrapper {
+  border-radius: 0;
+}
 </style>

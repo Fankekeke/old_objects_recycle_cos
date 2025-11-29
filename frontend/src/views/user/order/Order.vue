@@ -65,7 +65,7 @@
         <template slot="operation" slot-scope="text, record">
           <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>
           <a-icon type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
-          <a-icon v-if="record.status ==  0" type="alipay" @click="orderPay(record)" title="支 付" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.status == 1" type="alipay" @click="orderPay(record)" title="支 付" style="margin-left: 15px"></a-icon>
           <a-icon v-if="record.status == 2" type="check" @click="orderComplete(record)" title="订单完成" style="margin-left: 15px"></a-icon>
           <a-icon v-if="record.evaluateId == null && record.status == 3" type="reconciliation" theme="twoTone" twoToneColor="#4a9ff5" @click="orderEvaluateOpen(record)" title="评 价" style="margin-left: 15px"></a-icon>
         </template>
@@ -95,6 +95,7 @@
     </order-add>
     <MapView
       @close="handleorderMapViewClose"
+      @orderChange="handleorderChange"
       :orderShow="orderMapView.visiable"
       :orderData="orderMapView.data">
     </MapView>
@@ -116,7 +117,7 @@ import OrderAudit from './OrderAudit'
 import OrderView from './OrderView'
 import OrderStatus from './OrderStatus.vue'
 import OrderEvaluate from './OrderEvaluate'
-import MapView from '../../manage/map/Map.vue'
+import MapView from './MapView.vue'
 moment.locale('zh-cn')
 
 export default {
@@ -336,6 +337,10 @@ export default {
     },
     handleorderMapViewClose () {
       this.orderMapView.visiable = false
+    },
+    handleorderChange () {
+      this.orderMapView.visiable = false
+      this.search()
     },
     orderStatusOpen (row) {
       this.orderStatusView.data = row
