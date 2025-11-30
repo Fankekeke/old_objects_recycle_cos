@@ -309,7 +309,7 @@
               <div v-if="quotationList && quotationList.length > 0">
                 <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">报价信息</h3>
                 <a-list :data-source="quotationList" item-layout="vertical">
-                  <a-list-item slot="renderItem" slot-scope="item" style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;">
+                  <a-list-item slot="renderItem" slot-scope="item" style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;" v-if="item.id == orderInfo.quotationId">
                     <a-card style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                       <a-row :gutter="16">
                         <a-col :span="24">
@@ -363,42 +363,16 @@
                         </a-col>
                       </a-row>
 
-                      <!-- 添加确认报价按钮 -->
-                      <a-row style="margin-top: 15px;">
-                        <a-col :span="24" style="text-align: right;">
-                          <a-button type="default" class="action-btn" @click="goToChat(item)">
-                            <a-icon type="message" />
-                            在线沟通
-                          </a-button>
-                          <a-popconfirm
-                            title="确定要选择此报价吗？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="confirmQuotation(item)"
-                          >
-                            <a-button
-                              type="primary"
-                              icon="check"
-                              :loading="item.confirmLoading"
-                            >
-                              确认报价
-                            </a-button>
-                          </a-popconfirm>
-                        </a-col>
-                      </a-row>
                     </a-card>
                   </a-list-item>
                 </a-list>
               </div>
-              <div v-else>
-                <a-empty description="暂无报价信息" style="padding: 40px 0;">
-                  <div slot="image" style="fontSize: 48px; color: #bfbfbf;"></div>
-                </a-empty>
+            </a-col>
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
+              <div v-if="quotationList && quotationList.length > 0">
+                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">订单支付</h3>
               </div>
             </a-col>
-            <!--            <a-col :span="12">-->
-            <!--              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>-->
-            <!--            </a-col>-->
           </a-row>
         </a-col>
       </a-row>
@@ -496,59 +470,6 @@ export default {
     }
   },
   methods: {
-    goToChat (schedule) {
-      this.$post('/cos/chat-record/defaultChat', {
-        staffId: schedule.staffId,
-        userId: this.currentUser.userId,
-        senderType: 0,
-        content: '你好'
-      }).then((r) => {
-        // 跳转到聊天页面，并传递默认消息
-        this.$router.push({
-          path: '/user/chat'
-        })
-      })
-    },
-    confirmQuotation (quotation) {
-      this.$get(`/cos/order-info/checkQuotation`, {
-        quotationId: quotation.id
-      }).then(response => {
-        this.$message.success('报价确认成功')
-        // 更新订单状态
-        this.$emit('orderChange')
-      })
-    },
-    submitQuote () {
-      this.quoteForm.validateFields((err, values) => {
-        if (!err) {
-          const quoteData = {
-            orderId: this.orderInfo.id,
-            addressId: values.addressId,
-            price: values.price,
-            workHour: values.workHour,
-            content: values.content,
-            staffId: this.currentUser.userId
-          }
-
-          if (this.rowId != null) {
-            quoteData.id = this.rowId
-            this.$put('/cos/order-quotation', quoteData).then(response => {
-              this.$message.success('报价提交成功')
-              // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
-            }).catch(error => {
-              this.$message.error('报价提交失败: ' + error.message)
-            })
-          } else {
-            this.$post('/cos/order-quotation', quoteData).then(response => {
-              this.$message.success('报价提交成功')
-              // 可以在此处添加成功后的操作，例如刷新数据或关闭表单
-            }).catch(error => {
-              this.$message.error('报价提交失败: ' + error.message)
-            })
-          }
-        }
-      })
-    },
     queryQuotationByOrder () {
       this.$get('/cos/order-quotation/queryQuotationByOrder', {
         orderId: this.orderInfo.id

@@ -76,10 +76,12 @@ public class OrderInfoController {
         OrderInfo orderInfo = orderInfoService.getById(quotation.getOrderId());
         orderInfo.setStaffIds(quotation.getStaffId().toString());
         orderInfo.setTotal(quotation.getPrice());
+        orderInfo.setOrderPrice(quotation.getPrice());
         orderInfo.setStatus("1");
         if ("2".equals(orderInfo.getOrderMethod())) {
             orderInfo.setEndAddressId(quotation.getAddressId());
         }
+        orderInfo.setQuotationId(quotationId);
         return R.ok(orderInfoService.updateById(orderInfo));
     }
 

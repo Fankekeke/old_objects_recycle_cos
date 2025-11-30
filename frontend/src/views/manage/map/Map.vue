@@ -306,6 +306,13 @@
         <a-col :span="15" style="height: 100%;background: #f8f8f8">
           <a-row :gutter="15" style="padding: 20px" v-if="orderData != null">
             <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
+              <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                <a-button type="primary" icon="message" @click="openChat">
+                  在线沟通
+                </a-button>
+              </div>
+            </a-col>
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
               <div style="font-size: 13px;font-family: SimHei">
                 <a-row style="padding-left: 24px;padding-right: 24px;">
                   <a-col style="margin-bottom: 15px">
@@ -472,6 +479,19 @@ export default {
     }
   },
   methods: {
+    openChat () {
+      this.$post('/cos/chat-record/defaultStaffChat', {
+        staffId: this.currentUser.userId,
+        userId: this.orderInfo.userId,
+        senderType: 1,
+        content: '你好'
+      }).then((r) => {
+        // 跳转到聊天页面，并传递默认消息
+        this.$router.push({
+          path: '/work/chat'
+        })
+      })
+    },
     submitQuote () {
       this.quoteForm.validateFields((err, values) => {
         if (!err) {

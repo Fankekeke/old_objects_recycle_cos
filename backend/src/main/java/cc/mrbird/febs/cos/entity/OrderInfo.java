@@ -206,6 +206,11 @@ public class OrderInfo implements Serializable {
     private String tagList;
 
     /**
+     * 报价ID
+     */
+    private Integer quotationId;
+
+    /**
      * 是否使用优惠券
      */
     @TableField(exist = false)

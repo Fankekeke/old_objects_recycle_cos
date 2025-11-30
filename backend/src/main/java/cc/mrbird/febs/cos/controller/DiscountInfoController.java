@@ -3,15 +3,22 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.DiscountInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IDiscountInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author FanK
@@ -23,6 +30,8 @@ public class DiscountInfoController {
 
     private final IDiscountInfoService discountInfoService;
 
+    private final IUserInfoService userInfoService;
+
     /**
      * 分页获取优惠券信息
      *
@@ -33,6 +42,22 @@ public class DiscountInfoController {
     @GetMapping("/page")
     public R page(Page<DiscountInfo> page, DiscountInfo discountInfo) {
         return R.ok(discountInfoService.selectDiscountPage(page, discountInfo));
+    }
+
+    public R queryDiscountByUser(@RequestParam Integer userId, @RequestBody BigDecimal orderPrice) {
+        List<DiscountInfo> discountInfos = new ArrayList<>();
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, userId));
+        // 判断是有可用优惠券
+        List<DiscountInfo> discountInfoList = discountInfoService.list(Wrappers.<DiscountInfo>lambdaQuery().eq(DiscountInfo::getUserId, userInfo.getId()).eq(DiscountInfo::getStatus, "0"));
+        if (CollectionUtil.isNotEmpty(discountInfoList)) {
+            List<DiscountInfo> discount1s = discountInfoList.stream().filter(e -> "2".equals(e.getType())).collect(Collectors.toList());
+            List<DiscountInfo> discount2s = discountInfoList.stream().filter(e -> "1".equals(e.getType()) && orderPrice.compareTo(e.getThreshold()) >= 0).collect(Collectors.toList());
+
+            discount1s.addAll(discount2s);
+            discountInfos = discount1s;
+            boolean discountCheck = (discountInfoList.stream().anyMatch(e -> "2".equals(e.getType())) || discountInfoList.stream().anyMatch(e -> "1".equals(e.getType()) && orderPrice.compareTo(e.getThreshold()) >= 0));
+        }
+        return R.ok(discountInfos);
     }
 
     /**
