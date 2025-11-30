@@ -369,8 +369,86 @@
               </div>
             </a-col>
             <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
-              <div v-if="quotationList && quotationList.length > 0">
-                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">订单支付</h3>
+              <div>
+                <div>
+                  <div>
+                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">订单支付</h3>
+                    <!-- 优惠券选择部分 -->
+                    <a-card style="margin-bottom: 20px;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <div style="font-size: 16px; font-weight: 600; color: #000c17; margin-bottom: 8px;">优惠券</div>
+                          <div v-if="discountList && discountList.length > 0" style="font-size: 14px; color: #8c8c8c;">
+                            选择可用优惠券享受更多优惠
+                          </div>
+                          <div v-else style="font-size: 14px; color: #8c8c8c;">
+                            暂无可用优惠券
+                          </div>
+                        </div>
+                        <div>
+                          <a-select
+                            v-model="selectedDiscountId"
+                            style="width: 200px;"
+                            placeholder="选择优惠券"
+                            @change="calculateFinalPrice"
+                          >
+                            <a-select-option :value="0">不使用优惠券</a-select-option>
+                            <a-select-option
+                              v-for="discount in discountList"
+                              :key="discount.id"
+                              :value="discount.id"
+                            >
+                              <div v-if="discount.type == '1'">
+                                {{ discount.couponName }} (满{{ discount.threshold }}减{{ discount.discountPrice }})
+                              </div>
+                              <div v-if="discount.type == '2'">
+                                {{ discount.couponName }} ({{ discount.rebate }}折)
+                              </div>
+                            </a-select-option>
+                          </a-select>
+                        </div>
+                      </div>
+                    </a-card>
+
+                    <!-- 订单结算信息 -->
+                    <a-card>
+                      <div style="font-size: 16px; font-weight: 600; color: #000c17; margin-bottom: 15px;">结算信息</div>
+
+                      <div style="padding: 10px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                          <span style="color: #595959;">商品总价</span>
+                          <span>¥{{ orderInfo.orderPrice }}</span>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;" v-if="selectedDiscount && selectedDiscount.id !== 0">
+                          <span style="color: #595959;">
+                            优惠券抵扣
+                            <span v-if="selectedDiscount.type == '1'">
+                              (满{{ selectedDiscount.threshold }}减{{ selectedDiscount.discountPrice }})
+                            </span>
+                            <span v-if="selectedDiscount.type == '2'">
+                              ({{ selectedDiscount.rebate }}折)
+                            </span>
+                          </span>
+                          <span style="color: #ff4d4f;">-¥{{ discountAmount }}</span>
+                        </div>
+
+                        <a-divider style="margin: 15px 0;" />
+
+                        <div style="display: flex; justify-content: space-between;">
+                          <span style="font-size: 18px; font-weight: 600; color: #000c17;">实付款</span>
+                          <span style="font-size: 20px; font-weight: 700; color: #ff4d4f;">¥{{ finalPrice }}</span>
+                        </div>
+                      </div>
+
+                      <div style="margin-top: 20px; text-align: right;">
+                        <a-button type="primary" size="large" @click="confirmPayment">
+                          确认支付
+                        </a-button>
+                      </div>
+                    </a-card>
+                  </div>
+                </div>
               </div>
             </a-col>
           </a-row>
@@ -404,6 +482,10 @@ export default {
   },
   data () {
     return {
+      selectedDiscountId: 0,
+      selectedDiscount: null,
+      discountAmount: 0,
+      finalPrice: 0,
       rowId: null,
       quoteForm: this.$form.createForm(this),
       addressList: [],
@@ -431,6 +513,7 @@ export default {
       visible: false,
       rentList: [],
       communityList: [],
+      discountList: [],
       community: null,
       nowPoint: null,
       roadData: [],
@@ -463,6 +546,16 @@ export default {
     })
   },
   watch: {
+    quotationList: {
+      handler () {
+        if (this.quotationList && this.quotationList.length > 0) {
+          // 初始化计算价格
+          this.finalPrice = this.orderInfo.orderPrice
+          this.calculateFinalPrice()
+        }
+      },
+      immediate: true
+    },
     'orderShow': function (value) {
       if (value) {
         this.dataInit(this.orderData.id)
@@ -470,6 +563,79 @@ export default {
     }
   },
   methods: {
+    calculateFinalPrice () {
+      // 查找选中的优惠券
+      if (this.selectedDiscountId === 0) {
+        this.selectedDiscount = { id: 0 }
+        this.finalPrice = this.orderInfo.orderPrice
+        this.discountAmount = 0
+        return
+      }
+
+      this.selectedDiscount = this.discountList.find(d => d.id === this.selectedDiscountId)
+
+      if (!this.selectedDiscount) {
+        this.finalPrice = this.orderInfo.orderPrice
+        this.discountAmount = 0
+        return
+      }
+
+      // 计算优惠金额
+      if (this.selectedDiscount.type === '1') {
+        // 满减券
+        if (this.orderInfo.orderPrice >= this.selectedDiscount.threshold) {
+          this.discountAmount = this.selectedDiscount.discountPrice
+        } else {
+          this.discountAmount = 0
+        }
+      } else if (this.selectedDiscount.type === '2') {
+        // 折扣券
+        this.discountAmount = this.orderInfo.orderPrice * (1 - this.selectedDiscount.rebate / 10)
+      }
+
+      // 计算最终价格
+      this.finalPrice = (this.orderInfo.orderPrice - this.discountAmount).toFixed(2)
+
+      // 确保价格不低于0
+      if (this.finalPrice < 0) {
+        this.finalPrice = 0
+      }
+    },
+
+    confirmPayment () {
+      // 支付确认逻辑
+      this.$confirm({
+        title: '确认支付',
+        content: `您需要支付 ¥${this.finalPrice}，是否确认支付？`,
+        onOk: () => {
+          // 执行支付逻辑
+          this.processPayment()
+        }
+      })
+    },
+
+    processPayment () {
+      // 构造支付参数
+      const paymentData = {
+        orderId: this.orderInfo.id,
+        amount: this.finalPrice,
+        discountId: this.selectedDiscountId !== 0 ? this.selectedDiscountId : null
+      }
+
+      // 调用支付API
+      this.$post('/cos/order-payment', paymentData).then(res => {
+        if (res.data.code === 200) {
+          this.$message.success('支付成功')
+          // 更新订单状态
+          this.orderInfo.status = 2 // 维修回收中
+          // 可以在这里添加其他支付成功的逻辑
+        } else {
+          this.$message.error('支付失败: ' + res.data.msg)
+        }
+      }).catch(err => {
+        this.$message.error('支付过程中出现错误: ' + err.message)
+      })
+    },
     queryQuotationByOrder () {
       this.$get('/cos/order-quotation/queryQuotationByOrder', {
         orderId: this.orderInfo.id
@@ -551,11 +717,20 @@ export default {
         this.imagesInit(this.orderInfo.images)
         this.flawImagesInit(this.orderInfo.flawImages)
         this.queryQuotationByOrder()
+        this.queryDiscountByUser(this.orderInfo.orderPrice)
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()
           this.navigation(this.startAddressInfo, this.endAddressInfo)
         }, 200)
+      })
+    },
+    queryDiscountByUser (orderPrice) {
+      this.$get(`/cos/discount-info/queryDiscountByUser`, {
+        userId: this.currentUser.userId,
+        orderPrice
+      }).then((r) => {
+        this.discountList = r.data.data
       })
     },
     navigation (address, merchant) {

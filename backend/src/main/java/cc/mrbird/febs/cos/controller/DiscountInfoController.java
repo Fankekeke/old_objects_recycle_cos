@@ -44,7 +44,15 @@ public class DiscountInfoController {
         return R.ok(discountInfoService.selectDiscountPage(page, discountInfo));
     }
 
-    public R queryDiscountByUser(@RequestParam Integer userId, @RequestBody BigDecimal orderPrice) {
+    /**
+     * 查询用户可用的优惠券
+     *
+     * @param userId       用户ID
+     * @param orderPrice   订单价格
+     * @return 结果
+     */
+    @GetMapping("/queryDiscountByUser")
+    public R queryDiscountByUser(@RequestParam Integer userId, @RequestParam BigDecimal orderPrice) {
         List<DiscountInfo> discountInfos = new ArrayList<>();
         UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, userId));
         // 判断是有可用优惠券
@@ -55,7 +63,6 @@ public class DiscountInfoController {
 
             discount1s.addAll(discount2s);
             discountInfos = discount1s;
-            boolean discountCheck = (discountInfoList.stream().anyMatch(e -> "2".equals(e.getType())) || discountInfoList.stream().anyMatch(e -> "1".equals(e.getType()) && orderPrice.compareTo(e.getThreshold()) >= 0));
         }
         return R.ok(discountInfos);
     }
