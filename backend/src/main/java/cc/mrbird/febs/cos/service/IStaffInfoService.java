@@ -14,10 +14,10 @@ import java.util.LinkedHashMap;
 public interface IStaffInfoService extends IService<StaffInfo> {
 
     /**
-     * 分页获取员工信息
+     * 分页获取技师信息
      *
      * @param page      分页对象
-     * @param staffInfo 员工信息
+     * @param staffInfo 技师信息
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectStaffPage(Page<StaffInfo> page, StaffInfo staffInfo);

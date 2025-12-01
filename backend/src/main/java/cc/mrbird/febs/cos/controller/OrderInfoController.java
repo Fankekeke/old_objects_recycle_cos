@@ -56,7 +56,7 @@ public class OrderInfoController {
      * 订单分配
      *
      * @param orderId 订单ID
-     * @param staffId 员工ID
+     * @param staffId 技师ID
      * @return 结果
      */
     @GetMapping("/checkOrder")
@@ -206,9 +206,9 @@ public class OrderInfoController {
     }
 
     /**
-     * 员工获取统计信息
+     * 技师获取统计信息
      *
-     * @param userId 员工ID
+     * @param userId 技师ID
      * @return 结果
      */
     @GetMapping("/homeData")

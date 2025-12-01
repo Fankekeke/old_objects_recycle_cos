@@ -38,7 +38,7 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * 订单分配
      *
      * @param orderId 订单ID
-     * @param staffId 员工ID
+     * @param staffId 技师ID
      * @return 结果
      */
     boolean checkOrder(Integer orderId, Integer staffId);
@@ -117,9 +117,9 @@ public interface IOrderInfoService extends IService<OrderInfo> {
     LinkedHashMap<String, Object> selectOrderDetail(Integer id);
 
     /**
-     * 员工获取统计信息
+     * 技师获取统计信息
      *
-     * @param userId 员工ID
+     * @param userId 技师ID
      * @return 结果
      */
     LinkedHashMap<String, Object> selectHomeDataByMerchant(Integer userId);

@@ -36,10 +36,10 @@ public class StaffInfoController {
     private final UserService userInfoService;
 
     /**
-     * 分页获取员工信息
+     * 分页获取技师信息
      *
      * @param page      分页对象
-     * @param staffInfo 员工信息
+     * @param staffInfo 技师信息
      * @return 结果
      */
     @GetMapping("/page")
@@ -48,7 +48,7 @@ public class StaffInfoController {
     }
 
     /**
-     * 获取ID获取员工详情
+     * 获取ID获取技师详情
      *
      * @param id 主键
      * @return 结果
@@ -59,7 +59,7 @@ public class StaffInfoController {
     }
 
     /**
-     * 获取ID获取员工详情
+     * 获取ID获取技师详情
      *
      * @param userId 用户ID
      * @return 结果
@@ -79,7 +79,7 @@ public class StaffInfoController {
     }
 
     /**
-     * 获取ID获取员工详情
+     * 获取ID获取技师详情
      *
      * @param id 主键
      * @return 结果
@@ -90,7 +90,7 @@ public class StaffInfoController {
     }
 
     /**
-     * 获取员工信息列表
+     * 获取技师信息列表
      *
      * @return 结果
      */
@@ -100,7 +100,7 @@ public class StaffInfoController {
     }
 
     /**
-     * 获取在职员工信息列表
+     * 获取在职技师信息列表
      *
      * @return 结果
      */
@@ -110,9 +110,9 @@ public class StaffInfoController {
     }
 
     /**
-     * 新增员工信息
+     * 新增技师信息
      *
-     * @param staffInfo 员工信息
+     * @param staffInfo 技师信息
      * @return 结果
      */
     @PostMapping
@@ -124,9 +124,9 @@ public class StaffInfoController {
     }
 
     /**
-     * 修改员工信息
+     * 修改技师信息
      *
-     * @param staffInfo 员工信息
+     * @param staffInfo 技师信息
      * @return 结果
      */
     @PutMapping
@@ -136,10 +136,10 @@ public class StaffInfoController {
     }
 
     /**
-     * 删除员工信息
+     * 删除技师信息
      *
      * @param ids ids
-     * @return 员工信息
+     * @return 技师信息
      */
     @DeleteMapping("/{ids}")
     public R deleteByIds(@PathVariable("ids") List<Integer> ids) {

@@ -91,7 +91,7 @@ public class OrderInfo implements Serializable {
     private String status;
 
     /**
-     * 分配员工
+     * 分配技师
      */
     private String staffIds;
 

@@ -70,7 +70,7 @@ public class WithdrawInfoController {
      */
     @PostMapping
     public R save(WithdrawInfo withdrawInfo) throws FebsException {
-        // 校验此员工是否有提现正在审核中
+        // 校验此技师是否有提现正在审核中
         int count = withdrawInfoService.count(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStatus, 0));
         if (count > 0) {
             throw new FebsException("存在正在审核的提现记录！");

@@ -30,7 +30,7 @@ public class WithdrawInfo implements Serializable {
     private Integer id;
 
     /**
-     * 员工ID
+     * 技师ID
      */
     private Integer staffId;
 
@@ -55,13 +55,13 @@ public class WithdrawInfo implements Serializable {
     private String status;
 
     /**
-     * 员工姓名
+     * 技师姓名
      */
     @TableField(exist = false)
     private String staffName;
 
     /**
-     * 员工编号
+     * 技师编号
      */
     @TableField(exist = false)
     private String code;
