@@ -288,7 +288,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     public boolean orderPay(String orderCode) {
         // 获取订单信息
         OrderInfo orderInfo = this.getOne(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getCode, orderCode));
-        orderInfo.setStatus("1");
+        orderInfo.setStatus("2");
         orderInfo.setPayDate(DateUtil.formatDateTime(new Date()));
 
         // 用户添加积分

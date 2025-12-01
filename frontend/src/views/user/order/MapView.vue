@@ -9,39 +9,51 @@
     :getContainer="false"
   >
     <div style="width: 100%">
-      <a-icon type="arrow-left" style="position: absolute;z-index: 999;color: red;font-size: 20px;margin: 15px" @click="home"/>
+      <a-icon type="arrow-left" style="position: absolute;z-index: 999;color: red;font-size: 20px;margin: 15px"
+              @click="home"/>
       <a-row style="height:100vh;font-family: SimHei">
         <a-col :span="9" style="height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);color:#fff">
           <div>
             <div class="scenicInfo" style="height: 100vh; overflow-y: auto;overflow-x: hidden">
               <div v-if="orderInfo != null">
                 <a-carousel autoplay style="height: 300px;" v-if="orderInfo.images !== null && orderInfo.images !== ''">
-                  <div style="width: 100%;height: 300px" v-for="(item, index) in orderInfo.images.split(',')" :key="index">
+                  <div style="width: 100%;height: 300px" v-for="(item, index) in orderInfo.images.split(',')"
+                       :key="index">
                     <img :src="'http://127.0.0.1:9527/imagesWeb/' + item" style="width: 100%;height: 100%">
                   </div>
                 </a-carousel>
                 <a-card :title="orderInfo.orderName" :bordered="false">
                   <div style="text-align: center;margin-top: 20px;font-family: SimHei;">
                     <a-icon type="smile" theme="twoTone" style="font-size: 80px"/>
-                    <p v-if="orderInfo.status == 0" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">等待报价中！</p>
-                    <p v-if="orderInfo.status == 1" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">已确认，等待订单支付！</p>
-                    <p v-if="orderInfo.status == 2" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">维修回收中！</p>
-                    <p v-if="orderInfo.status == 3" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">订单已完成！</p>
+                    <p v-if="orderInfo.status == 0" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      等待报价中！</p>
+                    <p v-if="orderInfo.status == 1" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      已确认，等待订单支付！</p>
+                    <p v-if="orderInfo.status == 2" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      维修回收中！</p>
+                    <p v-if="orderInfo.status == 3" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      订单已完成！</p>
                   </div>
-                  <div style="padding-left: 24px;padding-right: 24px;margin-bottom: 50px;margin-top: 50px" v-if="orderInfo != null">
+                  <div style="padding-left: 24px;padding-right: 24px;margin-bottom: 50px;margin-top: 50px"
+                       v-if="orderInfo != null">
                     <a-steps :current="orderInfo.status" progress-dot size="small">
-                      <a-step title="等待报价" />
-                      <a-step title="未支付" />
-                      <a-step title="维修回收中" />
-                      <a-step title="已完成" />
+                      <a-step title="等待报价"/>
+                      <a-step title="未支付"/>
+                      <a-step title="维修回收中"/>
+                      <a-step title="已完成"/>
                     </a-steps>
+                  </div>
+                  <div v-if="orderData.status == 2">
+                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">上门信息</h3>
+                    <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
                   </div>
                 </a-card>
               </div>
               <div style="font-size: 12px;font-family: SimHei;color: #404040;margin-top: 15px">
                 <div style="font-size: 12px;font-family: SimHei" v-if="userInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span>
+                    </a-col>
                     <a-col :span="8"><b>用户编号：</b>
                       {{ userInfo.code }}
                     </a-col>
@@ -63,7 +75,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="orderInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单信息</span>
+                    </a-col>
                     <a-col :span="8"><b>订单编号：</b>
                       {{ orderInfo.code }}
                     </a-col>
@@ -127,21 +140,24 @@
                 <br/>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件描述</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">物件描述</span></a-col>
                   <a-col :span="24">
                     {{ orderData.content ? orderData.content : '- -' }}
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件瑕疵</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">物件瑕疵</span></a-col>
                   <a-col :span="24">
                     {{ orderData.flawContent ? orderData.flawContent : '- -' }}
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件图册</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">物件图册</span></a-col>
                   <a-col :span="24">
                     <a-upload
                       name="avatar"
@@ -153,13 +169,14 @@
                     >
                     </a-upload>
                     <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                      <img alt="example" style="width: 100%" :src="previewImage" />
+                      <img alt="example" style="width: 100%" :src="previewImage"/>
                     </a-modal>
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">瑕疵图册</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">瑕疵图册</span></a-col>
                   <a-col :span="24">
                     <a-upload
                       name="avatar"
@@ -171,13 +188,14 @@
                     >
                     </a-upload>
                     <a-modal :visible="previewVisibleFlaw" :footer="null" @cancel="handleCancelFlaw">
-                      <img alt="example" style="width: 100%" :src="previewImageFlaw" />
+                      <img alt="example" style="width: 100%" :src="previewImageFlaw"/>
                     </a-modal>
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;" v-if="orderData && orderData.video != null">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">视频</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">视频</span></a-col>
                   <a-col :span="24">
                     <video width="100%" height="100%" controls>
                       <source :src="'http://127.0.0.1:9527/imagesWeb/' + orderData.video" type="video/mp4">
@@ -188,7 +206,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="startAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件地址</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件地址</span>
+                    </a-col>
                     <a-col :span="24"><b>详细地址：</b>
                       {{ startAddressInfo.address }}
                     </a-col>
@@ -206,7 +225,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="endAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送货地址</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送货地址</span>
+                    </a-col>
                     <a-col :span="24"><b>详细地址：</b>
                       {{ endAddressInfo.address }}
                     </a-col>
@@ -224,7 +244,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="discountInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">优惠信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">优惠信息</span>
+                    </a-col>
                     <a-col :span="8"><b>优惠券编号：</b>
                       {{ discountInfo.code }}
                     </a-col>
@@ -264,7 +285,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">技师信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">技师信息</span>
+                    </a-col>
                     <a-col :span="8"><b>技师姓名：</b>
                       {{ staffInfo.name }}
                     </a-col>
@@ -281,14 +303,15 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="evaluateInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单评价</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单评价</span>
+                    </a-col>
                     <a-col :span="8"><b>评价分数：</b>
-                      <a-rate :default-value="evaluateInfo.score" disabled />
+                      <a-rate :default-value="evaluateInfo.score" disabled/>
                     </a-col>
                     <a-col :span="8"><b>评价内容：</b>
                       <a-tooltip>
                         <template slot="title">
-                          {{ evaluateInfo.content}}
+                          {{ evaluateInfo.content }}
                         </template>
                         {{ evaluateInfo.content.slice(0, 8) }} ...
                       </a-tooltip>
@@ -305,28 +328,34 @@
         </a-col>
         <a-col :span="15" style="height: 100%;background: #f8f8f8">
           <a-row :gutter="15" style="padding: 20px" v-if="orderData != null">
-            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px" v-if="orderData.status == 0">
               <div v-if="quotationList && quotationList.length > 0">
-                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">报价信息</h3>
+                <h3
+                  style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  报价信息</h3>
                 <a-list :data-source="quotationList" item-layout="vertical">
-                  <a-list-item slot="renderItem" slot-scope="item" style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;">
-                    <a-card style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                  <a-list-item slot="renderItem" slot-scope="item"
+                               style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;">
+                    <a-card style="width: 100%; border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                       <a-row :gutter="16">
                         <a-col :span="24">
                           <div style="display: flex; align-items: center; margin-bottom: 15px;">
                             <a-avatar
                               :src="'http://127.0.0.1:9527/imagesWeb/' + (item.staffImages ? item.staffImages.split(',')[0] : '')"
-                              size="large"                style="margin-right: 12px;"
+                              size="large" style="margin-right: 12px;"
                             />
                             <div>
                               <div style="font-size: 16px; font-weight: 600; color: #000c17;">{{ item.staffName }}</div>
                               <div style="font-size: 12px; color: #8c8c8c;">
-                                <a-rate :default-value="item.staffScore" disabled style="font-size: 12px;" />
+                                <a-rate :default-value="item.staffScore" disabled style="font-size: 12px;"/>
                               </div>
                             </div>
                             <div style="margin-left: auto; text-align: right;">
                               <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">¥{{ item.price }}</div>
-                              <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">报价时间：{{ item.createDate }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">报价时间：{{
+                                  item.createDate
+                                }}
+                              </div>
                             </div>
                           </div>
                         </a-col>
@@ -335,13 +364,13 @@
                       <a-row :gutter="16" style="margin-top: 15px;">
                         <a-col :span="8">
                           <div style="display: flex; align-items: center;">
-                            <a-icon type="phone" style="color: #1890ff; margin-right: 8px;" />
+                            <a-icon type="phone" style="color: #1890ff; margin-right: 8px;"/>
                             <span>{{ item.staffPhone }}</span>
                           </div>
                         </a-col>
                         <a-col :span="8">
                           <div style="display: flex; align-items: center;">
-                            <a-icon type="clock-circle" style="color: #52c41a; margin-right: 8px;" />
+                            <a-icon type="clock-circle" style="color: #52c41a; margin-right: 8px;"/>
                             <span>预计工时：{{ item.workHour }} 小时</span>
                           </div>
                         </a-col>
@@ -367,7 +396,7 @@
                       <a-row style="margin-top: 15px;">
                         <a-col :span="24" style="text-align: right;">
                           <a-button type="default" class="action-btn" @click="goToChat(item)">
-                            <a-icon type="message" />
+                            <a-icon type="message"/>
                             在线沟通
                           </a-button>
                           <a-popconfirm
@@ -396,9 +425,76 @@
                 </a-empty>
               </div>
             </a-col>
-            <!--            <a-col :span="12">-->
-            <!--              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>-->
-            <!--            </a-col>-->
+            <a-col :span="24" style="background: #fff;padding: 20px" v-if="orderData.status == 2">
+              <div v-if="quotationList && quotationList.length > 0">
+                <h3
+                  style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  报价信息</h3>
+                <a-list :data-source="quotationList" item-layout="vertical">
+                  <a-list-item slot="renderItem" slot-scope="item"
+                               style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;"
+                               v-if="item.id == orderInfo.quotationId">
+                    <a-card style="width: 100%; border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                      <a-row :gutter="16">
+                        <a-col :span="24">
+                          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <a-avatar
+                              :src="'http://127.0.0.1:9527/imagesWeb/' + (item.staffImages ? item.staffImages.split(',')[0] : '')"
+                              size="large" style="margin-right: 12px;"
+                            />
+                            <div>
+                              <div style="font-size: 16px; font-weight: 600; color: #000c17;">{{ item.staffName }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c;">
+                                <a-rate :default-value="item.staffScore" disabled style="font-size: 12px;"/>
+                              </div>
+                            </div>
+                            <div style="margin-left: auto; text-align: right;">
+                              <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">¥{{ item.price }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">报价时间：{{
+                                  item.createDate
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <a-row :gutter="16" style="margin-top: 15px;">
+                        <a-col :span="8">
+                          <div style="display: flex; align-items: center;">
+                            <a-icon type="phone" style="color: #1890ff; margin-right: 8px;"/>
+                            <span>{{ item.staffPhone }}</span>
+                          </div>
+                        </a-col>
+                        <a-col :span="8">
+                          <div style="display: flex; align-items: center;">
+                            <a-icon type="clock-circle" style="color: #52c41a; margin-right: 8px;"/>
+                            <span>预计工时：{{ item.workHour }} 小时</span>
+                          </div>
+                        </a-col>
+                        <a-col :span="8">
+                          <div style="display: flex; justify-content: flex-end;">
+                            <a-tag color="blue">技师报价</a-tag>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <a-row style="margin-top: 15px;">
+                        <a-col :span="24">
+                          <div style="font-size: 14px; color: #595959;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">报价说明：</div>
+                            <div style="background: #fafafa; padding: 12px;border-left: 3px solid #1890ff;">
+                              {{ item.content }}
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                    </a-card>
+                  </a-list-item>
+                </a-list>
+              </div>
+            </a-col>
           </a-row>
         </a-col>
       </a-row>
@@ -409,6 +505,7 @@
 <script>
 import baiduMap from '@/utils/map/baiduMap'
 import {mapState} from 'vuex'
+
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -417,6 +514,7 @@ function getBase64 (file) {
     reader.onerror = error => reject(error)
   })
 }
+
 export default {
   name: 'Map',
   props: {
@@ -601,7 +699,7 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-    picHandleChange ({ fileList }) {
+    picHandleChange ({fileList}) {
       this.fileList = fileList
     },
 
@@ -615,7 +713,7 @@ export default {
       this.previewImageFlaw = file.url || file.preview
       this.previewVisibleFlaw = true
     },
-    picHandleChangeFlaw ({ fileList }) {
+    picHandleChangeFlaw ({fileList}) {
       this.flawFileList = fileList
     },
     dataInit (orderId) {
@@ -720,14 +818,17 @@ export default {
 >>> .ant-drawer-body {
   padding: 0 !important;
 }
+
 >>> .ant-card-meta-title {
   font-size: 13px;
   font-family: SimHei;
 }
+
 >>> .ant-card-meta-description {
   font-size: 13px;
   font-family: SimHei;
 }
+
 >>> .ant-divider-with-text-left {
   margin: 0;
 }
@@ -736,10 +837,12 @@ export default {
   font-size: 13px;
   font-family: SimHei;
 }
+
 >>> .ant-card-extra {
   font-size: 13px;
   font-family: SimHei;
 }
+
 >>> .ant-radio-button-wrapper {
   border-radius: 0;
 }

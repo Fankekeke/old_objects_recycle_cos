@@ -7,11 +7,14 @@ import cc.mrbird.febs.cos.entity.OrderInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.PayService;
 import com.alipay.api.AlipayApiException;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/cos/pay")
@@ -50,7 +53,11 @@ public class PayController {
      * @throws AlipayApiException
      */
     @PostMapping(value = "/test")
-    public R alipay(String outTradeNo, String subject, String totalAmount, String body) throws AlipayApiException {
+    public R alipay(String outTradeNo, String subject, String totalAmount, String body, Integer discountId) throws AlipayApiException {
+        OrderInfo orderInfo = orderInfoService.getOne(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getCode, outTradeNo));
+        orderInfo.setDiscountId(discountId);
+        orderInfo.setAfterOrderPrice(new BigDecimal(totalAmount));
+        orderInfo.setIntegral(orderInfo.getAfterOrderPrice());
         AlipayBean alipayBean = new AlipayBean();
         alipayBean.setOut_trade_no(outTradeNo);
         alipayBean.setSubject(subject);

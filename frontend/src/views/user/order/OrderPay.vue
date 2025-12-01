@@ -430,7 +430,7 @@
                               ({{ selectedDiscount.rebate }}折)
                             </span>
                           </span>
-                          <span style="color: #ff4d4f;">-¥{{ discountAmount }}</span>
+                          <span style="color: #ff4d4f;">-¥{{ (discountAmount).toFixed(1) }}</span>
                         </div>
 
                         <a-divider style="margin: 15px 0;" />
@@ -563,6 +563,24 @@ export default {
     }
   },
   methods: {
+    orderPay () {
+      let data = { outTradeNo: this.orderData.code, subject: `${this.orderData.createDate}缴费信息`, totalAmount: this.finalPrice, body: '', discountId: this.selectedDiscount ? this.selectedDiscount.id : null }
+      console.log(data)
+      // this.$post('/cos/pay/test', data).then((r) => {
+      //   // console.log(r.data.msg)
+      //   // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
+      //   const divForm = document.getElementsByTagName('div')
+      //   if (divForm.length) {
+      //     document.body.removeChild(divForm[0])
+      //   }
+      //   const div = document.createElement('div')
+      //   div.innerHTML = r.data.msg // data就是接口返回的form 表单字符串
+      //   // console.log(div.innerHTML)
+      //   document.body.appendChild(div)
+      //   document.forms[0].setAttribute('target', '_self') // 新开窗口跳转
+      //   document.forms[0].submit()
+      // })
+    },
     calculateFinalPrice () {
       // 查找选中的优惠券
       if (this.selectedDiscountId === 0) {
@@ -617,23 +635,27 @@ export default {
     processPayment () {
       // 构造支付参数
       const paymentData = {
-        orderId: this.orderInfo.id,
-        amount: this.finalPrice,
+        outTradeNo: this.orderInfo.code,
+        totalAmount: this.finalPrice,
+        subject: `${this.orderData.createDate}缴费信息`,
+        body: '',
         discountId: this.selectedDiscountId !== 0 ? this.selectedDiscountId : null
       }
-
+      console.log(paymentData)
       // 调用支付API
-      this.$post('/cos/order-payment', paymentData).then(res => {
-        if (res.data.code === 200) {
-          this.$message.success('支付成功')
-          // 更新订单状态
-          this.orderInfo.status = 2 // 维修回收中
-          // 可以在这里添加其他支付成功的逻辑
-        } else {
-          this.$message.error('支付失败: ' + res.data.msg)
+      this.$post('/cos/pay/test', paymentData).then((r) => {
+        // console.log(r.data.msg)
+        // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
+        const divForm = document.getElementsByTagName('div')
+        if (divForm.length) {
+          document.body.removeChild(divForm[0])
         }
-      }).catch(err => {
-        this.$message.error('支付过程中出现错误: ' + err.message)
+        const div = document.createElement('div')
+        div.innerHTML = r.data.msg // data就是接口返回的form 表单字符串
+        // console.log(div.innerHTML)
+        document.body.appendChild(div)
+        document.forms[0].setAttribute('target', '_self') // 新开窗口跳转
+        document.forms[0].submit()
       })
     },
     queryQuotationByOrder () {

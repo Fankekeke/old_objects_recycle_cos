@@ -324,6 +324,7 @@
                         <a-col :span="8" v-if="orderData.orderMethod == 2">
                           <a-form-item label="选择地址">
                             <a-select
+                              :disabled="orderData && orderData.status > 0"
                               v-decorator="['addressId', { rules: [{ required: true, message: '请选择地址' }] }]"
                               placeholder="请选择地址"
                             >
@@ -341,6 +342,7 @@
                           <a-form-item label="报价价格(元)">
                             <a-input-number
                               style="width: 100%"
+                              :disabled="orderData && orderData.status > 0"
                               v-decorator="['price', { rules: [{ required: true, message: '请输入报价价格' }] }]"
                               placeholder="请输入报价价格"
                               :min="0"
@@ -351,6 +353,7 @@
                           <a-form-item label="工时(小时)">
                             <a-input-number
                               style="width: 100%"
+                              :disabled="orderData && orderData.status > 0"
                               v-decorator="['workHour', { rules: [{ required: true, message: '请输入工时' }] }]"
                               placeholder="请输入工时"
                               :min="0"
@@ -362,6 +365,7 @@
                         <a-col :span="24">
                           <a-form-item label="报价描述">
                             <a-textarea
+                              :disabled="orderData && orderData.status > 0"
                               v-decorator="['content', { rules: [{ required: true, message: '请输入报价描述' }] }]"
                               placeholder="请输入报价描述"
                               :rows="6"
@@ -369,7 +373,7 @@
                           </a-form-item>
                         </a-col>
                       </a-row>
-                      <a-row :gutter="16">
+                      <a-row :gutter="16" v-if="orderData.status == 0">
                         <a-col :span="24" style="text-align: right">
                           <a-button type="primary" @click="submitQuote">提交报价</a-button>
                         </a-col>
