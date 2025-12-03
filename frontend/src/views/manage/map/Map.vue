@@ -36,6 +36,10 @@
                       <a-step title="已完成" />
                     </a-steps>
                   </div>
+                  <div v-if="orderData.status == 2 || orderData.status == 3">
+                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">地址</h3>
+                    <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
+                  </div>
                 </a-card>
               </div>
               <div style="font-size: 12px;font-family: SimHei;color: #404040;margin-top: 15px">
@@ -206,7 +210,7 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="endAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送货地址</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送寄地址</span></a-col>
                     <a-col :span="24"><b>详细地址：</b>
                       {{ endAddressInfo.address }}
                     </a-col>
@@ -303,7 +307,7 @@
             </div>
           </div>
         </a-col>
-        <a-col :span="15" style="height: 100%;background: #f8f8f8">
+        <a-col :span="15" style="height: 100%;background: #f8f8f8;height: 100vh; overflow-y: auto;overflow-x: hidden">
           <a-row :gutter="15" style="padding: 20px" v-if="orderData != null">
             <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
               <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
@@ -316,7 +320,9 @@
               <div style="font-size: 13px;font-family: SimHei">
                 <a-row style="padding-left: 24px;padding-right: 24px;">
                   <a-col style="margin-bottom: 15px">
-                    <span style="font-size: 15px;font-weight: 650;color: #000c17">报价信息</span>
+                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                      报价信息
+                    </h3>
                   </a-col>
                   <a-col :span="24">
                     <a-form :form="quoteForm" layout="vertical">
@@ -383,9 +389,68 @@
                 </a-row>
               </div>
             </a-col>
-<!--            <a-col :span="12">-->
-<!--              <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>-->
-<!--            </a-col>-->
+            <a-col :span="24" v-if="orderData.deliveryDate == null && orderData.logisticsInfo != null" style="margin-top: 15px;background: #fff;padding: 20px">
+              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                物流信息
+              </h3>
+              <div v-if="orderData.logisticsInfo" style="padding: 15px; background: #f5f5f5; border-radius: 4px; margin-bottom: 20px;">
+                <a-row :gutter="16">
+                  <a-col :span="8"><b>物流公司：</b>{{ JSON.parse(orderData.logisticsInfo).company }}</a-col>
+                  <a-col :span="8"><b>物流单号：</b>{{ JSON.parse(orderData.logisticsInfo).trackingNumber }}</a-col>
+                  <a-col :span="8"><b>备注信息：</b>{{ JSON.parse(orderData.logisticsInfo).remark }}</a-col>
+                </a-row>
+              </div>
+              <a-button type="primary" @click="confirmReceipt">确认收货</a-button>
+            </a-col>
+            <a-col :span="24" v-else style="margin-top: 15px;background: #fff;padding: 20px">
+              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                修复流程
+              </h3>
+              <a-timeline style="margin-top: 20px;">
+                <a-timeline-item
+                  v-for="(step, index) in repairSteps"
+                  :key="step.id"
+                  :color="getStepColor(step.status)">
+                  <p style="font-size: 14px; margin-bottom: 5px;">{{ step.time }}</p>
+                  <p style="font-size: 16px; font-weight: 500; color: #000c17;">{{ step.title }}</p>
+                  <p style="font-size: 13px; color: #8c8c8c;">{{ step.description }}</p>
+                </a-timeline-item>
+              </a-timeline>
+              <div style="margin-top: 20px; text-align: right;">
+                <a-button type="primary" icon="plus" @click="showAddStepForm = true">
+                  添加步骤
+                </a-button>
+              </div>
+
+              <a-modal
+                title="添加维修步骤"
+                :visible="showAddStepForm"
+                @ok="addRepairStep"
+                @cancel="showAddStepForm = false"
+                width="600px">
+                <a-form :form="stepForm" layout="vertical">
+                  <a-form-item label="步骤标题">
+                    <a-input
+                      v-decorator="['title', { rules: [{ required: true, message: '请输入步骤标题' }] }]"
+                      placeholder="请输入步骤标题" />
+                  </a-form-item>
+                  <a-form-item label="步骤描述">
+                    <a-textarea
+                      v-decorator="['description', { rules: [{ required: true, message: '请输入步骤描述' }] }]"
+                      placeholder="请输入步骤描述"
+                      :rows="3" />
+                  </a-form-item>
+                  <a-form-item label="状态">
+                    <a-select
+                      v-decorator="['status', { rules: [{ required: true, message: '请选择状态' }], initialValue: 'pending' }]">
+                      <a-select-option value="completed">已完成</a-select-option>
+                      <a-select-option value="in-progress">进行中</a-select-option>
+                      <a-select-option value="pending">待处理</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-form>
+              </a-modal>
+            </a-col>
           </a-row>
         </a-col>
       </a-row>
@@ -395,7 +460,7 @@
 
 <script>
 import baiduMap from '@/utils/map/baiduMap'
-import {mapState} from "vuex";
+import {mapState} from 'vuex'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -417,6 +482,24 @@ export default {
   },
   data () {
     return {
+      repairSteps: [
+        {
+          id: 1,
+          time: '2025-11-20 09:30',
+          title: '订单确认',
+          description: '技师已确认订单，准备开始维修工作',
+          status: 'completed' // completed, in-progress, pending
+        },
+        {
+          id: 2,
+          time: '202511-20 14:15',
+          title: '检测评估',
+          description: '完成物品检测，制定维修方案',
+          status: 'completed'
+        }
+      ],
+      showAddStepForm: false,
+      stepForm: this.$form.createForm(this),
       rowId: null,
       quoteForm: this.$form.createForm(this),
       addressList: [],
@@ -483,6 +566,62 @@ export default {
     }
   },
   methods: {
+    getStepColor(status) {
+      switch (status) {
+        case 'completed':
+          return 'green';
+        case 'in-progress':
+          return 'blue';
+        case 'pending':
+          return 'gray';
+        default:
+          return 'gray';
+      }
+    },
+
+    addRepairStep() {
+      this.stepForm.validateFields((err, values) => {
+        if (!err) {
+          const newStep = {
+            id: this.repairSteps.length + 1,
+            time: this.formatDate(new Date()),
+            title: values.title,
+            description: values.description,
+            status: values.status
+          };
+
+          this.repairSteps.push(newStep);
+          this.stepForm.resetFields();
+          this.showAddStepForm = false;
+          this.$message.success('步骤添加成功');
+        }
+      });
+    },
+
+    formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    },
+    confirmReceipt () {
+      this.$confirm({
+        title: '确认收货',
+        content: '确定要确认收货吗？此操作不可撤销。',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          this.$get(`/cos/order-info/confirmReceipt/${this.orderInfo.id}`).then(response => {
+            this.$message.success('收货确认成功')
+            this.$emit('handleorderMapViewClose')
+          }).catch(error => {
+            this.$message.error('收货确认失败: ' + (error.message || '系统错误'))
+          })
+        }
+      })
+    },
     openChat () {
       this.$post('/cos/chat-record/defaultStaffChat', {
         staffId: this.currentUser.userId,

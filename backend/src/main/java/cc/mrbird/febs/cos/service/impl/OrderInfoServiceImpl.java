@@ -497,14 +497,17 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<OrderInfo> orderYearList = baseMapper.selectOrderByYear(staffInfo.getId());
         result.put("yearOrderNum", CollectionUtil.isEmpty(orderYearList) ? 0 : orderYearList.size());
         // 本年总收益
-        BigDecimal orderYearPrice = orderYearList.stream().map(OrderInfo::getAfterOrderPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal orderYearPrice = Optional.ofNullable(orderYearList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(orderInfo -> Optional.ofNullable(orderInfo.getAfterOrderPrice()).orElse(BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         result.put("yearOrderTotal", orderYearPrice);
 
         // 近十天销售订单统计
         result.put("orderNumDayList", baseMapper.selectOrderNumWithinDays(staffInfo.getId()));
         // 近十天销售金额统计
         result.put("priceDayList", baseMapper.selectOrderPriceWithinDays(staffInfo.getId()));
-        // todo 销售菜品统计
         // result.put("orderDrugType", baseMapper.selectOrderDishesType(merchantInfo.getId()));
         // 公告信息
         result.put("bulletinInfoList", bulletinInfoService.list(Wrappers.<BulletinInfo>lambdaQuery().eq(BulletinInfo::getRackUp, 1)));

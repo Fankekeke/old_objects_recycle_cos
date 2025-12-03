@@ -175,6 +175,28 @@ public class OrderInfoController {
     }
 
     /**
+     * 修改物流信息
+     *
+     * @param orderInfo 物流信息
+     * @return 结果
+     */
+    @PutMapping("/updateLogisticsInfo")
+    public R updateLogisticsInfo(OrderInfo orderInfo) {
+        return R.ok(orderInfoService.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getLogisticsInfo, orderInfo.getLogisticsInfo()).eq(OrderInfo::getId, orderInfo.getId())));
+    }
+
+    /**
+     * 确认收货
+     *
+     * @param orderId 订单ID
+     * @return 结果
+     */
+    @GetMapping("/confirmReceipt/{orderId}")
+    public R confirmReceipt(@PathVariable("orderId") Integer orderId) {
+        return R.ok(orderInfoService.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getDeliveryDate, DateUtil.formatDateTime(new Date())).eq(OrderInfo::getId, orderId)));
+    }
+
+    /**
      * 获取ID获取评价详情
      *
      * @param id 主键

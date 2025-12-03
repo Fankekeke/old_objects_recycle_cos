@@ -43,8 +43,8 @@
                       <a-step title="已完成"/>
                     </a-steps>
                   </div>
-                  <div v-if="orderData.status == 2">
-                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">上门信息</h3>
+                  <div v-if="orderData.status == 2 || orderData.status == 3">
+                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">地址</h3>
                     <div id="areas" style="width: 100%;height: 350px;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);background:#ec9e3c;color:#fff"></div>
                   </div>
                 </a-card>
@@ -225,7 +225,7 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="endAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送货地址</span>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送寄地址</span>
                     </a-col>
                     <a-col :span="24"><b>详细地址：</b>
                       {{ endAddressInfo.address }}
@@ -494,6 +494,51 @@
                   </a-list-item>
                 </a-list>
               </div>
+              <div v-if="endAddressInfo != null && orderData.deliveryDate == null" style="margin-top: 15px">
+                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  送寄地址
+                </h3>
+                <a-row style="padding-left: 24px;padding-right: 24px;">
+                  <a-col :span="24">
+                    <b>详细地址：</b>
+                    {{ endAddressInfo.address }}
+                  </a-col>
+                  <br/>
+                  <br/>
+                  <a-col :span="8"><b>联系人：</b>
+                    {{ endAddressInfo.contactPerson ? endAddressInfo.contactPerson : '- -' }}
+                  </a-col>
+                  <a-col :span="8"><b>联系方式：</b>
+                    {{ endAddressInfo.contactMethod ? endAddressInfo.contactMethod : '- -' }}
+                  </a-col>
+                </a-row>
+                <br/>
+                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  物流信息
+                </h3>
+                <a-form :form="logisticsForm" layout="vertical">
+                  <a-row :gutter="16">
+                    <a-col :span="12">
+                      <a-form-item label="物流公司">
+                        <a-input v-decorator="['company', { rules: [{ required: true, message: '请输入物流公司名称' }] }]" placeholder="请输入物流公司名称" />
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="12">
+                      <a-form-item label="物流单号">
+                        <a-input v-decorator="['trackingNumber', { rules: [{ required: true, message: '请输入物流单号' }] }]" placeholder="请输入物流单号" />
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="24">
+                      <a-form-item label="备注信息">
+                        <a-textarea v-decorator="['remark']" placeholder="请输入备注信息" :rows="3" />
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-form-item>
+                    <a-button type="primary" @click="submitLogisticsInfo">提交物流信息</a-button>
+                  </a-form-item>
+                </a-form>
+              </div>
             </a-col>
           </a-row>
         </a-col>
@@ -528,6 +573,7 @@ export default {
   },
   data () {
     return {
+      logisticsForm: this.$form.createForm(this),
       rowId: null,
       quoteForm: this.$form.createForm(this),
       addressList: [],
@@ -594,6 +640,30 @@ export default {
     }
   },
   methods: {
+    submitLogisticsInfo () {
+      this.logisticsForm.validateFields((err, values) => {
+        if (!err) {
+          // 构造物流信息对象
+          let logistics = {
+            company: values.company,
+            trackingNumber: values.trackingNumber,
+            remark: values.remark
+          }
+          const logisticsData = {
+            id: this.orderInfo.id,
+            logisticsInfo: JSON.stringify(logistics)
+          }
+          // 发送请求更新订单的物流信息
+          this.$put(`/cos/order-info/updateLogisticsInfo`, logisticsData).then(response => {
+            this.$message.success('物流信息提交成功')
+            // 通知父组件更新订单状态
+            this.$emit('orderChange')
+          }).catch(error => {
+            this.$message.error('物流信息提交失败: ' + (error.message || '系统错误'))
+          })
+        }
+      })
+    },
     goToChat (schedule) {
       this.$post('/cos/chat-record/defaultChat', {
         staffId: schedule.staffId,
@@ -728,6 +798,19 @@ export default {
         this.imagesInit(this.orderInfo.images)
         this.flawImagesInit(this.orderInfo.flawImages)
         this.queryQuotationByOrder()
+        if (this.endAddressInfo != null && this.orderData.logisticsInfo != null) {
+          // 设置表单值
+          setTimeout(() => {
+            this.$nextTick(() => {
+              let logisticsInfo = JSON.parse(this.orderData.logisticsInfo)
+              this.logisticsForm.setFieldsValue({
+                company: logisticsInfo.company || '',
+                trackingNumber: logisticsInfo.trackingNumber || '',
+                remark: logisticsInfo.remark || ''
+              })
+            })
+          }, 200)
+        }
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()
