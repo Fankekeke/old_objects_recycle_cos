@@ -142,6 +142,17 @@ public class OrderInfoController {
     }
 
     /**
+     * 更新订单维修步骤
+     *
+     * @param orderInfo 订单信息
+     * @return 订单信息
+     */
+    @PutMapping("/setRepairStep")
+    public R setRepairStep(OrderInfo orderInfo) {
+        return R.ok(orderInfoService.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getFixProcessInfo, orderInfo.getFixProcessInfo()).eq(OrderInfo::getId, orderInfo.getId())));
+    }
+
+    /**
      * 管理员审核提现申请
      *
      * @param withdrawInfo 提现记录

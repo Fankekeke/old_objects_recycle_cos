@@ -275,7 +275,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             String emailContent = templateEngine.process("registerEmail", context);
             mailService.sendHtmlMail(userInfo.getMail(), DateUtil.formatDate(new Date()) + "订单完成", emailContent);
         }
-        return this.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getStatus, status).eq(OrderInfo::getCode, orderCode));
+        return this.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getStatus, status).set(OrderInfo::getFinishDate, DateUtil.formatDateTime(new Date())).eq(OrderInfo::getCode, orderCode));
     }
 
     /**
