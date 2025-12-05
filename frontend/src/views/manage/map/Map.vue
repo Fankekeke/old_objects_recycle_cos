@@ -416,7 +416,10 @@
                   <p style="font-size: 13px; color: #8c8c8c;">{{ step.description }}</p>
                 </a-timeline-item>
               </a-timeline>
-              <div style="margin-top: 20px; text-align: right;">
+              <div style="margin-top: 20px; text-align: right;" v-if="orderData.finishDate == null">
+                <a-button type="primary" v-if="repairSteps.length > 0" @click="completeRepair">
+                  维修完成
+                </a-button>
                 <a-button type="primary" icon="plus" @click="showAddStepForm = true">
                   添加步骤
                 </a-button>
@@ -482,7 +485,7 @@ export default {
   },
   data () {
     return {
-      repairSteps: [
+      repairSteps1: [
         {
           id: 1,
           time: '2025-11-20 09:30',
@@ -498,6 +501,7 @@ export default {
           status: 'completed'
         }
       ],
+      repairSteps: [],
       showAddStepForm: false,
       stepForm: this.$form.createForm(this),
       rowId: null,
@@ -566,20 +570,43 @@ export default {
     }
   },
   methods: {
-    getStepColor(status) {
+    completeRepair () {
+      this.$confirm({
+        title: '确认维修完成',
+        content: '确定要标记此维修订单为完成状态吗？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          this.$get(`/cos/order-info/complete/${this.orderInfo.id}`).then((r) => {
+            this.$message.success('维修已完成')
+            this.$emit('close')
+          }).catch((e) => {
+            this.$message.error('操作失败')
+          })
+        }
+      })
+    },
+    getStepColor (status) {
       switch (status) {
         case 'completed':
-          return 'green';
+          return 'green'
         case 'in-progress':
-          return 'blue';
+          return 'blue'
         case 'pending':
-          return 'gray';
+          return 'gray'
         default:
-          return 'gray';
+          return 'gray'
       }
     },
-
-    addRepairStep() {
+    queryRepairStep (orderId) {
+      this.$get(`/cos/order-info/queryRepairStep/${orderId}`).then((r) => {
+        if (r.data.msg) {
+          let repairStep = JSON.parse(r.data.msg)
+          this.repairSteps = repairStep
+        }
+      })
+    },
+    addRepairStep () {
       this.stepForm.validateFields((err, values) => {
         if (!err) {
           const newStep = {
@@ -588,23 +615,29 @@ export default {
             title: values.title,
             description: values.description,
             status: values.status
-          };
+          }
+          this.repairSteps.push(newStep)
 
-          this.repairSteps.push(newStep);
-          this.stepForm.resetFields();
-          this.showAddStepForm = false;
-          this.$message.success('步骤添加成功');
+          this.$put(`/cos/order-info/setRepairStep`, {
+            id: this.orderInfo.id,
+            fixProcessInfo: JSON.stringify(this.repairSteps)
+          }).then((r) => {
+            this.queryRepairStep(this.orderInfo.id)
+            this.stepForm.resetFields()
+            this.showAddStepForm = false
+            this.$message.success('步骤添加成功')
+          })
         }
-      });
+      })
     },
 
-    formatDate(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    formatDate (date) {
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      return `${year}-${month}-${day} ${hours}:${minutes}`
     },
     confirmReceipt () {
       this.$confirm({
@@ -615,7 +648,7 @@ export default {
         onOk: () => {
           this.$get(`/cos/order-info/confirmReceipt/${this.orderInfo.id}`).then(response => {
             this.$message.success('收货确认成功')
-            this.$emit('handleorderMapViewClose')
+            this.$emit('close')
           }).catch(error => {
             this.$message.error('收货确认失败: ' + (error.message || '系统错误'))
           })
@@ -748,6 +781,7 @@ export default {
         this.imagesInit(this.orderInfo.images)
         this.flawImagesInit(this.orderInfo.flawImages)
         this.queryQuotationByOrder()
+        this.queryRepairStep(orderId)
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()

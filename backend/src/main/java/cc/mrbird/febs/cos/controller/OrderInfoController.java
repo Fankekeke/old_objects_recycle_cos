@@ -12,6 +12,7 @@ import cc.mrbird.febs.cos.service.IOrderQuotationService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.tokenizer.Result;
 import cn.hutool.extra.tokenizer.TokenizerEngine;
 import cn.hutool.extra.tokenizer.TokenizerUtil;
@@ -62,6 +63,18 @@ public class OrderInfoController {
     @GetMapping("/checkOrder")
     public R checkOrder(@RequestParam("orderId") Integer orderId, @RequestParam("staffId") Integer staffId) {
         return R.ok(orderInfoService.checkOrder(orderId, staffId));
+    }
+
+    /**
+     * 查询订单维修步骤
+     *
+     * @param orderId 订单ID
+     * @return 订单维修步骤
+     */
+    @GetMapping("/queryRepairStep/{orderId}")
+    public R queryRepairStep(@PathVariable("orderId") Integer orderId) {
+        OrderInfo orderInfo = orderInfoService.getById(orderId);
+        return R.ok(StrUtil.isEmpty(orderInfo.getFixProcessInfo()) ? null : orderInfo.getFixProcessInfo());
     }
 
     /**
@@ -139,6 +152,17 @@ public class OrderInfoController {
     @GetMapping("/orderPay")
     public R orderPay(@RequestParam("orderCode") String orderCode) {
         return R.ok(orderInfoService.orderPay(orderCode));
+    }
+
+    /**
+     * 维修完成
+     *
+     * @param orderId 订单编号
+     * @return 结果
+     */
+    @GetMapping("/complete/{orderId}")
+    public R orderComplete(@PathVariable("orderId") Integer orderId) {
+        return R.ok(orderInfoService.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getFinishDate, DateUtil.formatDateTime(new Date())).eq(OrderInfo::getId, orderId)));
     }
 
     /**

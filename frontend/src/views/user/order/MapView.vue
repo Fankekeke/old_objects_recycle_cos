@@ -540,6 +540,21 @@
                 </a-form>
               </div>
             </a-col>
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px" v-if="repairSteps.length !== 0">
+              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                修复流程
+              </h3>
+              <a-timeline style="margin-top: 20px;">
+                <a-timeline-item
+                  v-for="(step, index) in repairSteps"
+                  :key="step.id"
+                  :color="getStepColor(step.status)">
+                  <p style="font-size: 14px; margin-bottom: 5px;">{{ step.time }}</p>
+                  <p style="font-size: 16px; font-weight: 500; color: #000c17;">{{ step.title }}</p>
+                  <p style="font-size: 13px; color: #8c8c8c;">{{ step.description }}</p>
+                </a-timeline-item>
+              </a-timeline>
+            </a-col>
           </a-row>
         </a-col>
       </a-row>
@@ -573,6 +588,7 @@ export default {
   },
   data () {
     return {
+      repairSteps: [],
       logisticsForm: this.$form.createForm(this),
       rowId: null,
       quoteForm: this.$form.createForm(this),
@@ -640,6 +656,28 @@ export default {
     }
   },
   methods: {
+    getStepColor (status) {
+      switch (status) {
+        case 'completed':
+          return 'green'
+        case 'in-progress':
+          return 'blue'
+        case 'pending':
+          return 'gray'
+        default:
+          return 'gray'
+      }
+    },
+    queryRepairStep (orderId) {
+      this.$get(`/cos/order-info/queryRepairStep/${orderId}`).then((r) => {
+        if (r.data.msg) {
+          let repairStep = JSON.parse(r.data.msg)
+          this.repairSteps = repairStep
+        } else {
+          let repairStep = []
+        }
+      })
+    },
     submitLogisticsInfo () {
       this.logisticsForm.validateFields((err, values) => {
         if (!err) {
@@ -798,6 +836,7 @@ export default {
         this.imagesInit(this.orderInfo.images)
         this.flawImagesInit(this.orderInfo.flawImages)
         this.queryQuotationByOrder()
+        this.queryRepairStep(orderId)
         if (this.endAddressInfo != null && this.orderData.logisticsInfo != null) {
           // 设置表单值
           setTimeout(() => {

@@ -63,7 +63,7 @@
           </template>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>
+<!--          <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>-->
           <a-icon v-if="record.status != 1" type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
           <a-icon v-if="record.status == 1" type="alipay" @click="handleorderMapPayOpen(record)" title="支 付" style="margin-left: 15px"></a-icon>
           <a-icon v-if="record.status == 2" type="check" @click="orderComplete(record)" title="订单完成" style="margin-left: 15px"></a-icon>
