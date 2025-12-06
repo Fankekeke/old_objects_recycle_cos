@@ -355,17 +355,6 @@
                             />
                           </a-form-item>
                         </a-col>
-                        <a-col :span="8">
-                          <a-form-item label="工时(小时)">
-                            <a-input-number
-                              style="width: 100%"
-                              :disabled="orderData && orderData.status > 0"
-                              v-decorator="['workHour', { rules: [{ required: true, message: '请输入工时' }] }]"
-                              placeholder="请输入工时"
-                              :min="0"
-                            />
-                          </a-form-item>
-                        </a-col>
                       </a-row>
                       <a-row :gutter="16">
                         <a-col :span="24">

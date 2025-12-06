@@ -64,9 +64,10 @@
         </template>
         <template slot="operation" slot-scope="text, record">
 <!--          <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>-->
-          <a-icon v-if="record.status != 1" type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
-          <a-icon v-if="record.status == 1" type="alipay" @click="handleorderMapPayOpen(record)" title="支 付" style="margin-left: 15px"></a-icon>
-          <a-icon v-if="record.status == 2" type="check" @click="orderComplete(record)" title="订单完成" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.orderType == 1 && record.status != 1" type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.orderType == 2" type="cluster" @click="orderRecycleMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.orderType == 1 && record.status == 1" type="alipay" @click="handleorderMapPayOpen(record)" title="支 付" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.status == 2 && record.finishDate !== null" type="check" @click="orderComplete(record)" title="订单完成" style="margin-left: 15px"></a-icon>
           <a-icon v-if="record.evaluateId == null && record.status == 3" type="reconciliation" theme="twoTone" twoToneColor="#4a9ff5" @click="orderEvaluateOpen(record)" title="评 价" style="margin-left: 15px"></a-icon>
         </template>
       </a-table>
@@ -99,6 +100,12 @@
       :orderShow="orderMapView.visiable"
       :orderData="orderMapView.data">
     </MapView>
+    <MapRecycleView
+      @close="handleorderRecycleMapViewClose"
+      @orderChange="handleorderRecycleChange"
+      :orderShow="orderRecycleMapView.visiable"
+      :orderData="orderRecycleMapView.data">
+    </MapRecycleView>
     <OrderPay
       @close="handleorderMapPayClose"
       :orderShow="orderPayView.visiable"
@@ -123,12 +130,13 @@ import OrderView from './OrderView'
 import OrderStatus from './OrderStatus.vue'
 import OrderEvaluate from './OrderEvaluate'
 import MapView from './MapView.vue'
+import MapRecycleView from './MapRecycleView.vue'
 import OrderPay from './OrderPay.vue'
 moment.locale('zh-cn')
 
 export default {
   name: 'order',
-  components: {OrderView, OrderAudit, RangeDate, OrderStatus, OrderAdd, MapView, OrderEvaluate, OrderPay},
+  components: {OrderView, OrderAudit, RangeDate, OrderStatus, OrderAdd, MapView, OrderEvaluate, OrderPay, MapRecycleView},
   data () {
     return {
       advanced: false,
@@ -139,6 +147,10 @@ export default {
         visiable: false
       },
       orderMapView: {
+        visiable: false,
+        data: null
+      },
+      orderRecycleMapView: {
         visiable: false,
         data: null
       },
@@ -330,6 +342,17 @@ export default {
     },
     handleorderMapViewClose () {
       this.orderMapView.visiable = false
+    },
+    orderRecycleMapOpen (row) {
+      this.orderRecycleMapView.data = row
+      this.orderRecycleMapView.visiable = true
+    },
+    handleorderRecycleMapViewClose () {
+      this.orderRecycleMapView.visiable = false
+    },
+    handleorderRecycleChange () {
+      this.orderRecycleMapView.visiable = false
+      this.search()
     },
     handleorderMapPayClose () {
       this.orderPayView.visiable = false

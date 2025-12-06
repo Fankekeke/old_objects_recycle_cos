@@ -425,7 +425,7 @@
                 </a-empty>
               </div>
             </a-col>
-            <a-col :span="24" style="background: #fff;padding: 20px" v-if="orderData.status == 2">
+            <a-col :span="24" style="background: #fff;padding: 20px" v-if="orderData.status >= 2">
               <div v-if="quotationList && quotationList.length > 0">
                 <h3
                   style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">

@@ -355,17 +355,6 @@
                             />
                           </a-form-item>
                         </a-col>
-                        <a-col :span="8">
-                          <a-form-item label="工时(小时)">
-                            <a-input-number
-                              style="width: 100%"
-                              :disabled="orderData && orderData.status > 0"
-                              v-decorator="['workHour', { rules: [{ required: true, message: '请输入工时' }] }]"
-                              placeholder="请输入工时"
-                              :min="0"
-                            />
-                          </a-form-item>
-                        </a-col>
                       </a-row>
                       <a-row :gutter="16">
                         <a-col :span="24">
@@ -389,7 +378,7 @@
                 </a-row>
               </div>
             </a-col>
-            <a-col :span="24" v-if="orderData.deliveryDate == null && orderData.logisticsInfo != null" style="margin-top: 15px;background: #fff;padding: 20px">
+            <a-col :span="24" v-if="orderData.status == 1 && orderData.orderMethod == 2 && orderData.deliveryDate == null && orderData.logisticsInfo != null" style="margin-top: 15px;background: #fff;padding: 20px">
               <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
                 物流信息
               </h3>
@@ -402,58 +391,22 @@
               </div>
               <a-button type="primary" @click="confirmReceipt">确认收货</a-button>
             </a-col>
-<!--            <a-col :span="24" v-else style="margin-top: 15px;background: #fff;padding: 20px">-->
-<!--              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">-->
-<!--                修复流程-->
-<!--              </h3>-->
-<!--              <a-timeline style="margin-top: 20px;">-->
-<!--                <a-timeline-item-->
-<!--                  v-for="(step, index) in repairSteps"-->
-<!--                  :key="step.id"-->
-<!--                  :color="getStepColor(step.status)">-->
-<!--                  <p style="font-size: 14px; margin-bottom: 5px;">{{ step.time }}</p>-->
-<!--                  <p style="font-size: 16px; font-weight: 500; color: #000c17;">{{ step.title }}</p>-->
-<!--                  <p style="font-size: 13px; color: #8c8c8c;">{{ step.description }}</p>-->
-<!--                </a-timeline-item>-->
-<!--              </a-timeline>-->
-<!--              <div style="margin-top: 20px; text-align: right;" v-if="orderData.finishDate == null">-->
-<!--                <a-button type="primary" v-if="repairSteps.length > 0" @click="completeRepair">-->
-<!--                  维修完成-->
-<!--                </a-button>-->
-<!--                <a-button type="primary" icon="plus" @click="showAddStepForm = true">-->
-<!--                  添加步骤-->
-<!--                </a-button>-->
-<!--              </div>-->
-
-<!--              <a-modal-->
-<!--                title="添加维修步骤"-->
-<!--                :visible="showAddStepForm"-->
-<!--                @ok="addRepairStep"-->
-<!--                @cancel="showAddStepForm = false"-->
-<!--                width="600px">-->
-<!--                <a-form :form="stepForm" layout="vertical">-->
-<!--                  <a-form-item label="步骤标题">-->
-<!--                    <a-input-->
-<!--                      v-decorator="['title', { rules: [{ required: true, message: '请输入步骤标题' }] }]"-->
-<!--                      placeholder="请输入步骤标题" />-->
-<!--                  </a-form-item>-->
-<!--                  <a-form-item label="步骤描述">-->
-<!--                    <a-textarea-->
-<!--                      v-decorator="['description', { rules: [{ required: true, message: '请输入步骤描述' }] }]"-->
-<!--                      placeholder="请输入步骤描述"-->
-<!--                      :rows="3" />-->
-<!--                  </a-form-item>-->
-<!--                  <a-form-item label="状态">-->
-<!--                    <a-select-->
-<!--                      v-decorator="['status', { rules: [{ required: true, message: '请选择状态' }], initialValue: 'pending' }]">-->
-<!--                      <a-select-option value="completed">已完成</a-select-option>-->
-<!--                      <a-select-option value="in-progress">进行中</a-select-option>-->
-<!--                      <a-select-option value="pending">待处理</a-select-option>-->
-<!--                    </a-select>-->
-<!--                  </a-form-item>-->
-<!--                </a-form>-->
-<!--              </a-modal>-->
-<!--            </a-col>-->
+            <a-col :span="24"  v-if="(orderData.orderMethod == 2 && orderData.deliveryDate != null && orderData.logisticsInfo != null) || orderData.orderMethod == 1 && orderData.status == 2" style="margin-top: 15px;background: #fff;padding: 20px" >
+              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                收货订单完成
+              </h3>
+              <a-result
+                status="success"
+                :title="orderData.orderName"
+                sub-title="订单已完成，感谢您选择我们的服务。如在使用过程中出现任何问题，请通过在线沟通联系客服或拨打售后服务热线。"
+              >
+                <template #extra>
+                  <a-button key="console" type="primary" @click="completeRepair">
+                    确认维修完成
+                  </a-button>
+                </template>
+              </a-result>
+            </a-col>
           </a-row>
         </a-col>
       </a-row>
@@ -603,7 +556,10 @@ export default {
         if (r.data.msg) {
           let repairStep = JSON.parse(r.data.msg)
           this.repairSteps = repairStep
+        } else {
+          this.repairSteps = []
         }
+        console.log(this.repairSteps)
       })
     },
     addRepairStep () {
@@ -785,7 +741,7 @@ export default {
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()
-          this.navigation(this.startAddressInfo, this.endAddressInfo)
+          // this.navigation(this.startAddressInfo, this.endAddressInfo)
         }, 200)
       })
     },

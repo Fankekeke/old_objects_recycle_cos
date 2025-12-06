@@ -64,8 +64,9 @@
         </template>
         <template slot="operation" slot-scope="text, record">
 <!--          <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>-->
-          <a-icon type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
-<!--          <a-icon v-if="record.status ==  0" type="alipay" @click="orderPay(record)" title="支 付" style="margin-left: 15px"></a-icon>-->
+          <a-icon v-if="record.orderType == 1" type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.orderType == 2" type="cluster" @click="orderRecycleMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.orderType == 2 && record.status == 1 && (record.orderMethod == 2 && record.deliveryDate != null && record.logisticsInfo != null)" type="alipay" @click="processPayment(record)" title="支 付" style="margin-left: 15px"></a-icon>
 <!--          <a-icon v-if="record.status == 2" type="check" @click="orderComplete(record)" title="订单完成" style="margin-left: 15px"></a-icon>-->
 <!--          <a-icon v-if="record.evaluateId == null && record.status == 3" type="reconciliation" theme="twoTone" twoToneColor="#4a9ff5" @click="orderEvaluateOpen(record)" title="评 价" style="margin-left: 15px"></a-icon>-->
         </template>
@@ -98,6 +99,11 @@
       :orderShow="orderMapView.visiable"
       :orderData="orderMapView.data">
     </MapView>
+    <MapRecycleView
+      @close="handleorderRecycleMapViewClose"
+      :orderShow="orderRecycleMapView.visiable"
+      :orderData="orderRecycleMapView.data">
+    </MapRecycleView>
   </a-card>
 </template>
 
@@ -109,12 +115,13 @@ import OrderAdd from './OrderAdd'
 import OrderAudit from './OrderAudit'
 import OrderView from './OrderView'
 import OrderStatus from './OrderStatus.vue'
-import MapView from '../../manage/map/Map.vue'
+import MapView from './OrderMap.vue'
+import MapRecycleView from './OrderRecycleMap.vue'
 moment.locale('zh-cn')
 
 export default {
   name: 'order',
-  components: {OrderView, OrderAudit, RangeDate, OrderStatus, OrderAdd, MapView},
+  components: {OrderView, OrderAudit, RangeDate, OrderStatus, OrderAdd, MapView, MapRecycleView},
   data () {
     return {
       advanced: false,
@@ -123,6 +130,10 @@ export default {
       },
       orderEdit: {
         visiable: false
+      },
+      orderRecycleMapView: {
+        visiable: false,
+        data: null
       },
       orderMapView: {
         visiable: false,
@@ -285,9 +296,17 @@ export default {
     this.fetch()
   },
   methods: {
-    orderPay (record) {
-      let data = { outTradeNo: record.code, subject: `${record.createDate}缴费信息`, totalAmount: record.afterOrderPrice, body: '' }
-      this.$post('/cos/pay/test', data).then((r) => {
+    processPayment (record) {
+      // 构造支付参数
+      const paymentData = {
+        outTradeNo: record.code,
+        totalAmount: record.orderPrice,
+        subject: `${record.createDate}缴费信息`,
+        body: '',
+        discountId: null
+      }
+      // 调用支付API
+      this.$post('/cos/pay/test', paymentData).then((r) => {
         // console.log(r.data.msg)
         // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
         const divForm = document.getElementsByTagName('div')
@@ -329,6 +348,13 @@ export default {
     },
     handleorderMapViewClose () {
       this.orderMapView.visiable = false
+    },
+    orderRecycleMapOpen (row) {
+      this.orderRecycleMapView.data = row
+      this.orderRecycleMapView.visiable = true
+    },
+    handleorderRecycleMapViewClose () {
+      this.orderRecycleMapView.visiable = false
     },
     orderStatusOpen (row) {
       this.orderStatusView.data = row

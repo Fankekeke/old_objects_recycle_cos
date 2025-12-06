@@ -111,6 +111,7 @@ import {mapState} from 'vuex'
 import moment from 'moment'
 import Home from './manage/component/home/Home'
 import Work from './manage/component/user/Work.vue'
+import { getUrlKey } from '@/utils/urlKey'
 // import Forum from './forum/Forum.vue'
 import Post from './forum/Post.vue'
 moment.locale('zh-cn')
@@ -200,6 +201,11 @@ export default {
     }
   },
   mounted () {
+    if (getUrlKey('out_trade_no') !== null) {
+      this.$get('/cos/order-info/orderPay', { orderCode: getUrlKey('out_trade_no') }).then((r) => {
+        this.$message.success('支付成功！')
+      })
+    }
     this.welcomeMessage = this.welcome()
     this.$get(`index/${this.user.username}`).then((r) => {
       let data = r.data.data

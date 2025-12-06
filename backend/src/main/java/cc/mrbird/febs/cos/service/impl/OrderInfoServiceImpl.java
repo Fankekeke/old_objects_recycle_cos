@@ -489,7 +489,13 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 本月订单数量
         List<OrderInfo> orderMonthList = baseMapper.selectOrderByMonth(staffInfo.getId());
         result.put("monthOrderNum", CollectionUtil.isEmpty(orderMonthList) ? 0 : orderMonthList.size());
-        BigDecimal orderPrice = orderMonthList.stream().map(OrderInfo::getAfterOrderPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal orderPrice = Optional.ofNullable(orderMonthList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(Objects::nonNull)
+                .map(OrderInfo::getAfterOrderPrice)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         // 获取本月收益
         result.put("monthOrderTotal", orderPrice);
 
