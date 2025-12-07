@@ -131,7 +131,10 @@ public class StaffInfoController {
      */
     @PutMapping
     public R edit(StaffInfo staffInfo) {
-        userInfoService.update(Wrappers.<User>lambdaUpdate().set(User::getName, staffInfo.getName()).set(User::getImages, staffInfo.getImages()).eq(User::getUserId, staffInfo.getUserId()));
+        StaffInfo staff = staffInfoService.getById(staffInfo.getId());
+        if (staff != null) {
+            userInfoService.update(Wrappers.<User>lambdaUpdate().set(User::getName, staffInfo.getName()).set(User::getImages, staffInfo.getImages()).eq(User::getUserId, staff.getUserId()));
+        }
         return R.ok(staffInfoService.updateById(staffInfo));
     }
 

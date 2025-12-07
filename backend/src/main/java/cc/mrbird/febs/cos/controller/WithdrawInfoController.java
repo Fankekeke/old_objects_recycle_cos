@@ -71,15 +71,14 @@ public class WithdrawInfoController {
     @PostMapping
     public R save(WithdrawInfo withdrawInfo) throws FebsException {
         // 校验此技师是否有提现正在审核中
-        int count = withdrawInfoService.count(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStatus, 0));
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, withdrawInfo.getStaffId()));
+        int count = withdrawInfoService.count(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStatus, 0).eq(WithdrawInfo::getStaffId, staffInfo.getId()));
         if (count > 0) {
             throw new FebsException("存在正在审核的提现记录！");
         }
         withdrawInfo.setCode("WD-" + System.currentTimeMillis());
-        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, withdrawInfo.getStaffId()));
-        if (staffInfo != null) {
-            withdrawInfo.setStaffId(staffInfo.getId());
-        }
+        withdrawInfo.setStaffId(staffInfo.getId());
+        withdrawInfo.setStatus("0");
         withdrawInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(withdrawInfoService.save(withdrawInfo));
     }

@@ -656,6 +656,16 @@ export default {
     }
   },
   methods: {
+    local (merchantData) {
+      baiduMap.clearOverlays()
+      baiduMap.rMap().enableScrollWheelZoom(true)
+      // eslint-disable-next-line no-undef
+      let point = new BMap.Point(merchantData.longitude, merchantData.latitude)
+      baiduMap.pointAdd(point)
+      baiduMap.findPoint(point, 16)
+      // let driving = new BMap.DrivingRoute(baiduMap.rMap(), {renderOptions:{map: baiduMap.rMap(), autoViewport: true}});
+      // driving.search(new BMap.Point(this.nowPoint.lng,this.nowPoint.lat), new BMap.Point(scenic.point.split(",")[0],scenic.point.split(",")[1]));
+    },
     getStepColor (status) {
       switch (status) {
         case 'completed':
@@ -852,8 +862,12 @@ export default {
         }
         setTimeout(() => {
           baiduMap.initMap('areas')
-          this.getLocal()
-          this.navigation(this.startAddressInfo, this.endAddressInfo)
+          if (this.startAddressInfo != null) {
+            this.local(this.startAddressInfo)
+          }
+          if (this.endAddressInfo != null) {
+            this.local(this.endAddressInfo)
+          }
         }, 200)
       })
     },

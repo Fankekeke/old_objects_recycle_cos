@@ -15,6 +15,7 @@
         oi.order_name,
         oi.goods_type,
         oi.images,
+        oi.status,
         oi.weight,
         oi.height,
         oi.width,
@@ -38,10 +39,10 @@
             AND si.name LIKE CONCAT('%',#{orderQuotation.staffName},'%')
         </if>
         <if test="orderQuotation.orderName != null and orderQuotation.orderName != ''">
-            AND oq.staffId = #{orderQuotation.orderName}
+            AND oi.order_name = LIKE CONCAT('%',#{orderQuotation.orderName},'%')
         </if>
         <if test="orderQuotation.staffId != null and orderQuotation.staffId != ''">
-            AND oi.order_name LIKE CONCAT('%',#{orderQuotation.staffId},'%')
+            AND si.user_id = #{orderQuotation.staffId}
         </if>
         order by oq.create_date desc
     </select>

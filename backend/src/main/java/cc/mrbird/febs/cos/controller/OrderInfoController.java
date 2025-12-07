@@ -166,6 +166,17 @@ public class OrderInfoController {
     }
 
     /**
+     * 回收完成
+     *
+     * @param orderId 订单编号
+     * @return 结果
+     */
+    @GetMapping("/recycleComplete/{orderId}")
+    public R orderRecycleComplete(@PathVariable("orderId") Integer orderId) {
+        return R.ok(orderInfoService.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getFinishDate, DateUtil.formatDateTime(new Date())).set(OrderInfo::getStatus, "3").eq(OrderInfo::getId, orderId)));
+    }
+
+    /**
      * 更新订单维修步骤
      *
      * @param orderInfo 订单信息

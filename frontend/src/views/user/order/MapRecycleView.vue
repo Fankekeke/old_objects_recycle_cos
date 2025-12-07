@@ -508,22 +508,22 @@
                   <a-row :gutter="16">
                     <a-col :span="12">
                       <a-form-item label="物流公司">
-                        <a-input v-decorator="['company', { rules: [{ required: true, message: '请输入物流公司名称' }] }]" placeholder="请输入物流公司名称" />
+                        <a-input :disabled="orderData.status == 1" v-decorator="['company', { rules: [{ required: true, message: '请输入物流公司名称' }] }]" placeholder="请输入物流公司名称" />
                       </a-form-item>
                     </a-col>
                     <a-col :span="12">
                       <a-form-item label="物流单号">
-                        <a-input v-decorator="['trackingNumber', { rules: [{ required: true, message: '请输入物流单号' }] }]" placeholder="请输入物流单号" />
+                        <a-input :disabled="orderData.status == 1" v-decorator="['trackingNumber', { rules: [{ required: true, message: '请输入物流单号' }] }]" placeholder="请输入物流单号" />
                       </a-form-item>
                     </a-col>
                     <a-col :span="24">
                       <a-form-item label="备注信息">
-                        <a-textarea v-decorator="['remark']" placeholder="请输入备注信息" :rows="3" />
+                        <a-textarea :disabled="orderData.status == 1" v-decorator="['remark']" placeholder="请输入备注信息" :rows="3" />
                       </a-form-item>
                     </a-col>
                   </a-row>
                   <a-form-item>
-                    <a-button type="primary" @click="submitLogisticsInfo">提交物流信息</a-button>
+                    <a-button type="primary" :disabled="orderData.status == 1" @click="submitLogisticsInfo">提交物流信息</a-button>
                   </a-form-item>
                 </a-form>
               </div>
@@ -542,6 +542,26 @@
                   <p style="font-size: 13px; color: #8c8c8c;">{{ step.description }}</p>
                 </a-timeline-item>
               </a-timeline>
+            </a-col>
+            <a-col :span="24"  v-if="(orderData.orderMethod == 2 && orderData.deliveryDate != null && orderData.logisticsInfo != null) || orderData.orderMethod == 1 && orderData.status == 2" style="margin-top: 15px;background: #fff;padding: 20px" >
+              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                <span v-if="orderData.status == 3">收货订单完成</span>
+                <span v-if="orderData.status == 2">等待订单收货</span>
+              </h3>
+              <a-result
+                v-if="orderData.status == 3"
+                status="success"
+                :title="orderData.orderName"
+                sub-title="订单已完成，感谢您选择我们的服务。如在使用过程中出现任何问题，请通过在线沟通联系客服或拨打售后服务热线。"
+              >
+              </a-result>
+              <a-result
+                v-if="orderData.status == 2"
+                status="success"
+                :title="orderData.orderName"
+                sub-title="请等待订单收货，感谢您选择我们的服务。如在使用过程中出现任何问题，请通过在线沟通联系客服或拨打售后服务热线。"
+              >
+              </a-result>
             </a-col>
           </a-row>
         </a-col>
@@ -840,10 +860,24 @@ export default {
         }
         setTimeout(() => {
           baiduMap.initMap('areas')
-          this.getLocal()
-          this.navigation(this.startAddressInfo, this.endAddressInfo)
+          if (this.startAddressInfo != null) {
+            this.local(this.startAddressInfo)
+          }
+          if (this.endAddressInfo != null) {
+            this.local(this.endAddressInfo)
+          }
         }, 200)
       })
+    },
+    local (merchantData) {
+      baiduMap.clearOverlays()
+      baiduMap.rMap().enableScrollWheelZoom(true)
+      // eslint-disable-next-line no-undef
+      let point = new BMap.Point(merchantData.longitude, merchantData.latitude)
+      baiduMap.pointAdd(point)
+      baiduMap.findPoint(point, 16)
+      // let driving = new BMap.DrivingRoute(baiduMap.rMap(), {renderOptions:{map: baiduMap.rMap(), autoViewport: true}});
+      // driving.search(new BMap.Point(this.nowPoint.lng,this.nowPoint.lat), new BMap.Point(scenic.point.split(",")[0],scenic.point.split(",")[1]));
     },
     navigation (address, merchant) {
       baiduMap.clearOverlays()

@@ -58,6 +58,7 @@ public class PayController {
         orderInfo.setDiscountId(discountId);
         orderInfo.setAfterOrderPrice(new BigDecimal(totalAmount));
         orderInfo.setIntegral(orderInfo.getAfterOrderPrice());
+        orderInfoService.updateById(orderInfo);
         AlipayBean alipayBean = new AlipayBean();
         alipayBean.setOut_trade_no(outTradeNo);
         alipayBean.setSubject(subject);

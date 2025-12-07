@@ -10,8 +10,7 @@
       <a-row :gutter="20">
         <a-col :span="24">
           <a-form-item label='报价金额'>
-            <a-input-number              style="width: 100%"
-                                         v-decorator="[
+            <a-input-number :disabled="exchangeData != null && exchangeData.status != 0" style="width: 100%" v-decorator="[
                 'price',
                 { rules: [{ required: true, message: '请输入报价金额!' }] }
               ]"
@@ -23,6 +22,7 @@
         <a-col :span="24">
           <a-form-item label='报价内容'>
             <a-textarea
+              :disabled="exchangeData != null && exchangeData.status != 0"
               :rows="4"
               v-decorator="[
                 'content',
@@ -30,6 +30,10 @@
               ]"
               placeholder="请输入报价内容"/>
           </a-form-item>
+        </a-col>
+        <a-col :span="24" v-if="exchangeData != null && exchangeData.status != 0">
+          <a-result title="此订单报价已选定，无法修改报价信息">
+          </a-result>
         </a-col>
       </a-row>
     </a-form>

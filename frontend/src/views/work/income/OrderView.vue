@@ -11,9 +11,6 @@
         <a-col :span="6"><b>订单收益：</b>
           {{ incomeInfo.income }} 元
         </a-col>
-        <a-col :span="6"><b>配送费用：</b>
-          {{ incomeInfo.deliveryPrice ? incomeInfo.deliveryPrice + '元' : '- -' }}
-        </a-col>
         <a-col :span="6"><b>总收益：</b>
           {{ incomeInfo.totalPrice ? incomeInfo.totalPrice + '元' : '- -' }}
         </a-col>
@@ -63,12 +60,6 @@
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="6"><b>付款时间：</b>
           {{ orderInfo.payDate }}
-        </a-col>
-        <a-col :span="6"><b>公里数：</b>
-          {{ orderInfo.kilometre ? orderInfo.kilometre : '- -' }}KM
-        </a-col>
-        <a-col :span="6"><b>配送价格：</b>
-          {{ orderInfo.distributionPrice ? orderInfo.distributionPrice : '- -' }}元
         </a-col>
         <a-col :span="6"><b>折扣后价格：</b>
           {{ orderInfo.afterOrderPrice ? orderInfo.afterOrderPrice : '- -' }}元

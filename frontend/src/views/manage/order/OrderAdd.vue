@@ -45,12 +45,6 @@
           </a-row>
           <br/>
           <a-row style="padding-left: 24px;padding-right: 24px;" v-if="orderInfo.type === '1'">
-            <a-col :span="6"><b>公里数：</b>
-              {{ orderInfo.kilometre }}公里
-            </a-col>
-            <a-col :span="6"><b>配送价格：</b>
-              {{ orderInfo.distributionPrice ? orderInfo.distributionPrice + '元' : '- -' }}
-            </a-col>
             <a-col :span="6"><b>订单价格：</b>
               {{ orderInfo.orderPrice ? orderInfo.orderPrice + '元' : '- -' }}
             </a-col>

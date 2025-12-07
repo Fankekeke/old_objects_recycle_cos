@@ -186,17 +186,6 @@ export default {
           </a-popover>
         }
       }, {
-        title: '获得积分',
-        dataIndex: 'integral',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        },
-        ellipsis: true
-      }, {
         title: '评价时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {

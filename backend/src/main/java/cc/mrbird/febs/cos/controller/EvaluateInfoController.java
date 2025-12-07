@@ -3,8 +3,10 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.EvaluateInfo;
+import cc.mrbird.febs.cos.entity.OrderInfo;
 import cc.mrbird.febs.cos.entity.StaffInfo;
 import cc.mrbird.febs.cos.service.IEvaluateInfoService;
+import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
@@ -30,6 +32,8 @@ public class EvaluateInfoController {
     private final IEvaluateInfoService evaluateInfoService;
 
     private final IStaffInfoService staffInfoService;
+
+    private final IOrderInfoService orderInfoService;
 
     /**
      * 分页获取订单评价信息
@@ -73,7 +77,8 @@ public class EvaluateInfoController {
     @PostMapping
     public R save(EvaluateInfo evaluateInfo) {
         evaluateInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        StaffInfo staffInfo = staffInfoService.getById(evaluateInfo.getStaffId());
+        OrderInfo orderInfo = orderInfoService.getById(evaluateInfo.getOrderId());
+        StaffInfo staffInfo = staffInfoService.getById(orderInfo.getStaffIds());
         List<EvaluateInfo> evaluateInfoList = evaluateInfoService.list(Wrappers.<EvaluateInfo>lambdaQuery().eq(EvaluateInfo::getStaffId, staffInfo.getId()));
         if (CollectionUtil.isEmpty(evaluateInfoList)) {
             staffInfo.setScore(new BigDecimal("3.5"));

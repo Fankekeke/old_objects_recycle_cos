@@ -9,31 +9,38 @@
     :getContainer="false"
   >
     <div style="width: 100%">
-      <a-icon type="arrow-left" style="position: absolute;z-index: 999;color: red;font-size: 20px;margin: 15px" @click="home"/>
+      <a-icon type="arrow-left" style="position: absolute;z-index: 999;color: red;font-size: 20px;margin: 15px"
+              @click="home"/>
       <a-row style="height:100vh;font-family: SimHei">
         <a-col :span="9" style="height: 100%;box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);color:#fff">
           <div>
             <div class="scenicInfo" style="height: 100vh; overflow-y: auto;overflow-x: hidden">
               <div v-if="orderInfo != null">
                 <a-carousel autoplay style="height: 300px;" v-if="orderInfo.images !== null && orderInfo.images !== ''">
-                  <div style="width: 100%;height: 300px" v-for="(item, index) in orderInfo.images.split(',')" :key="index">
+                  <div style="width: 100%;height: 300px" v-for="(item, index) in orderInfo.images.split(',')"
+                       :key="index">
                     <img :src="'http://127.0.0.1:9527/imagesWeb/' + item" style="width: 100%;height: 100%">
                   </div>
                 </a-carousel>
                 <a-card :title="orderInfo.orderName" :bordered="false">
                   <div style="text-align: center;margin-top: 20px;font-family: SimHei;">
                     <a-icon type="smile" theme="twoTone" style="font-size: 80px"/>
-                    <p v-if="orderInfo.status == 0" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">等待报价中！</p>
-                    <p v-if="orderInfo.status == 1" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">已确认，等待订单支付！</p>
-                    <p v-if="orderInfo.status == 2" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">维修回收中！</p>
-                    <p v-if="orderInfo.status == 3" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">订单已完成！</p>
+                    <p v-if="orderInfo.status == 0" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      等待报价中！</p>
+                    <p v-if="orderInfo.status == 1" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      已确认，等待订单支付！</p>
+                    <p v-if="orderInfo.status == 2" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      维修回收中！</p>
+                    <p v-if="orderInfo.status == 3" style="font-size: 20px;margin-top: 15px;margin-bottom: 15px">
+                      订单已完成！</p>
                   </div>
-                  <div style="padding-left: 24px;padding-right: 24px;margin-bottom: 50px;margin-top: 50px" v-if="orderInfo != null">
+                  <div style="padding-left: 24px;padding-right: 24px;margin-bottom: 50px;margin-top: 50px"
+                       v-if="orderInfo != null">
                     <a-steps :current="orderInfo.status" progress-dot size="small">
-                      <a-step title="等待报价" />
-                      <a-step title="未支付" />
-                      <a-step title="维修回收中" />
-                      <a-step title="已完成" />
+                      <a-step title="等待报价"/>
+                      <a-step title="未支付"/>
+                      <a-step title="维修回收中"/>
+                      <a-step title="已完成"/>
                     </a-steps>
                   </div>
                   <div v-if="orderData.status == 2 || orderData.status == 3">
@@ -45,7 +52,8 @@
               <div style="font-size: 12px;font-family: SimHei;color: #404040;margin-top: 15px">
                 <div style="font-size: 12px;font-family: SimHei" v-if="userInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">用户信息</span>
+                    </a-col>
                     <a-col :span="8"><b>用户编号：</b>
                       {{ userInfo.code }}
                     </a-col>
@@ -67,7 +75,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="orderInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单信息</span>
+                    </a-col>
                     <a-col :span="8"><b>订单编号：</b>
                       {{ orderInfo.code }}
                     </a-col>
@@ -131,21 +140,24 @@
                 <br/>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件描述</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">物件描述</span></a-col>
                   <a-col :span="24">
                     {{ orderData.content ? orderData.content : '- -' }}
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件瑕疵</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">物件瑕疵</span></a-col>
                   <a-col :span="24">
                     {{ orderData.flawContent ? orderData.flawContent : '- -' }}
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件图册</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">物件图册</span></a-col>
                   <a-col :span="24">
                     <a-upload
                       name="avatar"
@@ -157,13 +169,14 @@
                     >
                     </a-upload>
                     <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                      <img alt="example" style="width: 100%" :src="previewImage" />
+                      <img alt="example" style="width: 100%" :src="previewImage"/>
                     </a-modal>
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">瑕疵图册</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">瑕疵图册</span></a-col>
                   <a-col :span="24">
                     <a-upload
                       name="avatar"
@@ -175,13 +188,14 @@
                     >
                     </a-upload>
                     <a-modal :visible="previewVisibleFlaw" :footer="null" @cancel="handleCancelFlaw">
-                      <img alt="example" style="width: 100%" :src="previewImageFlaw" />
+                      <img alt="example" style="width: 100%" :src="previewImageFlaw"/>
                     </a-modal>
                   </a-col>
                 </a-row>
                 <br/>
                 <a-row style="padding-left: 24px;padding-right: 24px;" v-if="orderData && orderData.video != null">
-                  <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">视频</span></a-col>
+                  <a-col style="margin-bottom: 15px"><span
+                    style="font-size: 15px;font-weight: 650;color: #000c17">视频</span></a-col>
                   <a-col :span="24">
                     <video width="100%" height="100%" controls>
                       <source :src="'http://127.0.0.1:9527/imagesWeb/' + orderData.video" type="video/mp4">
@@ -192,7 +206,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="startAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件地址</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">物件地址</span>
+                    </a-col>
                     <a-col :span="24"><b>详细地址：</b>
                       {{ startAddressInfo.address }}
                     </a-col>
@@ -210,7 +225,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="endAddressInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送寄地址</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">送寄地址</span>
+                    </a-col>
                     <a-col :span="24"><b>详细地址：</b>
                       {{ endAddressInfo.address }}
                     </a-col>
@@ -228,7 +244,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="discountInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">优惠信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">优惠信息</span>
+                    </a-col>
                     <a-col :span="8"><b>优惠券编号：</b>
                       {{ discountInfo.code }}
                     </a-col>
@@ -268,7 +285,8 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">技师信息</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">技师信息</span>
+                    </a-col>
                     <a-col :span="8"><b>技师姓名：</b>
                       {{ staffInfo.name }}
                     </a-col>
@@ -285,14 +303,15 @@
                 <br/>
                 <div style="font-size: 13px;font-family: SimHei" v-if="evaluateInfo !== null">
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单评价</span></a-col>
+                    <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">订单评价</span>
+                    </a-col>
                     <a-col :span="8"><b>评价分数：</b>
-                      <a-rate :default-value="evaluateInfo.score" disabled />
+                      <a-rate :default-value="evaluateInfo.score" disabled/>
                     </a-col>
                     <a-col :span="8"><b>评价内容：</b>
                       <a-tooltip>
                         <template slot="title">
-                          {{ evaluateInfo.content}}
+                          {{ evaluateInfo.content }}
                         </template>
                         {{ evaluateInfo.content.slice(0, 8) }} ...
                       </a-tooltip>
@@ -307,102 +326,161 @@
             </div>
           </div>
         </a-col>
-        <a-col :span="15" style="height: 100%;background: #f8f8f8;height: 100vh; overflow-y: auto;overflow-x: hidden">
+        <a-col :span="15" style="height: 100%;background: #f8f8f8">
           <a-row :gutter="15" style="padding: 20px" v-if="orderData != null">
-            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
-              <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-                <a-button type="primary" icon="message" @click="openChat">
-                  在线沟通
-                </a-button>
-              </div>
-            </a-col>
-            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px">
-              <div style="font-size: 13px;font-family: SimHei">
-                <a-row style="padding-left: 24px;padding-right: 24px;">
-                  <a-col style="margin-bottom: 15px">
-                    <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
-                      报价信息
-                    </h3>
-                  </a-col>
-                  <a-col :span="24">
-                    <a-form :form="quoteForm" layout="vertical">
-                      <a-row :gutter="16">
-                        <a-col :span="8" v-if="orderData.orderMethod == 2">
-                          <a-form-item label="选择地址">
-                            <a-select
-                              :disabled="orderData && orderData.status > 0"
-                              v-decorator="['addressId', { rules: [{ required: true, message: '请选择地址' }] }]"
-                              placeholder="请选择地址"
-                            >
-                              <a-select-option
-                                v-for="address in addressList"
-                                :key="address.id"
-                                :value="address.id"
-                              >
-                                {{ address.address }}
-                              </a-select-option>
-                            </a-select>
-                          </a-form-item>
-                        </a-col>
-                        <a-col :span="8">
-                          <a-form-item label="报价价格(元)">
-                            <a-input-number
-                              style="width: 100%"
-                              :disabled="orderData && orderData.status > 0"
-                              v-decorator="['price', { rules: [{ required: true, message: '请输入报价价格' }] }]"
-                              placeholder="请输入报价价格"
-                              :min="0"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col :span="8">
-                          <a-form-item label="工时(小时)">
-                            <a-input-number
-                              style="width: 100%"
-                              :disabled="orderData && orderData.status > 0"
-                              v-decorator="['workHour', { rules: [{ required: true, message: '请输入工时' }] }]"
-                              placeholder="请输入工时"
-                              :min="0"
-                            />
-                          </a-form-item>
-                        </a-col>
-                      </a-row>
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px" v-if="orderData.status == 0">
+              <div v-if="quotationList && quotationList.length > 0">
+                <h3
+                  style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  报价信息</h3>
+                <a-list :data-source="quotationList" item-layout="vertical">
+                  <a-list-item slot="renderItem" slot-scope="item"
+                               style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;">
+                    <a-card style="width: 100%; border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                       <a-row :gutter="16">
                         <a-col :span="24">
-                          <a-form-item label="报价描述">
-                            <a-textarea
-                              :disabled="orderData && orderData.status > 0"
-                              v-decorator="['content', { rules: [{ required: true, message: '请输入报价描述' }] }]"
-                              placeholder="请输入报价描述"
-                              :rows="6"
+                          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <a-avatar
+                              :src="'http://127.0.0.1:9527/imagesWeb/' + (item.staffImages ? item.staffImages.split(',')[0] : '')"
+                              size="large" style="margin-right: 12px;"
                             />
-                          </a-form-item>
+                            <div>
+                              <div style="font-size: 16px; font-weight: 600; color: #000c17;">{{ item.staffName }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c;">
+                                <a-rate :default-value="item.staffScore" disabled style="font-size: 12px;"/>
+                              </div>
+                            </div>
+                            <div style="margin-left: auto; text-align: right;">
+                              <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">¥{{ item.price }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">报价时间：{{
+                                  item.createDate
+                                }}
+                              </div>
+                            </div>
+                          </div>
                         </a-col>
                       </a-row>
-                      <a-row :gutter="16" v-if="orderData.status == 0">
-                        <a-col :span="24" style="text-align: right">
-                          <a-button type="primary" @click="submitQuote">提交报价</a-button>
+
+                      <a-row :gutter="16" style="margin-top: 15px;">
+                        <a-col :span="16">
+                          <div style="display: flex; align-items: center;">
+                            <a-icon type="phone" style="color: #1890ff; margin-right: 8px;"/>
+                            <span>{{ item.staffPhone }}</span>
+                          </div>
+                        </a-col>
+                        <a-col :span="8">
+                          <div style="display: flex; justify-content: flex-end;">
+                            <a-tag color="blue">技师报价</a-tag>
+                          </div>
                         </a-col>
                       </a-row>
-                    </a-form>
+
+                      <a-row style="margin-top: 15px;">
+                        <a-col :span="24">
+                          <div style="font-size: 14px; color: #595959;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">报价说明：</div>
+                            <div style="background: #fafafa; padding: 12px;border-left: 3px solid #1890ff;">
+                              {{ item.content }}
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                    </a-card>
+                  </a-list-item>
+                </a-list>
+              </div>
+              <div v-else>
+                <a-empty description="暂无报价信息" style="padding: 40px 0;">
+                  <div slot="image" style="fontSize: 48px; color: #bfbfbf;"></div>
+                </a-empty>
+              </div>
+            </a-col>
+            <a-col :span="24" style="background: #fff;padding: 20px" v-if="orderData.status >= 1">
+              <div v-if="quotationList && quotationList.length > 0">
+                <h3
+                  style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  报价信息</h3>
+                <a-list :data-source="quotationList" item-layout="vertical">
+                  <a-list-item slot="renderItem" slot-scope="item"
+                               style="padding: 20px 0; border-bottom: 1px dashed #e8e8e8;"
+                               v-if="item.id == orderInfo.quotationId">
+                    <a-card style="width: 100%; border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                      <a-row :gutter="16">
+                        <a-col :span="24">
+                          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <a-avatar
+                              :src="'http://127.0.0.1:9527/imagesWeb/' + (item.staffImages ? item.staffImages.split(',')[0] : '')"
+                              size="large" style="margin-right: 12px;"
+                            />
+                            <div>
+                              <div style="font-size: 16px; font-weight: 600; color: #000c17;">{{ item.staffName }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c;">
+                                <a-rate :default-value="item.staffScore" disabled style="font-size: 12px;"/>
+                              </div>
+                            </div>
+                            <div style="margin-left: auto; text-align: right;">
+                              <div style="font-size: 20px; font-weight: 700; color: #ff4d4f;">¥{{ item.price }}</div>
+                              <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">报价时间：{{
+                                  item.createDate
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <a-row :gutter="16" style="margin-top: 15px;">
+                        <a-col :span="16">
+                          <div style="display: flex; align-items: center;">
+                            <a-icon type="phone" style="color: #1890ff; margin-right: 8px;"/>
+                            <span>{{ item.staffPhone }}</span>
+                          </div>
+                        </a-col>
+                        <a-col :span="8">
+                          <div style="display: flex; justify-content: flex-end;">
+                            <a-tag color="blue">技师报价</a-tag>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                      <a-row style="margin-top: 15px;">
+                        <a-col :span="24">
+                          <div style="font-size: 14px; color: #595959;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">报价说明：</div>
+                            <div style="background: #fafafa; padding: 12px;border-left: 3px solid #1890ff;">
+                              {{ item.content }}
+                            </div>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                    </a-card>
+                  </a-list-item>
+                </a-list>
+              </div>
+              <div v-if="endAddressInfo != null && orderData.deliveryDate == null" style="margin-top: 15px">
+                <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                  送寄地址
+                </h3>
+                <a-row style="padding-left: 24px;padding-right: 24px;">
+                  <a-col :span="24">
+                    <b>详细地址：</b>
+                    {{ endAddressInfo.address }}
+                  </a-col>
+                  <br/>
+                  <br/>
+                  <a-col :span="8"><b>联系人：</b>
+                    {{ endAddressInfo.contactPerson ? endAddressInfo.contactPerson : '- -' }}
+                  </a-col>
+                  <a-col :span="8"><b>联系方式：</b>
+                    {{ endAddressInfo.contactMethod ? endAddressInfo.contactMethod : '- -' }}
                   </a-col>
                 </a-row>
+                <br/>
               </div>
             </a-col>
-            <a-col :span="24" v-if="orderData.status == 2 && orderData.orderMethod == 2 && orderData.deliveryDate == null && orderData.logisticsInfo != null" style="margin-top: 15px;background: #fff;padding: 20px">
-              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
-                物流信息
-              </h3>
-              <div v-if="orderData.logisticsInfo" style="padding: 15px; background: #f5f5f5; border-radius: 4px; margin-bottom: 20px;">
-                <a-row :gutter="16">
-                  <a-col :span="8"><b>物流公司：</b>{{ JSON.parse(orderData.logisticsInfo).company }}</a-col>
-                  <a-col :span="8"><b>物流单号：</b>{{ JSON.parse(orderData.logisticsInfo).trackingNumber }}</a-col>
-                  <a-col :span="8"><b>备注信息：</b>{{ JSON.parse(orderData.logisticsInfo).remark }}</a-col>
-                </a-row>
-              </div>
-              <a-button type="primary" @click="confirmReceipt">确认收货</a-button>
-            </a-col>
-            <a-col :span="24"  v-if="(orderData.orderMethod == 2 && orderData.deliveryDate != null && orderData.logisticsInfo != null) || repairSteps.length > 0 || orderData.orderMethod == 1 && orderData.status == 2 && repairSteps.length == 0" style="margin-top: 15px;background: #fff;padding: 20px" >
+            <a-col :span="24" style="margin-top: 15px;background: #fff;padding: 20px" v-if="repairSteps.length !== 0">
               <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
                 修复流程
               </h3>
@@ -416,43 +494,26 @@
                   <p style="font-size: 13px; color: #8c8c8c;">{{ step.description }}</p>
                 </a-timeline-item>
               </a-timeline>
-              <div style="margin-top: 20px; text-align: right;" v-if="orderData.finishDate == null">
-                <a-button type="primary" v-if="repairSteps.length > 0" @click="completeRepair">
-                  维修完成
-                </a-button>
-                <a-button type="primary" icon="plus" @click="showAddStepForm = true">
-                  添加步骤
-                </a-button>
-              </div>
-
-              <a-modal
-                title="添加维修步骤"
-                :visible="showAddStepForm"
-                @ok="addRepairStep"
-                @cancel="showAddStepForm = false"
-                width="600px">
-                <a-form :form="stepForm" layout="vertical">
-                  <a-form-item label="步骤标题">
-                    <a-input
-                      v-decorator="['title', { rules: [{ required: true, message: '请输入步骤标题' }] }]"
-                      placeholder="请输入步骤标题" />
-                  </a-form-item>
-                  <a-form-item label="步骤描述">
-                    <a-textarea
-                      v-decorator="['description', { rules: [{ required: true, message: '请输入步骤描述' }] }]"
-                      placeholder="请输入步骤描述"
-                      :rows="3" />
-                  </a-form-item>
-                  <a-form-item label="状态">
-                    <a-select
-                      v-decorator="['status', { rules: [{ required: true, message: '请选择状态' }], initialValue: 'pending' }]">
-                      <a-select-option value="completed">已完成</a-select-option>
-                      <a-select-option value="in-progress">进行中</a-select-option>
-                      <a-select-option value="pending">待处理</a-select-option>
-                    </a-select>
-                  </a-form-item>
-                </a-form>
-              </a-modal>
+            </a-col>
+            <a-col :span="24"  v-if="(orderData.orderMethod == 2 && orderData.deliveryDate != null && orderData.logisticsInfo != null) || orderData.orderMethod == 1 && orderData.status == 2" style="margin-top: 15px;background: #fff;padding: 20px" >
+              <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
+                <span v-if="orderData.status == 3">收货订单完成</span>
+                <span v-if="orderData.status == 2">等待订单收货</span>
+              </h3>
+              <a-result
+                v-if="orderData.status == 3"
+                status="success"
+                :title="orderData.orderName"
+                sub-title="订单已完成，感谢您选择我们的服务。如在使用过程中出现任何问题，请通过在线沟通联系客服或拨打售后服务热线。"
+              >
+              </a-result>
+              <a-result
+                v-if="orderData.status == 2"
+                status="success"
+                :title="orderData.orderName"
+                sub-title="请等待订单收货，感谢您选择我们的服务。如在使用过程中出现任何问题，请通过在线沟通联系客服或拨打售后服务热线。"
+              >
+              </a-result>
             </a-col>
           </a-row>
         </a-col>
@@ -464,6 +525,7 @@
 <script>
 import baiduMap from '@/utils/map/baiduMap'
 import {mapState} from 'vuex'
+
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -472,6 +534,7 @@ function getBase64 (file) {
     reader.onerror = error => reject(error)
   })
 }
+
 export default {
   name: 'Map',
   props: {
@@ -485,25 +548,8 @@ export default {
   },
   data () {
     return {
-      repairSteps1: [
-        {
-          id: 1,
-          time: '2025-11-20 09:30',
-          title: '订单确认',
-          description: '技师已确认订单，准备开始维修工作',
-          status: 'completed' // completed, in-progress, pending
-        },
-        {
-          id: 2,
-          time: '202511-20 14:15',
-          title: '检测评估',
-          description: '完成物品检测，制定维修方案',
-          status: 'completed'
-        }
-      ],
       repairSteps: [],
-      showAddStepForm: false,
-      stepForm: this.$form.createForm(this),
+      logisticsForm: this.$form.createForm(this),
       rowId: null,
       quoteForm: this.$form.createForm(this),
       addressList: [],
@@ -538,6 +584,7 @@ export default {
       echartsShow: false,
       getShop: null,
       putShop: null,
+      quotationList: [],
       series: [{
         name: '得分',
         data: []
@@ -565,27 +612,10 @@ export default {
     'orderShow': function (value) {
       if (value) {
         this.dataInit(this.orderData.id)
-        this.queryStaffAddress()
       }
     }
   },
   methods: {
-    completeRepair () {
-      this.$confirm({
-        title: '确认维修完成',
-        content: '确定要标记此维修订单为完成状态吗？',
-        okText: '确认',
-        cancelText: '取消',
-        onOk: () => {
-          this.$get(`/cos/order-info/complete/${this.orderInfo.id}`).then((r) => {
-            this.$message.success('维修已完成')
-            this.$emit('close')
-          }).catch((e) => {
-            this.$message.error('操作失败')
-          })
-        }
-      })
-    },
     getStepColor (status) {
       switch (status) {
         case 'completed':
@@ -604,71 +634,54 @@ export default {
           let repairStep = JSON.parse(r.data.msg)
           this.repairSteps = repairStep
         } else {
-          this.repairSteps = []
+          let repairStep = []
         }
-        console.log(this.repairSteps)
       })
     },
-    addRepairStep () {
-      this.stepForm.validateFields((err, values) => {
+    submitLogisticsInfo () {
+      this.logisticsForm.validateFields((err, values) => {
         if (!err) {
-          const newStep = {
-            id: this.repairSteps.length + 1,
-            time: this.formatDate(new Date()),
-            title: values.title,
-            description: values.description,
-            status: values.status
+          // 构造物流信息对象
+          let logistics = {
+            company: values.company,
+            trackingNumber: values.trackingNumber,
+            remark: values.remark
           }
-          this.repairSteps.push(newStep)
-
-          this.$put(`/cos/order-info/setRepairStep`, {
+          const logisticsData = {
             id: this.orderInfo.id,
-            fixProcessInfo: JSON.stringify(this.repairSteps)
-          }).then((r) => {
-            this.queryRepairStep(this.orderInfo.id)
-            this.stepForm.resetFields()
-            this.showAddStepForm = false
-            this.$message.success('步骤添加成功')
-          })
-        }
-      })
-    },
-
-    formatDate (date) {
-      const year = date.getFullYear()
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const day = String(date.getDate()).padStart(2, '0')
-      const hours = String(date.getHours()).padStart(2, '0')
-      const minutes = String(date.getMinutes()).padStart(2, '0')
-      return `${year}-${month}-${day} ${hours}:${minutes}`
-    },
-    confirmReceipt () {
-      this.$confirm({
-        title: '确认收货',
-        content: '确定要确认收货吗？此操作不可撤销。',
-        okText: '确认',
-        cancelText: '取消',
-        onOk: () => {
-          this.$get(`/cos/order-info/confirmReceipt/${this.orderInfo.id}`).then(response => {
-            this.$message.success('收货确认成功')
-            this.$emit('close')
+            logisticsInfo: JSON.stringify(logistics)
+          }
+          // 发送请求更新订单的物流信息
+          this.$put(`/cos/order-info/updateLogisticsInfo`, logisticsData).then(response => {
+            this.$message.success('物流信息提交成功')
+            // 通知父组件更新订单状态
+            this.$emit('orderChange')
           }).catch(error => {
-            this.$message.error('收货确认失败: ' + (error.message || '系统错误'))
+            this.$message.error('物流信息提交失败: ' + (error.message || '系统错误'))
           })
         }
       })
     },
-    openChat () {
-      this.$post('/cos/chat-record/defaultStaffChat', {
-        staffId: this.currentUser.userId,
-        userId: this.orderInfo.userId,
-        senderType: 1,
+    goToChat (schedule) {
+      this.$post('/cos/chat-record/defaultChat', {
+        staffId: schedule.staffId,
+        userId: this.currentUser.userId,
+        senderType: 0,
         content: '你好'
       }).then((r) => {
         // 跳转到聊天页面，并传递默认消息
         this.$router.push({
-          path: '/work/chat'
+          path: '/user/chat'
         })
+      })
+    },
+    confirmQuotation (quotation) {
+      this.$get(`/cos/order-info/checkQuotation`, {
+        quotationId: quotation.id
+      }).then(response => {
+        this.$message.success('报价确认成功')
+        // 更新订单状态
+        this.$emit('orderChange')
       })
     },
     submitQuote () {
@@ -703,11 +716,10 @@ export default {
       })
     },
     queryQuotationByOrder () {
-      this.$get('/cos/order-quotation/queryQuotationByStaff', {
-        orderId: this.orderInfo.id,
-        staffId: this.currentUser.userId
+      this.$get('/cos/order-quotation/queryQuotationByOrder', {
+        orderId: this.orderInfo.id
       }).then(response => {
-        this.setFormValues(response.data.data)
+        this.quotationList = response.data.data
       })
     },
     setFormValues ({...quotation}) {
@@ -755,7 +767,7 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-    picHandleChange ({ fileList }) {
+    picHandleChange ({fileList}) {
       this.fileList = fileList
     },
 
@@ -769,7 +781,7 @@ export default {
       this.previewImageFlaw = file.url || file.preview
       this.previewVisibleFlaw = true
     },
-    picHandleChangeFlaw ({ fileList }) {
+    picHandleChangeFlaw ({fileList}) {
       this.flawFileList = fileList
     },
     dataInit (orderId) {
@@ -785,6 +797,19 @@ export default {
         this.flawImagesInit(this.orderInfo.flawImages)
         this.queryQuotationByOrder()
         this.queryRepairStep(orderId)
+        if (this.endAddressInfo != null && this.orderData.logisticsInfo != null) {
+          // 设置表单值
+          setTimeout(() => {
+            this.$nextTick(() => {
+              let logisticsInfo = JSON.parse(this.orderData.logisticsInfo)
+              this.logisticsForm.setFieldsValue({
+                company: logisticsInfo.company || '',
+                trackingNumber: logisticsInfo.trackingNumber || '',
+                remark: logisticsInfo.remark || ''
+              })
+            })
+          }, 200)
+        }
         setTimeout(() => {
           baiduMap.initMap('areas')
           if (this.startAddressInfo != null) {
@@ -793,18 +818,10 @@ export default {
           if (this.endAddressInfo != null) {
             this.local(this.endAddressInfo)
           }
+          // this.getLocal()
+          // this.navigation(this.startAddressInfo, this.endAddressInfo)
         }, 200)
       })
-    },
-    local (merchantData) {
-      baiduMap.clearOverlays()
-      baiduMap.rMap().enableScrollWheelZoom(true)
-      // eslint-disable-next-line no-undef
-      let point = new BMap.Point(merchantData.longitude, merchantData.latitude)
-      baiduMap.pointAdd(point)
-      baiduMap.findPoint(point, 16)
-      // let driving = new BMap.DrivingRoute(baiduMap.rMap(), {renderOptions:{map: baiduMap.rMap(), autoViewport: true}});
-      // driving.search(new BMap.Point(this.nowPoint.lng,this.nowPoint.lat), new BMap.Point(scenic.point.split(",")[0],scenic.point.split(",")[1]));
     },
     navigation (address, merchant) {
       baiduMap.clearOverlays()
@@ -874,6 +891,16 @@ export default {
       // eslint-disable-next-line no-undef
       driving.search(new BMap.Point(this.nowPoint.lng, this.nowPoint.lat), new BMap.Point(data.longitude, data.latitude))
     },
+    local (merchantData) {
+      baiduMap.clearOverlays()
+      baiduMap.rMap().enableScrollWheelZoom(true)
+      // eslint-disable-next-line no-undef
+      let point = new BMap.Point(merchantData.longitude, merchantData.latitude)
+      baiduMap.pointAdd(point)
+      baiduMap.findPoint(point, 16)
+      // let driving = new BMap.DrivingRoute(baiduMap.rMap(), {renderOptions:{map: baiduMap.rMap(), autoViewport: true}});
+      // driving.search(new BMap.Point(this.nowPoint.lng,this.nowPoint.lat), new BMap.Point(scenic.point.split(",")[0],scenic.point.split(",")[1]));
+    },
     getLocal () {
       // eslint-disable-next-line no-undef
       let geolocation = new BMap.Geolocation()
@@ -886,30 +913,35 @@ export default {
 </script>
 
 <style scoped>
-  >>> .ant-drawer-body {
-    padding: 0 !important;
-  }
-  >>> .ant-card-meta-title {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-card-meta-description {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-divider-with-text-left {
-    margin: 0;
-  }
+>>> .ant-drawer-body {
+  padding: 0 !important;
+}
 
-  >>> .ant-card-head-title {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-card-extra {
-    font-size: 13px;
-    font-family: SimHei;
-  }
-  >>> .ant-radio-button-wrapper {
-    border-radius: 0;
-  }
+>>> .ant-card-meta-title {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+>>> .ant-card-meta-description {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+>>> .ant-divider-with-text-left {
+  margin: 0;
+}
+
+>>> .ant-card-head-title {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+>>> .ant-card-extra {
+  font-size: 13px;
+  font-family: SimHei;
+}
+
+>>> .ant-radio-button-wrapper {
+  border-radius: 0;
+}
 </style>

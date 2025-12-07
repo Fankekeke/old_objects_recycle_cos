@@ -133,9 +133,6 @@
                     <div style="padding-left: 20px;margin-top: 5px;text-align: right;padding-right: 30px" v-if="orderAddInfo.isMember == 1"><span>用户折扣</span>
                       <span style="color: red">{{ orderAddInfo.discount }} 元</span>
                     </div>
-                    <div style="padding-left: 20px;margin-top: 5px;text-align: right;padding-right: 30px" v-if="orderAddInfo.addressId != null"><span>配送费用</span>
-                      {{ orderAddInfo.kilometre }} 千米  <span style="color: red">{{ orderAddInfo.distributionPrice }} 元</span>
-                    </div>
                     <div style="padding-left: 20px;margin-top: 5px;text-align: right;padding-right: 30px"><span>折后价格</span>
                       <span style="color: red">{{ orderAddInfo.afterOrderPrice }} 元</span>
                     </div>

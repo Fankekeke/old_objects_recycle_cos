@@ -39,7 +39,7 @@
     </div>
     <div>
       <div class="operator">
-<!--        <a-button type="primary" ghost @click="add">添加订单</a-button>-->
+        <!--        <a-button type="primary" ghost @click="add">添加订单</a-button>-->
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -63,10 +63,9 @@
           </template>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>
-<!--          <a-icon v-if="record.status == 2" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="orderComplete(record)" title="订单完成" style="margin-left: 15px"></a-icon>-->
-<!--          <a-icon v-if="record.taskShop == null && record.returnShop == null" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="orderAuditOpen(record)" title="修 改" style="margin-left: 15px"></a-icon>-->
-          <a-icon type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
+          <!--          <a-icon type="file-search" @click="orderViewOpen(record)" title="详 情"></a-icon>-->
+          <a-icon v-if="record.orderType == 1 && record.status != 1" type="cluster" @click="orderMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
+          <a-icon v-if="record.orderType == 2" type="cluster" @click="orderRecycleMapOpen(record)" title="地 图" style="margin-left: 15px"></a-icon>
         </template>
       </a-table>
     </div>
@@ -94,9 +93,16 @@
     </order-add>
     <MapView
       @close="handleorderMapViewClose"
+      @orderChange="handleorderChange"
       :orderShow="orderMapView.visiable"
       :orderData="orderMapView.data">
     </MapView>
+    <MapRecycleView
+      @close="handleorderRecycleMapViewClose"
+      @orderChange="handleorderRecycleChange"
+      :orderShow="orderRecycleMapView.visiable"
+      :orderData="orderRecycleMapView.data">
+    </MapRecycleView>
   </a-card>
 </template>
 
@@ -108,12 +114,13 @@ import OrderAdd from './OrderAdd'
 import OrderAudit from './OrderAudit'
 import OrderView from './OrderView'
 import OrderStatus from './OrderStatus.vue'
-import MapView from '../map/Map.vue'
+import MapView from './MapView.vue'
+import MapRecycleView from './MapRecycleView.vue'
 moment.locale('zh-cn')
 
 export default {
   name: 'order',
-  components: {OrderView, OrderAudit, RangeDate, OrderStatus, OrderAdd, MapView},
+  components: {OrderView, OrderAudit, RangeDate, OrderStatus, OrderAdd, MapView, MapRecycleView},
   data () {
     return {
       advanced: false,
@@ -124,6 +131,14 @@ export default {
         visiable: false
       },
       orderMapView: {
+        visiable: false,
+        data: null
+      },
+      orderRecycleMapView: {
+        visiable: false,
+        data: null
+      },
+      orderPayView: {
         visiable: false,
         data: null
       },
@@ -154,7 +169,11 @@ export default {
         visiable: false,
         data: null
       },
-      userList: []
+      userList: [],
+      orderEvaluateView: {
+        visiable: false,
+        data: null
+      }
     }
   },
   computed: {
@@ -224,13 +243,16 @@ export default {
           </a-popover>
         }
       }, {
-        title: '折后价格（元）',
-        dataIndex: 'afterOrderPrice',
+        title: '订单类型',
+        dataIndex: 'orderType',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '元'
-          } else {
-            return '- -'
+          switch (text) {
+            case '1':
+              return <a-tag>维修</a-tag>
+            case '2':
+              return <a-tag>回收</a-tag>
+            default:
+              return '- -'
           }
         },
         ellipsis: true
@@ -252,9 +274,8 @@ export default {
           }
         }
       }, {
-        title: '备注',
-        dataIndex: 'remark',
-        scopedSlots: {customRender: 'titleShow'},
+        title: '物件描述',
+        dataIndex: 'content',
         ellipsis: true
       }, {
         title: '下单时间',
@@ -278,6 +299,18 @@ export default {
     this.fetch()
   },
   methods: {
+    handleorderAddClose () {
+      this.orderEvaluateView.visiable = false
+    },
+    handleorderAddSuccess () {
+      this.orderEvaluateView.visiable = false
+      this.$message.success('新增评价成功')
+      this.search()
+    },
+    orderEvaluateOpen (row) {
+      this.orderEvaluateView.data = row
+      this.orderEvaluateView.visiable = true
+    },
     orderComplete (row) {
       this.$get(`/cos/order-info/auditOrderFinish`, {
         'orderCode': row.code,
@@ -293,6 +326,28 @@ export default {
     },
     handleorderMapViewClose () {
       this.orderMapView.visiable = false
+    },
+    orderRecycleMapOpen (row) {
+      this.orderRecycleMapView.data = row
+      this.orderRecycleMapView.visiable = true
+    },
+    handleorderRecycleMapViewClose () {
+      this.orderRecycleMapView.visiable = false
+    },
+    handleorderRecycleChange () {
+      this.orderRecycleMapView.visiable = false
+      this.search()
+    },
+    handleorderMapPayClose () {
+      this.orderPayView.visiable = false
+    },
+    handleorderMapPayOpen (row) {
+      this.orderPayView.data = row
+      this.orderPayView.visiable = true
+    },
+    handleorderChange () {
+      this.orderMapView.visiable = false
+      this.search()
     },
     orderStatusOpen (row) {
       this.orderStatusView.data = row
@@ -333,14 +388,6 @@ export default {
     },
     add () {
       this.orderAdd.visiable = true
-    },
-    handleorderAddClose () {
-      this.orderAdd.visiable = false
-    },
-    handleorderAddSuccess () {
-      this.orderAdd.visiable = false
-      this.$message.success('添加平台订单成功')
-      this.search()
     },
     edit (record) {
       this.$refs.orderEdit.setFormValues(record)

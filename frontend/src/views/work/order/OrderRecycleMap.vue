@@ -378,7 +378,7 @@
                 </a-row>
               </div>
             </a-col>
-            <a-col :span="24" v-if="orderData.status == 1 && orderData.orderMethod == 2 && orderData.deliveryDate == null && orderData.logisticsInfo != null" style="margin-top: 15px;background: #fff;padding: 20px">
+            <a-col :span="24" v-if="orderData.status == 2 && orderData.orderMethod == 2 && orderData.deliveryDate == null && orderData.logisticsInfo != null" style="margin-top: 15px;background: #fff;padding: 20px">
               <h3 style="font-size: 18px; font-weight: 650; color: #000c17; margin-bottom: 20px; border-left: 4px solid #1890ff; padding-left: 10px;">
                 物流信息
               </h3>
@@ -401,8 +401,8 @@
                 sub-title="订单已完成，感谢您选择我们的服务。如在使用过程中出现任何问题，请通过在线沟通联系客服或拨打售后服务热线。"
               >
                 <template #extra>
-                  <a-button key="console" type="primary" @click="completeRepair">
-                    确认维修完成
+                  <a-button key="console" type="primary" @click="completeRepair" v-if="orderData.status != 3">
+                    确认回收完成
                   </a-button>
                 </template>
               </a-result>
@@ -525,13 +525,13 @@ export default {
   methods: {
     completeRepair () {
       this.$confirm({
-        title: '确认维修完成',
-        content: '确定要标记此维修订单为完成状态吗？',
+        title: '确认回收完成',
+        content: '确定要标记此回收订单为完成状态吗？',
         okText: '确认',
         cancelText: '取消',
         onOk: () => {
-          this.$get(`/cos/order-info/complete/${this.orderInfo.id}`).then((r) => {
-            this.$message.success('维修已完成')
+          this.$get(`/cos/order-info/recycleComplete/${this.orderInfo.id}`).then((r) => {
+            this.$message.success('回收已完成')
             this.$emit('close')
           }).catch((e) => {
             this.$message.error('操作失败')
@@ -740,10 +740,24 @@ export default {
         this.queryRepairStep(orderId)
         setTimeout(() => {
           baiduMap.initMap('areas')
-          this.getLocal()
-          // this.navigation(this.startAddressInfo, this.endAddressInfo)
+          if (this.startAddressInfo != null) {
+            this.local(this.startAddressInfo)
+          }
+          if (this.endAddressInfo != null) {
+            this.local(this.endAddressInfo)
+          }
         }, 200)
       })
+    },
+    local (merchantData) {
+      baiduMap.clearOverlays()
+      baiduMap.rMap().enableScrollWheelZoom(true)
+      // eslint-disable-next-line no-undef
+      let point = new BMap.Point(merchantData.longitude, merchantData.latitude)
+      baiduMap.pointAdd(point)
+      baiduMap.findPoint(point, 16)
+      // let driving = new BMap.DrivingRoute(baiduMap.rMap(), {renderOptions:{map: baiduMap.rMap(), autoViewport: true}});
+      // driving.search(new BMap.Point(this.nowPoint.lng,this.nowPoint.lat), new BMap.Point(scenic.point.split(",")[0],scenic.point.split(",")[1]));
     },
     navigation (address, merchant) {
       baiduMap.clearOverlays()

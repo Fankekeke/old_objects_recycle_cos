@@ -48,12 +48,6 @@
         <a-col :span="6"><b>付款时间：</b>
           {{ orderInfo.payDate }}
         </a-col>
-        <a-col :span="6"><b>公里数：</b>
-          {{ orderInfo.kilometre ? orderInfo.kilometre : '- -' }}KM
-        </a-col>
-        <a-col :span="6"><b>配送价格：</b>
-          {{ orderInfo.distributionPrice ? orderInfo.distributionPrice : '- -' }}元
-        </a-col>
         <a-col :span="6"><b>折扣后价格：</b>
           {{ orderInfo.afterOrderPrice ? orderInfo.afterOrderPrice : '- -' }}元
         </a-col>

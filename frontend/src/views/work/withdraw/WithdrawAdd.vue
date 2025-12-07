@@ -21,7 +21,7 @@
         <a-col :span="12">
           <a-form-item label='提现金额' v-bind="formItemLayout">
             <a-input-number style="width: 100%" v-decorator="[
-            'unitPrice',
+            'withdrawPrice',
             { rules: [{ required: true, message: '请输入价格!' }] }
             ]" :min="0.1" :step="0.1" :max="accountPrice"/>
           </a-form-item>

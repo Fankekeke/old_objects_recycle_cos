@@ -257,9 +257,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         staffIncome.setCreateDate(DateUtil.formatDateTime(new Date()));
 
         // 订单价格
-        staffIncome.setIncome(NumberUtil.mul(new BigDecimal(30), 0.8));
-        staffIncome.setDeliveryPrice(NumberUtil.mul(order.getDistributionPrice(), 0.8));
-        staffIncome.setTotalPrice(NumberUtil.add(staffIncome.getIncome(), staffIncome.getDeliveryPrice()));
+        staffIncome.setIncome(order.getAfterOrderPrice());
+        staffIncome.setTotalPrice(order.getAfterOrderPrice());
         staffIncomeService.save(staffIncome);
 
         // 更新技师收益
@@ -549,7 +548,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 本月订单数量
         List<OrderInfo> orderMonthList = baseMapper.selectOrderByMonth(null);
         result.put("monthOrderNum", CollectionUtil.isEmpty(orderMonthList) ? 0 : orderMonthList.size());
-        BigDecimal orderPrice = orderMonthList.stream().map(OrderInfo::getAfterOrderPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal orderPrice = orderMonthList.stream().map(OrderInfo::getAfterOrderPrice).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
         // 获取本月收益
         result.put("monthOrderTotal", orderPrice);
 
@@ -557,7 +556,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<OrderInfo> orderYearList = baseMapper.selectOrderByYear(null);
         result.put("yearOrderNum", CollectionUtil.isEmpty(orderYearList) ? 0 : orderYearList.size());
         // 本年总收益
-        BigDecimal orderYearPrice = orderYearList.stream().map(OrderInfo::getAfterOrderPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal orderYearPrice = orderYearList.stream().map(OrderInfo::getAfterOrderPrice).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
         result.put("yearOrderTotal", orderYearPrice);
 
         // 近十天销售订单统计

@@ -199,28 +199,6 @@ export default {
         },
         ellipsis: true
       }, {
-        title: '配送费用',
-        dataIndex: 'deliveryPrice',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '元'
-          } else {
-            return '- -'
-          }
-        },
-        ellipsis: true
-      }, {
-        title: '总收益',
-        dataIndex: 'totalPrice',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '元'
-          } else {
-            return '- -'
-          }
-        },
-        ellipsis: true
-      }, {
         title: '创建时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {

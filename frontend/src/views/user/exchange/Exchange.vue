@@ -146,8 +146,8 @@ export default {
           }
         }
       }, {
-        title: '收货地址',
-        dataIndex: 'address',
+        title: '联系方式',
+        dataIndex: 'phone',
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
